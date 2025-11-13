@@ -139,11 +139,11 @@ function App() {
     <div className="min-h-screen bg-white">
       {/* Hero */}
       <section className="relative overflow-hidden min-h-[520px] pt-28 sm:pt-32 pb-10">
-      <div className="pointer-events-none absolute inset-0 z-0">
+      {/* <div className="pointer-events-none absolute inset-0 z-0">
     <div className="h-full w-full 
                     bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:18px_18px]" />
     <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white via-white/80 to-transparent" />
-  </div>
+  </div> */}
         <div className="relative px-4 sm:px-6">
           <div className="max-w-6xl mx-auto flex flex-col gap-6 sm:gap-8 text-center">
             <motion.div
@@ -174,6 +174,7 @@ function App() {
 <div className="pointer-events-none absolute inset-0 z-0">
     <div className="h-full w-full 
                     bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:18px_18px]" />
+    <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white via-white/80 to-transparent" />
   </div>
   <div
     className="max-w-7xl mx-auto grid
