@@ -1,0 +1,625 @@
+"use client"
+
+import React, { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import Link from "next/link"
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  show:  { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+}
+
+// Sticky Center Div with Scroll Reveal Effect
+function StickyCenterDiv() {
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  const productImages = [
+    { src: "/workingglove1.png", alt: "Working Gloves" },
+    { src: "/weldinggloves1.png", alt: "Welding Gloves" },
+    { src: "/mechanicalglove1.png", alt: "Mechanical Gloves" },
+    { src: "/gardening1.png", alt: "Gardening Gloves" },
+    { src: "/riding1.png", alt: "Riding Gloves" },
+    { src: "/canadianglove1.png", alt: "Canadian Gloves" },
+  ]
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroVisionSection = document.getElementById('hero-vision')
+      if (!heroVisionSection) return
+
+      const rect = heroVisionSection.getBoundingClientRect()
+      const sectionTop = rect.top + window.scrollY
+      const sectionHeight = rect.height
+      const scrollPosition = window.scrollY
+      const viewportHeight = window.innerHeight
+
+      // Calculate progress from when section enters viewport to when it exits
+      const startPoint = sectionTop - viewportHeight + 300
+      const endPoint = sectionTop + sectionHeight - viewportHeight - 200
+      const totalScroll = endPoint - startPoint
+
+      if (scrollPosition < startPoint) {
+        setScrollProgress(0)
+        setCurrentImageIndex(0)
+      } else if (scrollPosition > endPoint) {
+        setScrollProgress(1)
+        setCurrentImageIndex(productImages.length - 1)
+      } else {
+        const progress = (scrollPosition - startPoint) / totalScroll
+        setScrollProgress(Math.min(Math.max(progress, 0), 1))
+        
+        // Change image based on scroll progress
+        const imageIndex = Math.floor(progress * (productImages.length - 1))
+        setCurrentImageIndex(Math.min(imageIndex, productImages.length - 1))
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // Initial call
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [productImages.length])
+
+  return (
+    <div className="sticky top-20 sm:top-28">
+      <div className="relative h-[400px] sm:h-[480px] lg:h-[560px] flex items-start justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true, amount: 0.2 }}
+          className="w-full max-w-[320px] sm:max-w-[360px] lg:w-[380px] h-[360px] sm:h-[440px] lg:h-[500px]
+                     bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50
+                     rounded-3xl opacity-70 shadow-lg overflow-hidden relative"
+        >
+          {/* Background decorative elements */}
+          <div className="absolute bottom-8 right-8 w-32 h-32 bg-white/40 rounded-full blur-xl" />
+          <div className="absolute top-12 left-12 w-24 h-24 bg-purple-200/30 rounded-full blur-lg" />
+          
+          {/* Scroll-revealing image container */}
+          <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+            <div className="relative w-full h-full">
+              {/* All images stacked, pop up consistently */}
+              {productImages.map((img, index) => {
+                const isActive = index === currentImageIndex
+                const isPast = index < currentImageIndex
+                
+                return (
+                  <motion.div
+                    key={index}
+                    className="absolute inset-0 flex items-center justify-center"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{
+                      opacity: isActive ? 1 : isPast ? 0.3 : 0,
+                      scale: isActive ? 1 : 0.8,
+                    }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                  >
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <img 
+                        src={img.src}
+                        alt={img.alt}
+                        className="max-w-full max-h-full object-contain drop-shadow-2xl"
+                      />
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Progress indicator dots */}
+          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+            {productImages.map((_, index) => (
+              <div
+                key={index}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentImageIndex
+                    ? 'w-8 bg-white/90'
+                    : index < currentImageIndex
+                    ? 'w-2 bg-white/60'
+                    : 'w-2 bg-white/30'
+                }`}
+              />
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  )
+}
+
+const fade = {
+  hidden: { opacity: 0 },
+  show:  { opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+}
+
+function App() {
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Hero */}
+      <section className="pt-28 sm:pt-36 pb-10 px-4 sm:px-6">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          className="max-w-3xl mx-auto text-center mb-12 sm:mb-20"
+        >
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-2">
+            Premium Hand Protection Solutions from Sialkot, Pakistan
+          </h1>
+          <p className="text-gray-600 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed px-2">
+            Handcare is a leading manufacturer of high-quality industrial and safety gloves, proudly based in Sialkot, Pakistan. With decades of expertise, we deliver superior hand protection solutions trusted by professionals worldwide.
+          </p>
+          <Link href="/products" className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-gray-900 text-gray-900 text-sm rounded-full hover:bg-gray-900 hover:text-white transition-colors">
+            Explore Our Products
+          </Link>
+        </motion.div>
+
+        
+      </section>
+
+      {/* Hero-Vision combined section with sticky center */}
+{/* DECORATIVE SHAPES + VISION (center starts between side shapes) */}
+{/* DECORATIVE SHAPES + PRE-RUNWAY + VISION (+ optional post-runway) */}
+<section id="hero-vision" className="px-4 sm:px-6">
+  <div
+    className="max-w-7xl mx-auto grid
+               grid-cols-1
+               lg:grid-cols-[1fr_minmax(420px,560px)_1fr]
+               /* ↓ reduced pre- and post-runway heights ↓ */
+               lg:grid-rows-[500px_minmax(120px,28vh)_auto_minmax(100px,18vh)]
+               gap-x-6 lg:gap-x-12 gap-y-8 lg:gap-y-12">
+
+    {/* ROW 1: SHAPES STAGE */}
+    <div className="hidden lg:block row-start-1 col-span-3 relative h-[500px]">
+      {/* Left Side Shape with Glove Image */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.05 }}
+        viewport={{ once: true, amount: 0.2 }}
+        className="absolute top-[220px] right-[220%] w-[300px] h-[220px]
+                   bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50
+                   rounded-3xl opacity-80 overflow-hidden"
+      >
+        <div className="absolute inset-0 flex items-center justify-center p-6">
+          <img 
+            src="/weldinggloves2.png" 
+            alt="Welding Gloves"
+            className="max-w-full max-h-full object-contain opacity-90"
+          />
+        </div>
+        <div className="absolute top-4 left-4 w-16 h-16 bg-white/60 rounded-full blur-sm" />
+      </motion.div>
+      
+      {/* Right Side Shape with Glove Image */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.25 }}
+        viewport={{ once: true, amount: 0.2 }}
+        className="absolute top-[80px] right-[74%] w-[280px] h-[220px]
+                   bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50
+                   rounded-3xl opacity-80 shadow-md z-10 overflow-hidden"
+      >
+        <div className="absolute inset-0 flex items-center justify-center p-6">
+          <img 
+            src="/mechanicalglove3.png" 
+            alt="Mechanical Gloves"
+            className="max-w-full max-h-full object-contain opacity-90"
+          />
+        </div>
+        <div className="absolute top-6 right-6 w-20 h-20 bg-white/50 rounded-full" />
+      </motion.div>
+    </div>
+
+    {/* CENTER STICKY with Scroll Reveal Effect */}
+    <div className="row-start-1 row-span-4 lg:col-start-2">
+      <StickyCenterDiv />
+    </div>
+
+    {/* ROW 2: PRE-RUNWAY (shortened) */}
+    <div className="row-start-2 col-span-3" aria-hidden />
+
+    {/* ROW 3: VISION */}
+    <div className="row-start-3 lg:col-start-1">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true, amount: 0.3 }}
+        className="w-full max-w-xl h-[200px] sm:h-[240px] lg:h-[260px] bg-gray-100 rounded-3xl flex items-center justify-center p-4"
+      >
+        <img 
+          src="/workingglove3.png" 
+          alt="Handcare Quality Gloves"
+          className="max-w-full max-h-full object-contain"
+        />
+      </motion.div>
+    </div>
+
+    <div className="row-start-3 lg:col-start-3" id="about">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+        className="max-w-xl lg:ml-auto"
+      >
+        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">Our Vision</h2>
+        <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+          To become the global leader in hand protection solutions by combining traditional craftsmanship from Sialkot with modern manufacturing excellence. We envision a world where every worker has access to reliable, high-quality gloves that ensure safety and productivity.
+        </p>
+      </motion.div>
+    </div>
+
+    {/* ROW 4: POST-RUNWAY (shortened) */}
+    <div className="row-start-4 col-span-3" aria-hidden />
+  </div>
+</section>
+
+
+
+
+      {/* About / KPIs */}
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">About Handcare</h2>
+            <p className="text-gray-600 mb-8 sm:mb-12 max-w-2xl text-sm sm:text-base">
+              Established in the heart of Sialkot, Pakistan—the world&apos;s largest manufacturing hub for sports and safety goods—Handcare has been producing premium quality gloves for over two decades. Our state-of-the-art facility combines traditional craftsmanship with modern technology to deliver products that meet international quality standards. We are ISO 9001:2015 certified and comply with CE, ANSI, and EN standards, ensuring our gloves provide superior protection across various industries.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-4 md:gap-8 mb-8">
+            {[
+              { n: "25+", desc: "Years of Excellence" },
+              { n: "50+", desc: "Countries Served" },
+              { n: "500K+", desc: "Pairs Produced Annually" },
+              { n: "ISO", desc: "9001:2015 Certified" },
+            ].map((kpi, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+                viewport={{ once: true, amount: 0.2 }}
+              >
+                <p className="text-4xl font-bold text-gray-900 mb-2">{kpi.n}</p>
+                <p className="text-sm text-gray-600">
+                  {kpi.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-gray-200">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">Certifications & Standards</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[
+                { cert: "ISO 9001:2015", desc: "Quality Management" },
+                { cert: "CE Marking", desc: "European Conformity" },
+                { cert: "ANSI/ISEA", desc: "American Standards" },
+                { cert: "EN 388", desc: "Mechanical Protection" },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.05 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  className="bg-white p-4 rounded-lg border border-gray-200"
+                >
+                  <p className="font-bold text-gray-900 mb-1">{item.cert}</p>
+                  <p className="text-xs text-gray-600">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Product */}
+      <section className="py-12 sm:py-20 px-4 sm:px-6" id="product">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            className="text-center mb-8 sm:mb-12"
+          >
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">Our Product Range</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              Handcare offers a comprehensive range of protective gloves designed for various industries and applications. Each product is engineered with precision and tested for durability, comfort, and maximum protection.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { id: "working-gloves", name: "Working Gloves", img: "workingglove1.png", desc: "Heavy-duty protection for construction and general work" },
+              { id: "welding-gloves", name: "Welding Gloves", img: "weldinggloves1.png", desc: "Heat and flame-resistant gloves for welding operations" },
+              { id: "mechanical-gloves", name: "Mechanical Gloves", img: "mechanicalglove1.png", desc: "Precision grip and cut resistance for mechanical work" },
+              { id: "gardening-gloves", name: "Gardening Gloves", img: "gardening1.png", desc: "Comfortable protection for gardening and landscaping" },
+              { id: "riding-gloves", name: "Riding Gloves", img: "riding1.png", desc: "Flexible and durable gloves for equestrian activities" },
+              { id: "canadian-gloves", name: "Canadian Gloves", img: "canadianglove1.png", desc: "Cold weather protection with superior insulation" },
+            ].map((product, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                <Link href={`/products/${product.id}`}>
+                  <div className="h-64 bg-gray-100 flex items-center justify-center p-4">
+                    <img 
+                      src={`/${product.img}`} 
+                      alt={product.name}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{product.name}</h3>
+                    <p className="text-sm text-gray-600 mb-4">{product.desc}</p>
+                    <span className="text-sm text-gray-900 font-medium hover:text-gray-700">
+                      View Details →
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link 
+              href="/products"
+              className="inline-block px-8 py-3 border-2 border-gray-900 text-gray-900 text-sm rounded-full hover:bg-gray-900 hover:text-white transition-colors"
+            >
+              View All Products
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Resources / Categories */}
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50" id="resources">
+        <div className="max-w-6xl mx-auto">
+          <motion.h2
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 sm:mb-12 text-center"
+          >
+            Product Categories
+          </motion.h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { 
+                title: "Industrial Safety", 
+                img: "workingglove2.png",
+                desc: "Comprehensive protection for industrial workers with cut-resistant and impact protection features." 
+              },
+              { 
+                title: "Specialized Protection", 
+                img: "weldinggloves2.png",
+                desc: "Heat-resistant and flame-retardant gloves for specialized applications in welding and foundries." 
+              },
+              { 
+                title: "Outdoor & Sports", 
+                img: "riding2.png",
+                desc: "Durable gloves designed for outdoor activities, sports, and recreational use with weather protection." 
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                viewport={{ once: true, amount: 0.25 }}
+                className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                <div className="h-48 bg-gray-100 flex items-center justify-center p-4">
+                  <img 
+                    src={`/${item.img}`} 
+                    alt={item.title}
+                    className="max-w-full max-h-full object-contain"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">{item.title}</h3>
+                  <p className="text-sm text-gray-600">
+                    {item.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Brands */}
+      <section className="py-12 sm:py-20">
+        <div className="px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto">
+            <motion.h2
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6"
+            >
+              Brands
+            </motion.h2>
+            <motion.p
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              className="text-gray-600 mb-8 sm:mb-12 max-w-2xl text-sm sm:text-base"
+            >
+              Trusted by leading companies worldwide, Handcare gloves are exported to over 50 countries. Our commitment to quality, innovation, and customer satisfaction has made us a preferred partner for distributors, retailers, and industrial buyers seeking reliable hand protection solutions.
+            </motion.p>
+          </div>
+        </div>
+
+        <div className="relative">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            className="bg-gray-100 rounded-lg p-6 sm:p-8 mx-4 sm:mx-0 sm:ml-16 lg:ml-64"
+            style={{ marginRight: 0 }}
+          >
+            <div className="flex items-center justify-center gap-6 sm:gap-12 flex-wrap w-full">
+              {[
+                "Industrial Protection Products · USA",
+                "Al-Futtaim Engineering & Technologies · UAE",
+                "SafetyCare Australia Pty Ltd · Australia",
+                "Atlas Safety Products Pte Ltd · Singapore",
+              ].map((partner, i) => (
+                <motion.div
+                  key={partner}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  className="flex items-center gap-2 text-gray-700"
+                >
+                  <div className="w-0 h-0 border-l-[6px] border-l-gray-700 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent"></div>
+                  <span className="font-medium text-gray-700">{partner}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <motion.h2
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 sm:mb-12"
+          >
+            Testimonials
+          </motion.h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                quote: "Handcare gloves have been our go-to supplier for over 5 years. The quality is consistently excellent, and their delivery times are always reliable. Our workers trust these gloves for their daily operations.",
+                name: "Ahmed Hassan",
+                company: "Industrial Safety Solutions, UAE"
+              },
+              {
+                quote: "We've tried many suppliers, but Handcare stands out for their attention to detail and commitment to meeting international standards. Their welding gloves have significantly reduced workplace injuries in our facility.",
+                name: "Sarah Johnson",
+                company: "Global Manufacturing Co., USA"
+              },
+              {
+                quote: "As a distributor, I appreciate Handcare's competitive pricing and consistent quality. Their products meet all our certification requirements, and our customers are always satisfied with the durability and comfort.",
+                name: "Michael Chen",
+                company: "Safety Equipment Distributors, Singapore"
+              },
+            ].map((testimonial, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                viewport={{ once: true, amount: 0.25 }}
+                className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow"
+              >
+                <p className="text-sm text-gray-600 mb-6">
+                  &quot;{testimonial.quote}&quot;
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">{testimonial.name}</p>
+                    <p className="text-xs text-gray-500">{testimonial.company}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section className="py-12 sm:py-20 px-4 sm:px-6" id="contact">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Get in touch</h2>
+            <p className="text-gray-600 mb-8 leading-relaxed">
+              Ready to find the perfect hand protection solution for your needs? Contact our team in Sialkot, Pakistan. We&apos;re here to help you choose the right gloves and provide competitive pricing for bulk orders. Let&apos;s discuss how Handcare can meet your requirements.
+            </p>
+            <div className="space-y-2 text-sm text-gray-600">
+              <p className="font-medium text-gray-900">Phone: +92 52 355 1234</p>
+              <p className="font-medium text-gray-900">Email: info@handcare.com.pk</p>
+              <p className="font-medium text-gray-900">Export: export@handcare.com.pk</p>
+              <p className="mt-4">Industrial Area, Sialkot 51310<br />Punjab, Pakistan</p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            variants={fade}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            className="space-y-4"
+          >
+            <input type="text" placeholder="Your name" className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900" />
+            <input type="email" placeholder="Email" className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900" />
+            <textarea placeholder="Message" rows={4} className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"></textarea>
+            <button className="w-full px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+              Submit
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          className="max-w-3xl mx-auto text-center"
+        >
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">Ready to Partner with Handcare?</h2>
+          <p className="text-gray-600 mb-8 leading-relaxed">
+            Join hundreds of satisfied customers worldwide who trust Handcare for their hand protection needs. Request a quote today and discover why we&apos;re the preferred choice for quality gloves from Sialkot, Pakistan.
+          </p>
+          <Link href="/quote" className="px-8 py-3 bg-gray-900 text-white text-sm rounded-full hover:bg-gray-800 transition-colors inline-block">
+            Request a Quote
+          </Link>
+        </motion.div>
+      </section>
+
+    </div>
+  )
+}
+
+export default App
