@@ -1,12 +1,12 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 import Link from "next/link"
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
-  show:  { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+  show:  { opacity: 1, y: 0, transition: { duration: 0.6 } },
 }
 
 // Sticky Center Div with Scroll Reveal Effect
@@ -69,7 +69,7 @@ function StickyCenterDiv() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true, amount: 0.2 }}
           className="w-full max-w-[320px] sm:max-w-[360px] lg:w-[380px] h-[360px] sm:h-[440px] lg:h-[500px]
-                     bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50
+                     bg-linear-to-br from-gray-50 via-gray-100 to-gray-50
                      rounded-3xl opacity-70 shadow-lg overflow-hidden relative"
         >
           {/* Background decorative elements */}
@@ -129,41 +129,52 @@ function StickyCenterDiv() {
   )
 }
 
-const fade = {
+const fade: Variants = {
   hidden: { opacity: 0 },
-  show:  { opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+  show:  { opacity: 1, transition: { duration: 0.6 } },
 }
 
 function App() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <section className="pt-28 sm:pt-36 pb-10 px-4 sm:px-6">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-          className="max-w-3xl mx-auto text-center mb-12 sm:mb-20"
-        >
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-2">
-            Premium Hand Protection Solutions from Sialkot, Pakistan
-          </h1>
-          <p className="text-gray-600 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed px-2">
-            Handcare is a leading manufacturer of high-quality industrial and safety gloves, proudly based in Sialkot, Pakistan. With decades of expertise, we deliver superior hand protection solutions trusted by professionals worldwide.
-          </p>
-          <Link href="/products" className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-gray-900 text-gray-900 text-sm rounded-full hover:bg-gray-900 hover:text-white transition-colors">
-            Explore Our Products
-          </Link>
-        </motion.div>
-
-        
+      <section className="relative overflow-hidden min-h-[520px] pt-28 sm:pt-32 pb-10">
+      <div className="pointer-events-none absolute inset-0 z-0">
+    <div className="h-full w-full 
+                    bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:18px_18px]" />
+    <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white via-white/80 to-transparent" />
+  </div>
+        <div className="relative px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto flex flex-col gap-6 sm:gap-8 text-center">
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              className="max-w-3xl mx-auto text-center"
+            >
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-2">
+                Premium Hand Protection Solutions from Sialkot, Pakistan
+              </h1>
+              <p className="text-gray-600 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed px-2">
+                Handcare is a leading manufacturer of high-quality industrial and safety gloves, proudly based in Sialkot, Pakistan. With decades of expertise, we deliver superior hand protection solutions trusted by professionals worldwide.
+              </p>
+              <Link href="/products" className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-gray-900 text-gray-900 text-sm rounded-full hover:bg-gray-900 hover:text-white transition-colors">
+                Explore Our Products
+              </Link>
+            </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* Hero-Vision combined section with sticky center */}
 {/* DECORATIVE SHAPES + VISION (center starts between side shapes) */}
 {/* DECORATIVE SHAPES + PRE-RUNWAY + VISION (+ optional post-runway) */}
-<section id="hero-vision" className="px-4 sm:px-6">
+<section id="hero-vision" className="relative px-4 sm:px-6">
+<div className="pointer-events-none absolute inset-0 z-0">
+    <div className="h-full w-full 
+                    bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:18px_18px]" />
+  </div>
   <div
     className="max-w-7xl mx-auto grid
                grid-cols-1
@@ -181,7 +192,7 @@ function App() {
         transition={{ duration: 0.6, delay: 0.05 }}
         viewport={{ once: true, amount: 0.2 }}
         className="absolute top-[220px] right-[220%] w-[300px] h-[220px]
-                   bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50
+                   bg-linear-to-br from-gray-50 via-gray-100 to-gray-50
                    rounded-3xl opacity-80 overflow-hidden"
       >
         <div className="absolute inset-0 flex items-center justify-center p-6">
@@ -201,7 +212,7 @@ function App() {
         transition={{ duration: 0.6, delay: 0.25 }}
         viewport={{ once: true, amount: 0.2 }}
         className="absolute top-[80px] right-[74%] w-[280px] h-[220px]
-                   bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50
+                   bg-linear-to-br from-gray-50 via-gray-100 to-gray-50
                    rounded-3xl opacity-80 shadow-md z-10 overflow-hidden"
       >
         <div className="absolute inset-0 flex items-center justify-center p-6">
@@ -224,7 +235,7 @@ function App() {
     <div className="row-start-2 col-span-3" aria-hidden />
 
     {/* ROW 3: VISION */}
-    <div className="row-start-3 lg:col-start-1">
+    <div className="row-start-3 lg:col-start-1 z-10">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -240,7 +251,7 @@ function App() {
       </motion.div>
     </div>
 
-    <div className="row-start-3 lg:col-start-3" id="about">
+    <div className="row-start-3 lg:col-start-3 z-10" id="about">
       <motion.div
         variants={fadeUp}
         initial="hidden"
@@ -497,7 +508,7 @@ function App() {
                   viewport={{ once: true, amount: 0.2 }}
                   className="flex items-center gap-2 text-gray-700"
                 >
-                  <div className="w-0 h-0 border-l-[6px] border-l-gray-700 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent"></div>
+                  <div className="w-0 h-0 border-l-[6px] border-l-gray-700 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
                   <span className="font-medium text-gray-700">{partner}</span>
                 </motion.div>
               ))}
