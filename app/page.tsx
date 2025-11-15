@@ -79,10 +79,11 @@ function StickyCenterDiv() {
           {/* Scroll-revealing image container */}
           <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <div className="relative w-full h-full">
-              {/* All images stacked, pop up consistently */}
+              {/* Only show current image */}
               {productImages.map((img, index) => {
                 const isActive = index === currentImageIndex
-                const isPast = index < currentImageIndex
+                
+                if (!isActive) return null
                 
                 return (
                   <motion.div
@@ -90,8 +91,8 @@ function StickyCenterDiv() {
                     className="absolute inset-0 flex items-center justify-center"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{
-                      opacity: isActive ? 1 : isPast ? 0.3 : 0,
-                      scale: isActive ? 1 : 0.8,
+                      opacity: 1,
+                      scale: 1,
                     }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
                   >
@@ -134,6 +135,113 @@ const fade: Variants = {
   show:  { opacity: 1, transition: { duration: 0.6 } },
 }
 
+function ContactForm() {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState("")
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+    setError("")
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setError("")
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message')
+      }
+
+      setSubmitted(true)
+      setFormData({ name: "", email: "", message: "" })
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setSubmitted(false)
+      }, 5000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <motion.div
+      variants={fade}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.3 }}
+      className="space-y-4"
+    >
+      {submitted ? (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+          <p className="text-green-800 font-medium">Thank you! Your message has been sent successfully.</p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="name"
+            placeholder="Your name"
+            required
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+          />
+          <textarea
+            name="message"
+            placeholder="Message"
+            rows={4}
+            required
+            value={formData.message}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+          />
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p className="text-red-800 text-sm">{error}</p>
+            </div>
+          )}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'Sending...' : 'Submit'}
+          </button>
+        </form>
+      )}
+    </motion.div>
+  )
+}
+
 function App() {
   return (
     <div className="min-h-screen bg-white">
@@ -173,8 +281,8 @@ function App() {
 <section id="hero-vision" className="relative px-4 sm:px-6">
 <div className="pointer-events-none absolute inset-0 z-0">
     <div className="h-full w-full 
-                    bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:18px_18px]" />
-    <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white via-white/80 to-transparent" />
+                    bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-size-[18px_18px]" />
+    <div className="absolute inset-x-0 top-0 h-64 bg-linear-to-b from-white via-white/80 to-transparent" />
   </div>
   <div
     className="max-w-7xl mx-auto grid
@@ -311,30 +419,6 @@ function App() {
               </motion.div>
             ))}
           </div>
-
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Certifications & Standards</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[
-                { cert: "ISO 9001:2015", desc: "Quality Management" },
-                { cert: "CE Marking", desc: "European Conformity" },
-                { cert: "ANSI/ISEA", desc: "American Standards" },
-                { cert: "EN 388", desc: "Mechanical Protection" },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.05 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  className="bg-white p-4 rounded-lg border border-gray-200"
-                >
-                  <p className="font-bold text-gray-900 mb-1">{item.cert}</p>
-                  <p className="text-xs text-gray-600">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -460,64 +544,6 @@ function App() {
         </div>
       </section>
 
-      {/* Brands */}
-      <section className="py-12 sm:py-20">
-        <div className="px-4 sm:px-6">
-          <div className="max-w-6xl mx-auto">
-            <motion.h2
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.3 }}
-              className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6"
-            >
-              Brands
-            </motion.h2>
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.3 }}
-              className="text-gray-600 mb-8 sm:mb-12 max-w-2xl text-sm sm:text-base"
-            >
-              Trusted by leading companies worldwide, Handcare gloves are exported to over 50 countries. Our commitment to quality, innovation, and customer satisfaction has made us a preferred partner for distributors, retailers, and industrial buyers seeking reliable hand protection solutions.
-            </motion.p>
-          </div>
-        </div>
-
-        <div className="relative">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-            className="bg-gray-100 rounded-lg p-6 sm:p-8 mx-4 sm:mx-0 sm:ml-16 lg:ml-64"
-            style={{ marginRight: 0 }}
-          >
-            <div className="flex items-center justify-center gap-6 sm:gap-12 flex-wrap w-full">
-              {[
-                "Industrial Protection Products · USA",
-                "Al-Futtaim Engineering & Technologies · UAE",
-                "SafetyCare Australia Pty Ltd · Australia",
-                "Atlas Safety Products Pte Ltd · Singapore",
-              ].map((partner, i) => (
-                <motion.div
-                  key={partner}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  className="flex items-center gap-2 text-gray-700"
-                >
-                  <div className="w-0 h-0 border-l-[6px] border-l-gray-700 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
-                  <span className="font-medium text-gray-700">{partner}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
       {/* Testimonials */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
@@ -586,28 +612,39 @@ function App() {
             <p className="text-gray-600 mb-8 leading-relaxed">
               Ready to find the perfect hand protection solution for your needs? Contact our team in Sialkot, Pakistan. We&apos;re here to help you choose the right gloves and provide competitive pricing for bulk orders. Let&apos;s discuss how Handcare can meet your requirements.
             </p>
-            <div className="space-y-2 text-sm text-gray-600">
-              <p className="font-medium text-gray-900">Phone: +92 52 355 1234</p>
-              <p className="font-medium text-gray-900">Email: info@handcare.com.pk</p>
-              <p className="font-medium text-gray-900">Export: export@handcare.com.pk</p>
-              <p className="mt-4">Industrial Area, Sialkot 51310<br />Punjab, Pakistan</p>
+            <div className="space-y-3 text-sm text-gray-600">
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Phone:</p>
+                <a href="tel:+923014264385" className="text-gray-600 hover:text-gray-900 transition-colors">+92 301 426 4385</a>
+                <br />
+                <a href="tel:+923024002921" className="text-gray-600 hover:text-gray-900 transition-colors">+92 302 400 2921</a>
+              </div>
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Email:</p>
+                <a href="mailto:handcare514@gmail.com" className="text-gray-600 hover:text-gray-900 transition-colors">handcare514@gmail.com</a>
+              </div>
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Follow Us:</p>
+                <a 
+                  href="https://www.instagram.com/hand_care14?igsh=MXRwb2VxdHZ1aGdobw==" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-gray-900 transition-colors inline-flex items-center gap-1"
+                >
+                  Instagram
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+              <div className="mt-4">
+                <p className="font-medium text-gray-900 mb-1">Address:</p>
+                <p>Industrial Area, Sialkot 51310<br />Punjab, Pakistan</p>
+              </div>
             </div>
           </motion.div>
 
-          <motion.div
-            variants={fade}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-            className="space-y-4"
-          >
-            <input type="text" placeholder="Your name" className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900" />
-            <input type="email" placeholder="Email" className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900" />
-            <textarea placeholder="Message" rows={4} className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"></textarea>
-            <button className="w-full px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
-              Submit
-            </button>
-          </motion.div>
+          <ContactForm />
         </div>
       </section>
 

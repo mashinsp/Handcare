@@ -33,33 +33,53 @@ function QuoteForm() {
     message: "",
   })
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     })
+    setError("")
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend/API
-    console.log("Quote Request:", formData)
-    setSubmitted(true)
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setSubmitted(false)
+    setIsSubmitting(true)
+    setError("")
+
+    try {
+      const response = await fetch('/api/quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send quote request')
+      }
+
+      setSubmitted(true)
       setFormData({
         name: "",
         email: "",
         phone: "",
         company: "",
         country: "",
-        product: "",
+        product: productParam || "",
         quantity: "",
         message: "",
       })
-    }, 5000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -256,12 +276,19 @@ function QuoteForm() {
                   />
                 </div>
 
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <p className="text-red-800 text-sm">{error}</p>
+                  </div>
+                )}
+
                 <div className="pt-4">
                   <button
                     type="submit"
-                    className="w-full px-6 py-3 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors font-medium"
+                    disabled={isSubmitting}
+                    className="w-full px-6 py-3 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Submit Quote Request
+                    {isSubmitting ? 'Sending...' : 'Submit Quote Request'}
                   </button>
                 </div>
 
