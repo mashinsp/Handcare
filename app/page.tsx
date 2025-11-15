@@ -267,9 +267,19 @@ function App() {
               <p className="text-gray-600 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed px-2">
                 Handcare is a leading manufacturer of high-quality industrial and safety gloves, proudly based in Sialkot, Pakistan. With decades of expertise, we deliver superior hand protection solutions trusted by professionals worldwide.
               </p>
-              <Link href="/products" className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-gray-900 text-gray-900 text-sm rounded-full hover:bg-gray-900 hover:text-white transition-colors">
-                Explore Our Products
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                <Link href="/products" className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-gray-900 text-gray-900 text-sm rounded-full hover:bg-gray-900 hover:text-white transition-colors">
+                  Explore Our Products
+                </Link>
+                <a 
+                  href="/handcare_catalogue.pdf" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-900 text-white text-sm rounded-full hover:bg-gray-800 transition-colors"
+                >
+                  View Catalogue
+                </a>
+              </div>
             </motion.div>
           </div>
         </div>

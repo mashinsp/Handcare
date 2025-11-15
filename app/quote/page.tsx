@@ -305,11 +305,12 @@ function QuoteForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-sm font-medium text-gray-900 mb-2">Phone</p>
-                <p className="text-gray-600">+92 52 355 1234</p>
+                <p className="text-gray-600">+92 3024002921</p>
+                <p className="text-gray-600">+92 3014264385</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-900 mb-2">Email</p>
-                <p className="text-gray-600">export@handcare.com.pk</p>
+                <p className="text-gray-600">handcare514@gmail.com</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-900 mb-2">Address</p>
