@@ -100,6 +100,21 @@ const products = {
       "Color": "Black, Brown",
     }
   },
+  "boxing-gloves": {
+    name: "Boxing Gloves",
+    img: "boxing1.png",
+    desc: "Professional-grade boxing gloves for training and competition",
+    images: ["boxing1.png", "boxing2.png", "boxing3.png", "boxing4.png"],
+    features: ["Impact protection", "Secure wrist support", "Breathable design", "Durable construction", "Ergonomic fit", "Shock absorption"],
+    applications: ["Boxing training", "Martial arts", "Fitness workouts", "Competition", "Sparring"],
+    specifications: {
+      "Material": "Premium leather and synthetic",
+      "Weight": "12oz, 14oz, 16oz",
+      "Sizes": "S, M, L, XL",
+      "Standards": "CE Marking",
+      "Color": "Red, Blue, Black",
+    }
+  },
 }
 
 function ProductDetailContent() {

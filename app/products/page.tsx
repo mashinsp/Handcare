@@ -64,6 +64,15 @@ const products = [
     features: ["Thermal insulation", "Waterproof exterior", "Wind resistant", "Extended wrist coverage"],
     applications: ["Cold weather work", "Outdoor construction", "Winter maintenance", "Arctic operations"]
   },
+  { 
+    id: "boxing-gloves",
+    name: "Boxing Gloves", 
+    img: "boxing1.png", 
+    desc: "Professional-grade boxing gloves for training and competition",
+    images: ["boxing1.png", "boxing2.png", "boxing3.png", "boxing4.png"],
+    features: ["Impact protection", "Secure wrist support", "Breathable design", "Durable construction"],
+    applications: ["Boxing training", "Martial arts", "Fitness workouts", "Competition"]
+  },
 ]
 
 export default function ProductsPage() {

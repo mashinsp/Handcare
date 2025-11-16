@@ -30,18 +30,16 @@ export default function Footer() {
         <div className="col-span-1">
           <h3 className="font-medium mb-4">Policy</h3>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link></li>
-            <li><Link href="/terms" className="hover:text-white transition-colors">Terms</Link></li>
-            <li><Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link></li>
+            <li><Link href="/privacy" className="hover:text-white transition-colors pointer-events-none cursor-default opacity-50">Privacy</Link></li>
+            <li><Link href="/terms" className="hover:text-white transition-colors pointer-events-none cursor-default opacity-50">Terms</Link></li>
+            <li><Link href="/cookies" className="hover:text-white transition-colors pointer-events-none cursor-default opacity-50">Cookies</Link></li>
           </ul>
         </div>
 
         <div className="col-span-1">
           <h3 className="font-medium mb-4">Social</h3>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><Link href="https://twitter.com" className="hover:text-white transition-colors">Twitter</Link></li>
-            <li><Link href="https://linkedin.com" className="hover:text-white transition-colors">LinkedIn</Link></li>
-            <li><Link href="https://instagram.com" className="hover:text-white transition-colors">Instagram</Link></li>
+            <li><Link href="https://www.instagram.com/hand_care14?igsh=MXRwb2VxdHZ1aGdobw==" className="hover:text-white transition-colors">Instagram</Link></li>
           </ul>
         </div>
       </div>

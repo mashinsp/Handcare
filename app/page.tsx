@@ -19,8 +19,8 @@ function StickyCenterDiv() {
     { src: "/weldinggloves1.png", alt: "Welding Gloves" },
     { src: "/mechanicalglove1.png", alt: "Mechanical Gloves" },
     { src: "/gardening1.png", alt: "Gardening Gloves" },
+    { src: "/boxing1.png", alt: "Boxing Gloves" },
     { src: "/riding1.png", alt: "Riding Gloves" },
-    { src: "/canadianglove1.png", alt: "Canadian Gloves" },
   ]
 
   useEffect(() => {
@@ -300,11 +300,11 @@ function App() {
                lg:grid-cols-[1fr_minmax(420px,560px)_1fr]
                /* ↓ reduced pre- and post-runway heights ↓ */
                lg:grid-rows-[500px_minmax(120px,28vh)_auto_minmax(100px,18vh)]
-               gap-x-6 lg:gap-x-12 gap-y-8 lg:gap-y-12">
+               gap-y-8 lg:gap-x-12 lg:gap-y-12">
 
     {/* ROW 1: SHAPES STAGE */}
     <div className="hidden lg:block row-start-1 col-span-3 relative h-[500px]">
-      {/* Left Side Shape with Glove Image */}
+      {/* Left Side Shape with Glove Image */} 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -316,8 +316,8 @@ function App() {
       >
         <div className="absolute inset-0 flex items-center justify-center p-6">
           <img 
-            src="/weldinggloves2.png" 
-            alt="Welding Gloves"
+            src="/boxing2.png" 
+            alt="Boxing Gloves"
             className="max-w-full max-h-full object-contain opacity-90"
           />
         </div>
@@ -354,13 +354,13 @@ function App() {
     <div className="row-start-2 col-span-3" aria-hidden />
 
     {/* ROW 3: VISION */}
-    <div className="row-start-3 lg:col-start-1 z-10">
+    <div className="row-start-3 col-span-3 lg:col-start-1 lg:col-span-1 z-10 mb-6 lg:mb-0">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true, amount: 0.3 }}
-        className="w-full max-w-xl h-[200px] sm:h-[240px] lg:h-[260px] bg-gray-100 rounded-3xl flex items-center justify-center p-4"
+        className="w-full max-w-xl mx-auto lg:mx-0 h-[200px] sm:h-[240px] lg:h-[260px] bg-gray-100 rounded-3xl flex items-center justify-center p-4"
       >
         <img 
           src="/workingglove3.png" 
@@ -370,16 +370,16 @@ function App() {
       </motion.div>
     </div>
 
-    <div className="row-start-3 lg:col-start-3 z-10" id="about">
+    <div className="row-start-4 col-span-3 lg:row-start-3 lg:col-start-3 lg:col-span-1 z-10" id="about">
       <motion.div
         variants={fadeUp}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.3 }}
-        className="max-w-xl lg:ml-auto"
+        className="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:max-w-none lg:mx-0 lg:px-0 lg:w-[250%] lg:-ml-[25%]"
       >
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">Our Vision</h2>
-        <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 lg:mb-6 text-center">Our Vision</h2>
+        <p className="text-gray-600 leading-relaxed text-base sm:text-lg text-center lg:text-left">
           To become the global leader in hand protection solutions by combining traditional craftsmanship from Sialkot with modern manufacturing excellence. We envision a world where every worker has access to reliable, high-quality gloves that ensure safety and productivity.
         </p>
       </motion.div>
@@ -456,6 +456,7 @@ function App() {
               { id: "gardening-gloves", name: "Gardening Gloves", img: "gardening1.png", desc: "Comfortable protection for gardening and landscaping" },
               { id: "riding-gloves", name: "Riding Gloves", img: "riding1.png", desc: "Flexible and durable gloves for equestrian activities" },
               { id: "canadian-gloves", name: "Canadian Gloves", img: "canadianglove1.png", desc: "Cold weather protection with superior insulation" },
+              { id: "boxing-gloves", name: "Boxing Gloves", img: "boxing1.png", desc: "Professional-grade boxing gloves for training and competition" },
             ].map((product, i) => (
               <motion.div
                 key={i}
