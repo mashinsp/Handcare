@@ -329,7 +329,13 @@ function App() {
                     bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:18px_18px]" />
     <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white via-white/80 to-transparent" />
   </div> */}
-        <div className="relative px-4 sm:px-6">
+        {/* Smooth white fade from bottom */}
+        <div className="absolute inset-x-0 bottom-0 h-32 sm:h-40 lg:h-48 pointer-events-none z-10"
+             style={{
+               background: 'linear-gradient(to top, oklch(1 0 0) 0%, oklch(1 0 0) 40%, oklch(0.99 0.002 100 / 0.8) 70%, transparent 100%)'
+             }}></div>
+        
+        <div className="relative px-4 sm:px-6 z-20">
           <div className="max-w-6xl mx-auto flex flex-col gap-6 sm:gap-8 text-center">
             <motion.div
               variants={fadeUp}
