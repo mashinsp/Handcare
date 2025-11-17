@@ -20,7 +20,8 @@ function StickyCenterDiv() {
     { src: "/mechanicalglove1.png", alt: "Mechanical Gloves" },
     { src: "/gardening1.png", alt: "Gardening Gloves" },
     { src: "/boxing1.png", alt: "Boxing Gloves" },
-    { src: "/riding1.png", alt: "Riding Gloves" },
+    // { src: "/riding1.png", alt: "Riding Gloves" },
+    { src: "/riding2.png", alt: "Riding Gloves" },
   ]
 
   useEffect(() => {
@@ -33,20 +34,30 @@ function StickyCenterDiv() {
       const sectionHeight = rect.height
       const scrollPosition = window.scrollY
       const viewportHeight = window.innerHeight
+      
+      // Calculate when sticky element becomes active (top-20 = 5rem = 80px, top-28 on sm = 7rem = 112px)
+      // Use responsive sticky offset: 80px on mobile, 112px on larger screens
+      const stickyOffset = window.innerWidth >= 640 ? 112 : 80
+      const stickyStartPoint = sectionTop - stickyOffset
+      
+      // Image switching starts only after sticky element becomes active
+      // Calculate the scroll range while sticky (from when it becomes sticky until section ends)
+      // Using 70% of the range to make switching faster (images change more frequently)
+      const imageSwitchStart = stickyStartPoint
+      const imageSwitchEnd = sectionTop + sectionHeight - stickyOffset - 200
+      const totalSwitchRange = (imageSwitchEnd - imageSwitchStart) * 0.7
 
-      // Calculate progress from when section enters viewport to when it exits
-      const startPoint = sectionTop - viewportHeight + 300
-      const endPoint = sectionTop + sectionHeight - viewportHeight - 200
-      const totalScroll = endPoint - startPoint
-
-      if (scrollPosition < startPoint) {
+      // Before sticky starts, show first image
+      if (scrollPosition < imageSwitchStart) {
         setScrollProgress(0)
         setCurrentImageIndex(0)
-      } else if (scrollPosition > endPoint) {
+      } else if (scrollPosition > imageSwitchEnd) {
+        // After switching range, show last image
         setScrollProgress(1)
         setCurrentImageIndex(productImages.length - 1)
       } else {
-        const progress = (scrollPosition - startPoint) / totalScroll
+        // Calculate progress within the switching range (0 to 1)
+        const progress = (scrollPosition - imageSwitchStart) / totalSwitchRange
         setScrollProgress(Math.min(Math.max(progress, 0), 1))
         
         // Change image based on scroll progress
