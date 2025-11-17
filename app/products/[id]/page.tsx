@@ -149,10 +149,14 @@ function ProductDetailContent() {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center relative"
+           style={{
+             background: 'linear-gradient(180deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.005 95) 50%, oklch(0.99 0.002 100) 100%)'
+           }}>
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-          <Link href="/products" className="text-gray-600 hover:text-gray-900">
+          <h1 className="text-2xl font-bold mb-4 text-gradient-primary">Product Not Found</h1>
+          <Link href="/products" className="transition-colors hover:text-[oklch(0.50_0.15_220)]"
+                style={{ color: 'oklch(0.40 0.01 240)' }}>
             ← Back to Products
           </Link>
         </div>
@@ -161,27 +165,45 @@ function ProductDetailContent() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen relative"
+         style={{
+           background: 'linear-gradient(180deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.005 95) 50%, oklch(0.99 0.002 100) 100%)'
+         }}>
+      {/* Subtle texture overlay */}
+      <div className="fixed inset-0 pointer-events-none opacity-20 z-0"
+           style={{
+             backgroundImage: 'radial-gradient(circle at 1px 1px, oklch(0.50 0.15 220 / 0.12) 1px, transparent 0)',
+             backgroundSize: '28px 28px'
+           }}></div>
+      
       {/* Breadcrumb */}
-      <section className="pt-28 sm:pt-36 pb-8 px-4 sm:px-6">
+      <section className="pt-28 sm:pt-36 pb-8 px-4 sm:px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-            <Link href="/" className="hover:text-gray-900">Home</Link>
+          <nav className="flex items-center gap-2 text-xs sm:text-sm"
+               style={{ color: 'oklch(0.40 0.01 240)' }}>
+            <Link href="/" className="transition-colors hover:text-[oklch(0.50_0.15_220)]">Home</Link>
             <span>/</span>
-            <Link href="/products" className="hover:text-gray-900">Products</Link>
+            <Link href="/products" className="transition-colors hover:text-[oklch(0.50_0.15_220)]">Products</Link>
             <span>/</span>
-            <span className="text-gray-900">{product.name}</span>
+            <span style={{ color: 'oklch(0.25 0.01 240)' }}>{product.name}</span>
           </nav>
         </div>
       </section>
 
       {/* Product Detail */}
-      <section className="py-12 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-12 px-4 sm:px-6 relative z-10"
+               style={{
+                 background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.008 90) 100%)'
+               }}>
+        <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Images */}
             <div>
-              <div className="mb-4 bg-gray-100 rounded-2xl p-4 sm:p-8 flex items-center justify-center h-[300px] sm:h-[400px] lg:h-[500px]">
+              <div className="mb-4 rounded-2xl p-4 sm:p-8 flex items-center justify-center h-[300px] sm:h-[400px] lg:h-[500px] shadow-primary border"
+                   style={{
+                     background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)',
+                     border: '1px solid oklch(0.88 0.015 220)'
+                   }}>
                 <img 
                   src={`/${selectedImage}`}
                   alt={product.name}
@@ -193,9 +215,15 @@ function ProductDetailContent() {
                   <Link
                     key={i}
                     href={`/products/${productId}?variant=${i + 1}`}
-                    className={`bg-gray-100 rounded-lg p-2 h-24 flex items-center justify-center border-2 transition-all hover:scale-105 ${
-                      selectedImage === img ? 'border-gray-900 shadow-md' : 'border-transparent hover:border-gray-300'
+                    className={`rounded-lg p-2 h-24 flex items-center justify-center border-2 transition-all hover:scale-105 ${
+                      selectedImage === img ? 'shadow-primary-lg' : 'hover:shadow-primary'
                     }`}
+                    style={{
+                      background: selectedImage === img 
+                        ? 'linear-gradient(135deg, oklch(0.98 0.01 220) 0%, oklch(0.97 0.008 220) 100%)'
+                        : 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.01 220) 100%)',
+                      borderColor: selectedImage === img ? 'oklch(0.50 0.15 220)' : 'oklch(0.90 0.008 100)'
+                    }}
                   >
                     <img 
                       src={`/${img}`}
@@ -205,7 +233,8 @@ function ProductDetailContent() {
                   </Link>
                 ))}
               </div>
-              <p className="text-xs text-gray-500 mt-2 text-center">Click thumbnails to view different variants</p>
+              <p className="text-xs mt-2 text-center"
+                 style={{ color: 'oklch(0.45 0.01 240)' }}>Click thumbnails to view different variants</p>
             </div>
 
             {/* Product Info */}
@@ -215,7 +244,7 @@ function ProductDetailContent() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4"
+                className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-gradient-primary"
               >
                 {product.name}
               </motion.h1>
@@ -224,7 +253,8 @@ function ProductDetailContent() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8"
+                className="text-base sm:text-lg mb-6 sm:mb-8"
+                style={{ color: 'oklch(0.40 0.01 240)' }}
               >
                 {product.desc}
               </motion.p>
@@ -237,11 +267,13 @@ function ProductDetailContent() {
                 viewport={{ once: true }}
                 className="mb-8"
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Key Features</h3>
+                <h3 className="text-xl font-bold mb-4 text-gradient-primary">Key Features</h3>
                 <ul className="grid grid-cols-2 gap-2">
                   {product.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
-                      <span className="w-1.5 h-1.5 bg-gray-900 rounded-full"></span>
+                    <li key={i} className="flex items-center gap-2 text-sm"
+                        style={{ color: 'oklch(0.40 0.01 240)' }}>
+                      <span className="w-1.5 h-1.5 rounded-full"
+                            style={{ background: 'oklch(0.50 0.15 220)' }}></span>
                       {feature}
                     </li>
                   ))}
@@ -254,14 +286,19 @@ function ProductDetailContent() {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true }}
-                className="mb-8 p-6 bg-gray-50 rounded-xl"
+                className="mb-8 p-6 rounded-xl shadow-primary border"
+                style={{
+                  background: 'linear-gradient(135deg, oklch(0.98 0.01 220) 0%, oklch(0.97 0.008 220) 100%)',
+                  border: '1px solid oklch(0.90 0.008 100)'
+                }}
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Specifications</h3>
+                <h3 className="text-xl font-bold mb-4 text-gradient-primary">Specifications</h3>
                 <div className="space-y-2">
                   {Object.entries(product.specifications).map(([key, value]) => (
                     <div key={key} className="flex justify-between text-sm">
-                      <span className="text-gray-600 font-medium">{key}:</span>
-                      <span className="text-gray-900">{value}</span>
+                      <span className="font-medium"
+                            style={{ color: 'oklch(0.40 0.01 240)' }}>{key}:</span>
+                      <span style={{ color: 'oklch(0.25 0.01 240)' }}>{value}</span>
                     </div>
                   ))}
                 </div>
@@ -275,10 +312,15 @@ function ProductDetailContent() {
                 viewport={{ once: true }}
                 className="mb-8"
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Applications</h3>
+                <h3 className="text-xl font-bold mb-4 text-gradient-primary">Applications</h3>
                 <div className="flex flex-wrap gap-2">
                   {product.applications.map((app, i) => (
-                    <span key={i} className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
+                    <span key={i} className="px-3 py-1 text-sm rounded-full transition-colors hover:shadow-primary"
+                          style={{
+                            background: 'linear-gradient(135deg, oklch(0.98 0.01 220) 0%, oklch(0.97 0.008 220) 100%)',
+                            color: 'oklch(0.40 0.01 240)',
+                            border: '1px solid oklch(0.88 0.015 220)'
+                          }}>
                       {app}
                     </span>
                   ))}
@@ -289,13 +331,30 @@ function ProductDetailContent() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href={`/quote?product=${productId}`}
-                  className="flex-1 px-6 py-3 bg-gray-900 text-white text-center rounded-full hover:bg-gray-800 transition-colors"
+                  className="flex-1 px-6 py-3 text-white text-center rounded-full transition-all duration-300 btn-gradient glow-accent-hover relative overflow-hidden font-medium"
+                  style={{
+                    background: 'linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))'
+                  }}
                 >
                   Request a Quote
                 </Link>
                 <Link
                   href="/#contact"
-                  className="flex-1 px-6 py-3 border-2 border-gray-900 text-gray-900 text-center rounded-full hover:bg-gray-900 hover:text-white transition-colors"
+                  className="flex-1 px-6 py-3 border-2 text-center rounded-full font-medium transition-all duration-300 glow-primary-hover"
+                  style={{
+                    borderColor: 'oklch(0.45 0.15 220)',
+                    color: 'oklch(0.45 0.15 220)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'linear-gradient(135deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))';
+                    e.currentTarget.style.color = 'white';
+                    e.currentTarget.style.borderColor = 'transparent';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)';
+                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 220)';
+                  }}
                 >
                   Contact Us
                 </Link>
@@ -306,27 +365,48 @@ function ProductDetailContent() {
       </section>
 
       {/* Related Products */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Related Products</h2>
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10 bg-gradient-cool pattern-grid">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gradient-primary">Related Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {Object.entries(products)
               .filter(([id]) => id !== productId)
               .slice(0, 3)
               .map(([id, prod]) => (
                 <Link key={id} href={`/products/${id}`}>
-                  <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="h-48 bg-gray-100 flex items-center justify-center p-4">
+                  <div className="rounded-2xl overflow-hidden transition-all duration-300 group hover:shadow-primary-lg"
+                       style={{
+                         background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
+                         border: '1px solid oklch(0.90 0.008 100)',
+                         boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
+                       }}
+                       onMouseEnter={(e) => {
+                         e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
+                       }}
+                       onMouseLeave={(e) => {
+                         e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
+                       }}>
+                    <div className="h-48 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300"
+                         style={{
+                           background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
+                         }}>
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                           style={{
+                             background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
+                           }}></div>
                       <img 
                         src={`/${prod.img}`}
                         alt={prod.name}
-                        className="max-w-full max-h-full object-contain"
+                        className="max-w-full max-h-full object-contain relative z-10"
                       />
                     </div>
-                    <div className="p-6">
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">{prod.name}</h3>
-                      <p className="text-sm text-gray-600 mb-4">{prod.desc}</p>
-                      <span className="text-sm text-gray-900 font-medium">View Details →</span>
+                    <div className="p-6 relative z-10">
+                      <h3 className="text-lg font-bold mb-2 text-gradient-primary group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
+                          style={{ color: 'oklch(0.25 0.01 240)' }}>{prod.name}</h3>
+                      <p className="text-sm mb-4"
+                         style={{ color: 'oklch(0.40 0.01 240)' }}>{prod.desc}</p>
+                      <span className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-300 group-hover:gap-2"
+                             style={{ color: 'oklch(0.50 0.15 220)' }}>View Details →</span>
                     </div>
                   </div>
                 </Link>
@@ -342,10 +422,17 @@ function ProductDetailContent() {
 export default function ProductDetailPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center relative"
+           style={{
+             background: 'linear-gradient(180deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.005 95) 50%, oklch(0.99 0.002 100) 100%)'
+           }}>
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+               style={{
+                 borderColor: 'oklch(0.45 0.15 220)',
+                 borderTopColor: 'transparent'
+               }}></div>
+          <p style={{ color: 'oklch(0.40 0.01 240)' }}>Loading...</p>
         </div>
       </div>
     }>

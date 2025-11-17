@@ -77,16 +77,26 @@ const products = [
 
 export default function ProductsPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen relative"
+         style={{
+           background: 'linear-gradient(180deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.005 95) 50%, oklch(0.99 0.002 100) 100%)'
+         }}>
+      {/* Subtle texture overlay */}
+      <div className="fixed inset-0 pointer-events-none opacity-20 z-0"
+           style={{
+             backgroundImage: 'radial-gradient(circle at 1px 1px, oklch(0.50 0.15 220 / 0.12) 1px, transparent 0)',
+             backgroundSize: '28px 28px'
+           }}></div>
+      
       {/* Hero */}
-      <section className="pt-28 sm:pt-36 pb-12 sm:pb-20 px-4 sm:px-6 bg-gray-50">
+      <section className="pt-28 sm:pt-36 pb-12 sm:pb-20 px-4 sm:px-6 relative z-10 bg-gradient-warm pattern-dots">
         <div className="max-w-6xl mx-auto text-center">
           <motion.h1
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 text-gradient-primary"
           >
             Our Product Range
           </motion.h1>
@@ -95,7 +105,8 @@ export default function ProductsPage() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto"
+            className="text-base sm:text-lg max-w-2xl mx-auto"
+            style={{ color: 'oklch(0.40 0.01 240)' }}
           >
             Explore our comprehensive collection of premium hand protection solutions. Each product is engineered for specific applications and tested to meet international safety standards.
           </motion.p>
@@ -103,8 +114,11 @@ export default function ProductsPage() {
       </section>
 
       {/* Products Grid */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
+               style={{
+                 background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.008 90) 100%)'
+               }}>
+        <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {products.map((product, i) => (
               <motion.div
@@ -114,28 +128,50 @@ export default function ProductsPage() {
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 viewport={{ once: true, amount: 0.3 }}
               >
-                <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+                <div className="rounded-2xl overflow-hidden transition-all duration-300 h-full flex flex-col group hover:shadow-primary-lg"
+                     style={{
+                       background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
+                       border: '1px solid oklch(0.90 0.008 100)',
+                       boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
+                     }}
+                     onMouseEnter={(e) => {
+                       e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
+                     }}
+                     onMouseLeave={(e) => {
+                       e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
+                     }}>
                   <Link
                     href={`/products/${product.id}`}
                     className="flex flex-col flex-grow cursor-pointer"
                   >
-                    <div className="h-64 bg-gray-100 flex items-center justify-center p-4">
+                    <div className="h-64 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300"
+                         style={{
+                           background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
+                         }}>
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                           style={{
+                             background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
+                           }}></div>
                       <img 
                         src={`/${product.img}`} 
                         alt={product.name}
-                        className="max-w-full max-h-full object-contain"
+                        className="max-w-full max-h-full object-contain relative z-10"
                       />
                     </div>
-                    <div className="p-6 flex-grow flex flex-col">
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">{product.name}</h3>
-                      <p className="text-sm text-gray-600 mb-4 flex-grow">{product.desc}</p>
-                      <span className="text-sm text-gray-900 font-medium">View Details →</span>
+                    <div className="p-6 flex-grow flex flex-col relative z-10">
+                      <h3 className="text-lg font-bold mb-2 text-gradient-primary group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
+                          style={{ color: 'oklch(0.25 0.01 240)' }}>{product.name}</h3>
+                      <p className="text-sm mb-4 flex-grow"
+                         style={{ color: 'oklch(0.40 0.01 240)' }}>{product.desc}</p>
+                      <span className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-300 group-hover:gap-2"
+                             style={{ color: 'oklch(0.50 0.15 220)' }}>View Details →</span>
                     </div>
                   </Link>
-                  <div className="px-6 pb-6">
+                  <div className="px-6 pb-6 relative z-10">
                     <Link 
                       href={`/quote?product=${product.id}`}
-                      className="text-sm text-gray-600 hover:text-gray-900"
+                      className="text-sm font-medium transition-colors hover:text-[oklch(0.50_0.15_220)]"
+                      style={{ color: 'oklch(0.40 0.01 240)' }}
                     >
                       Request Quote
                     </Link>
@@ -148,8 +184,8 @@ export default function ProductsPage() {
       </section>
 
       {/* Complete Product Gallery - All 24 Images */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10 bg-gradient-cool pattern-grid">
+        <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -157,8 +193,9 @@ export default function ProductsPage() {
             viewport={{ once: true }}
             className="text-center mb-8 sm:mb-12"
           >
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Complete Product Gallery</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-gradient-primary">Complete Product Gallery</h2>
+            <p className="max-w-2xl mx-auto"
+               style={{ color: 'oklch(0.40 0.01 240)' }}>
               Browse through all product variants across our categories. Each product is available in multiple variants to suit different requirements.
             </p>
           </motion.div>
@@ -166,7 +203,7 @@ export default function ProductsPage() {
           <div className="space-y-16">
             {products.map((product, categoryIndex) => (
               <div key={product.id}>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">{product.name}</h3>
+                <h3 className="text-2xl font-bold mb-6 text-gradient-primary">{product.name}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {product.images.map((img, imgIndex) => (
                     <Link key={imgIndex} href={`/products/${product.id}?variant=${imgIndex + 1}`}>
@@ -175,16 +212,35 @@ export default function ProductsPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: (categoryIndex * 0.1) + (imgIndex * 0.05) }}
                         viewport={{ once: true }}
-                        className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                        className="rounded-xl p-4 hover:shadow-primary transition-all duration-300 cursor-pointer group"
+                        style={{
+                          background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
+                          border: '1px solid oklch(0.90 0.008 100)',
+                          boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
+                        }}
                       >
-                        <div className="h-48 bg-gray-100 rounded-lg flex items-center justify-center mb-3">
+                        <div className="h-48 rounded-lg flex items-center justify-center mb-3 relative overflow-hidden transition-all duration-300"
+                             style={{
+                               background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
+                             }}>
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                               style={{
+                                 background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
+                               }}></div>
                           <img 
                             src={`/${img}`}
                             alt={`${product.name} - Variant ${imgIndex + 1}`}
-                            className="max-w-full max-h-full object-contain"
+                            className="max-w-full max-h-full object-contain relative z-10"
                           />
                         </div>
-                        <p className="text-sm font-medium text-gray-900 text-center">
+                        <p className="text-sm font-medium text-center transition-colors group-hover:text-[oklch(0.50_0.15_220)]"
+                           style={{ color: 'oklch(0.25 0.01 240)' }}>
                           {product.name} - Variant {imgIndex + 1}
                         </p>
                       </motion.div>
@@ -198,22 +254,40 @@ export default function ProductsPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-white">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Need Help Choosing?</h2>
-          <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10 bg-gradient-warm pattern-dots">
+        <div className="max-w-3xl mx-auto text-center relative z-10">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gradient-primary">Need Help Choosing?</h2>
+          <p className="mb-6 sm:mb-8 text-sm sm:text-base"
+             style={{ color: 'oklch(0.40 0.01 240)' }}>
             Our team is here to help you find the perfect hand protection solution for your specific needs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               href="/quote"
-              className="px-8 py-3 bg-gray-900 text-white text-sm rounded-full hover:bg-gray-800 transition-colors"
+              className="px-8 py-3 text-white text-sm rounded-full transition-all duration-300 btn-gradient glow-accent-hover relative overflow-hidden font-medium"
+              style={{
+                background: 'linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))'
+              }}
             >
               Request a Quote
             </Link>
             <Link 
               href="/#contact"
-              className="px-8 py-3 border-2 border-gray-900 text-gray-900 text-sm rounded-full hover:bg-gray-900 hover:text-white transition-colors"
+              className="px-8 py-3 border-2 text-sm rounded-full font-medium transition-all duration-300 glow-primary-hover"
+              style={{
+                borderColor: 'oklch(0.45 0.15 220)',
+                color: 'oklch(0.45 0.15 220)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))';
+                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.borderColor = 'transparent';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = 'oklch(0.45 0.15 220)';
+                e.currentTarget.style.borderColor = 'oklch(0.45 0.15 220)';
+              }}
             >
               Contact Us
             </Link>
