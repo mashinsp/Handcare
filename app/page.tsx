@@ -726,86 +726,130 @@ function App() {
         </div>
       </section>
 
-      {/* Resources / Categories */}
+      {/* Resources / Leather Types Guide */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10" id="resources"
                style={{
                  background: 'oklch(0.98 0.008 85)'
                }}>
-        <div className="max-w-6xl mx-auto relative z-10">
+        <div className="max-w-4xl mx-auto relative z-10">
           <motion.h2
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3, margin: "0px" }}
-            style={{ willChange: "opacity, transform" }}
-            className="text-2xl sm:text-3xl font-bold mb-8 sm:mb-12 text-center text-gradient-primary"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-12 sm:mb-16 text-center text-gradient-primary"
+            style={{ 
+              willChange: "opacity, transform"
+            }}
           >
-            Product Categories
+            Our Leather Selection
           </motion.h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { 
-                title: "Industrial Safety", 
-                img: "workingglove2.png",
-                desc: "Comprehensive protection for industrial workers with cut-resistant and impact protection features." 
-              },
-              { 
-                title: "Specialized Protection", 
-                img: "weldinggloves2.png",
-                desc: "Heat-resistant and flame-retardant gloves for specialized applications in welding and foundries." 
-              },
-              { 
-                title: "Outdoor & Sports", 
-                img: "riding2.png",
-                desc: "Durable gloves designed for outdoor activities, sports, and recreational use with weather protection." 
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                viewport={{ once: true, amount: 0.25 }}
-              >
-                <div className="rounded-2xl overflow-hidden transition-all duration-300 h-full flex flex-col group hover:shadow-primary-lg"
-                     style={{
-                       background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
-                       border: '1px solid oklch(0.90 0.008 100)',
-                       boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
-                     }}
-                     onMouseEnter={(e) => {
-                       e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
-                     }}
-                     onMouseLeave={(e) => {
-                       e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
-                     }}>
-                <div className="h-48 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300"
-                     style={{
-                       background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
-                     }}>
-                  {/* Gradient overlay on hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          <div className="relative">
+            {/* Red vertical connecting line */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-1 -translate-x-1/2 hidden md:block"
+                 style={{
+                   background: 'linear-gradient(to bottom, transparent 0%, oklch(0.55 0.20 15) 5%, oklch(0.55 0.20 15) 95%, transparent 100%)',
+                   zIndex: 1
+                 }}></div>
+
+            <div className="space-y-12 sm:space-y-16">
+              {[
+                { 
+                  type: "Cow",
+                  label: "Cow hide",
+                  icon: "cow-face.png",
+                  description: "Most preferred type of leather. Readily available, thick, durable and easy to maintain. Cost-effective, and relatively soft.",
+                  iconPosition: "left",
+                  descriptionPosition: "right"
+                },
+                { 
+                  type: "Goat",
+                  label: "Goat skin",
+                  icon: "goat.png",
+                  description: "Smooth and soft fine grain, easily available, strong yet flexible and water resistant. Light weight and resilient leather.",
+                  iconPosition: "right",
+                  descriptionPosition: "left"
+                },
+                { 
+                  type: "Sheep",
+                  label: "Sheep skin",
+                  icon: "sheep.png",
+                  description: "Thin and plush leather, extremely comfortable, soft and light-weight but delicate to use. Mostly used in garments and purses. Sheepskin shearlings can be used with wool inside and leather outside.",
+                  iconPosition: "left",
+                  descriptionPosition: "right"
+                },
+                { 
+                  type: "Deer",
+                  label: "Deer skin",
+                  icon: "deer.png",
+                  description: "Highly resilient, abrasion resistant and naturally water friendly. It is stretchable and breathable. Very strong leather yet soft and supple.",
+                  iconPosition: "right",
+                  descriptionPosition: "left"
+                },
+              ].map((leather, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  className="relative flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-6 md:gap-8"
+                >
+                  {/* Icon */}
+                  <div className={`${leather.iconPosition === 'left' ? 'md:order-1 md:flex md:justify-end' : 'md:order-3 md:flex md:justify-start'} relative z-10 flex items-center justify-center`}
+                       style={{ 
+                         width: leather.iconPosition === 'left' ? '100%' : '100px', 
+                         height: '100px', 
+                         minWidth: leather.iconPosition === 'left' ? 'auto' : '100px'
+                       }}>
+                    <div className="flex items-center justify-center"
+                         style={{ 
+                           width: '100px', 
+                           height: '100px',
+                           filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
+                         }}>
+                      <img 
+                        src={`/${leather.icon}`} 
+                        alt={leather.type}
+                        className="max-w-full max-h-full object-contain"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Red Circle Label */}
+                  <div className="shrink-0 md:order-2 relative z-20 flex items-center justify-center"
                        style={{
-                         background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
-                       }}></div>
-                  <img 
-                    src={`/${item.img}`} 
-                    alt={item.title}
-                    className="max-w-full max-h-full object-contain"
-                  />
-                </div>
-                <div className="p-6 relative z-10">
-                  <h3 className="text-lg font-bold mb-3 text-gradient-primary group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
-                      style={{ color: 'oklch(0.25 0.01 240)' }}>{item.title}</h3>
-                  <p className="text-sm"
-                     style={{ color: 'oklch(0.40 0.01 240)' }}>
-                    {item.desc}
-                  </p>
-                </div>
-                </div>
-              </motion.div>
-            ))}
+                         width: '90px',
+                         height: '90px',
+                         minWidth: '90px',
+                         borderRadius: '50%',
+                         background: 'oklch(0.55 0.20 15)',
+                         display: 'flex',
+                         alignItems: 'center',
+                         justifyContent: 'center',
+                         boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                         border: '2px solid oklch(0.50 0.18 15)'
+                       }}>
+                    <span className="text-white font-bold text-xs sm:text-sm uppercase tracking-wide text-center px-2"
+                          style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                      {leather.type}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <div className={`flex-1 ${leather.descriptionPosition === 'left' ? 'md:order-1 md:text-right md:flex md:justify-end' : 'md:order-3 md:text-left md:flex md:justify-start'} relative z-10 text-center`}
+                       style={{ width: '100%', maxWidth: '400px' }}>
+                    <p className="text-sm sm:text-base leading-relaxed"
+                       style={{ 
+                         color: 'oklch(0.40 0.01 240)'
+                       }}>
+                      {leather.description}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

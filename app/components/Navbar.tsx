@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -168,116 +169,208 @@ export default function Navbar() {
           }}
           aria-label="Toggle menu"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {mobileMenuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
+          <motion.svg 
+            className="w-6 h-6" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+            animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <AnimatePresence mode="wait">
+              {mobileMenuOpen ? (
+                <motion.path
+                  key="close"
+                  initial={{ opacity: 0, pathLength: 0 }}
+                  animate={{ opacity: 1, pathLength: 1 }}
+                  exit={{ opacity: 0, pathLength: 0 }}
+                  transition={{ duration: 0.2 }}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <motion.path
+                  key="menu"
+                  initial={{ opacity: 0, pathLength: 0 }}
+                  animate={{ opacity: 1, pathLength: 1 }}
+                  exit={{ opacity: 0, pathLength: 0 }}
+                  transition={{ duration: 0.2 }}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </AnimatePresence>
+          </motion.svg>
         </button>
       </div>
 
       {/* Mobile Navigation Menu */}
-      {mobileMenuOpen && (
-        <nav 
-          className="lg:hidden transition-all duration-300"
-          style={{
-            borderTop: '1px solid oklch(0.90 0.008 100 / 0.5)',
-            background: 'linear-gradient(180deg, oklch(1 0 0 / 0.95) 0%, oklch(0.99 0.002 100 / 0.98) 100%)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            boxShadow: '0 8px 32px -8px oklch(0.45 0.15 220 / 0.1)'
-          }}
-        >
-          <div className="px-4 py-4 space-y-2">
-            <a 
-              href="/#about" 
-              className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
-              style={{ 
-                color: 'oklch(0.40 0.01 240)'
-              }}
-              onClick={() => setMobileMenuOpen(false)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
-                e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent'
-                e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-              }}
-            >
-              About
-            </a>
-            <Link 
-              href="/products" 
-              className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
-              style={{ 
-                color: 'oklch(0.40 0.01 240)'
-              }}
-              onClick={() => setMobileMenuOpen(false)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
-                e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent'
-                e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.nav
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ 
+              duration: 0.3, 
+              ease: [0.4, 0, 0.2, 1],
+              opacity: { duration: 0.2 }
+            }}
+            className="lg:hidden overflow-hidden"
+            style={{
+              borderTop: '1px solid oklch(0.90 0.008 100 / 0.5)',
+              background: 'linear-gradient(180deg, oklch(1 0 0 / 0.95) 0%, oklch(0.99 0.002 100 / 0.98) 100%)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              boxShadow: '0 8px 32px -8px oklch(0.45 0.15 220 / 0.1)'
+            }}
+          >
+            <motion.div 
+              className="px-4 py-4 space-y-2"
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={{
+                open: {
+                  transition: { staggerChildren: 0.05, delayChildren: 0.1 }
+                },
+                closed: {
+                  transition: { staggerChildren: 0.03, staggerDirection: -1 }
+                }
               }}
             >
-              Products
-            </Link>
-            <a 
-              href="/#resources" 
-              className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
-              style={{ 
-                color: 'oklch(0.40 0.01 240)'
-              }}
-              onClick={() => setMobileMenuOpen(false)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
-                e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent'
-                e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-              }}
-            >
-              Categories
-            </a>
-            <a 
-              href="/#contact" 
-              className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
-              style={{ 
-                color: 'oklch(0.40 0.01 240)'
-              }}
-              onClick={() => setMobileMenuOpen(false)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
-                e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent'
-                e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-              }}
-            >
-              Contact
-            </a>
-            <Link 
-              href="/quote" 
-              className="block px-4 py-2.5 text-sm rounded-full text-center font-medium transition-all duration-300 relative overflow-hidden mt-2 glow-primary-hover"
-              style={{
-                background: 'linear-gradient(135deg, oklch(0.45 0.15 220) 0%, oklch(0.55 0.15 160) 100%)',
-                color: 'white',
-                boxShadow: '0 4px 16px -4px oklch(0.45 0.15 220 / 0.4)'
-              }}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Request Quote
-            </Link>
-          </div>
-        </nav>
-      )}
+              <motion.div
+                variants={{
+                  open: { opacity: 1, x: 0 },
+                  closed: { opacity: 0, x: -20 }
+                }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                <a 
+                  href="/#about" 
+                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
+                  style={{ 
+                    color: 'oklch(0.40 0.01 240)'
+                  }}
+                  onClick={() => setMobileMenuOpen(false)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
+                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
+                  }}
+                >
+                  About
+                </a>
+              </motion.div>
+              <motion.div
+                variants={{
+                  open: { opacity: 1, x: 0 },
+                  closed: { opacity: 0, x: -20 }
+                }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                <Link 
+                  href="/products" 
+                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
+                  style={{ 
+                    color: 'oklch(0.40 0.01 240)'
+                  }}
+                  onClick={() => setMobileMenuOpen(false)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
+                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
+                  }}
+                >
+                  Products
+                </Link>
+              </motion.div>
+              <motion.div
+                variants={{
+                  open: { opacity: 1, x: 0 },
+                  closed: { opacity: 0, x: -20 }
+                }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                <a 
+                  href="/#resources" 
+                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
+                  style={{ 
+                    color: 'oklch(0.40 0.01 240)'
+                  }}
+                  onClick={() => setMobileMenuOpen(false)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
+                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
+                  }}
+                >
+                  Categories
+                </a>
+              </motion.div>
+              <motion.div
+                variants={{
+                  open: { opacity: 1, x: 0 },
+                  closed: { opacity: 0, x: -20 }
+                }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                <a 
+                  href="/#contact" 
+                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
+                  style={{ 
+                    color: 'oklch(0.40 0.01 240)'
+                  }}
+                  onClick={() => setMobileMenuOpen(false)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
+                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
+                  }}
+                >
+                  Contact
+                </a>
+              </motion.div>
+              <motion.div
+                variants={{
+                  open: { opacity: 1, x: 0, scale: 1 },
+                  closed: { opacity: 0, x: -20, scale: 0.95 }
+                }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+              >
+                <Link 
+                  href="/quote" 
+                  className="block px-4 py-2.5 text-sm rounded-full text-center font-medium transition-all duration-300 relative overflow-hidden mt-2 glow-primary-hover"
+                  style={{
+                    background: 'linear-gradient(135deg, oklch(0.45 0.15 220) 0%, oklch(0.55 0.15 160) 100%)',
+                    color: 'white',
+                    boxShadow: '0 4px 16px -4px oklch(0.45 0.15 220 / 0.4)'
+                  }}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Request Quote
+                </Link>
+              </motion.div>
+            </motion.div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   )
 }
