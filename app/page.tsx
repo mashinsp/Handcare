@@ -799,14 +799,14 @@ function App() {
                   {/* Icon */}
                   <div className={`${leather.iconPosition === 'left' ? 'md:order-1 md:flex md:justify-end' : 'md:order-3 md:flex md:justify-start'} relative z-10 flex items-center justify-center`}
                        style={{ 
-                         width: leather.iconPosition === 'left' ? '100%' : '100px', 
-                         height: '100px', 
-                         minWidth: leather.iconPosition === 'left' ? 'auto' : '100px'
+                         width: leather.iconPosition === 'left' ? '100%' : (leather.type === "Deer" ? '120px' : '100px'), 
+                         height: leather.type === "Deer" ? '120px' : '100px', 
+                         minWidth: leather.iconPosition === 'left' ? 'auto' : (leather.type === "Deer" ? '120px' : '100px')
                        }}>
                     <div className="flex items-center justify-center"
                          style={{ 
-                           width: '100px', 
-                           height: '100px',
+                           width: leather.type === "Deer" ? '120px' : '100px', 
+                           height: leather.type === "Deer" ? '120px' : '100px',
                            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
                          }}>
                       <img 
