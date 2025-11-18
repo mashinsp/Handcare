@@ -122,7 +122,7 @@ function QuoteForm() {
       {/* Form */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
                style={{
-                 background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.008 90) 100%)'
+                 background: 'oklch(0.98 0.008 85)'
                }}>
         <div className="max-w-3xl mx-auto relative z-10">
           {submitted ? (

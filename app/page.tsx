@@ -394,7 +394,7 @@ function App() {
 {/* DECORATIVE SHAPES + PRE-RUNWAY + VISION (+ optional post-runway) */}
 <section id="hero-vision" className="relative px-4 sm:px-6 z-10"
          style={{
-           background: 'linear-gradient(180deg, oklch(0.98 0.005 95) 0%, oklch(0.99 0.002 100) 100%)'
+           background: 'oklch(0.98 0.008 85)'
          }}>
 <div className="pointer-events-none absolute inset-0 z-0">
     <div className="h-full w-full 
@@ -514,8 +514,11 @@ function App() {
 
 
       {/* About / KPIs */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-cool pattern-grid relative">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
+               style={{
+                 background: 'oklch(0.98 0.008 85)'
+               }}>
+        <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -557,7 +560,7 @@ function App() {
       {/* Product */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10" id="product"
                style={{
-                 background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.008 90) 100%)'
+                 background: 'oklch(0.98 0.008 85)'
                }}>
         <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
@@ -662,7 +665,10 @@ function App() {
       </section>
 
       {/* Resources / Categories */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-warm pattern-dots relative z-10" id="resources">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10" id="resources"
+               style={{
+                 background: 'oklch(0.98 0.008 85)'
+               }}>
         <div className="max-w-6xl mx-auto relative z-10">
           <motion.h2
             variants={fadeUp}
@@ -741,7 +747,10 @@ function App() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-cool pattern-grid relative z-10">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
+               style={{
+                 background: 'oklch(0.98 0.008 85)'
+               }}>
         <div className="max-w-6xl mx-auto relative z-10">
           <motion.h2
             variants={fadeUp}
@@ -815,7 +824,7 @@ function App() {
       {/* Contact */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10" id="contact"
                style={{
-                 background: 'linear-gradient(135deg, oklch(0.98 0.008 90) 0%, oklch(0.99 0.002 100) 100%)'
+                 background: 'oklch(0.98 0.008 85)'
                }}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 relative z-10">
           <motion.div
@@ -878,7 +887,10 @@ function App() {
       </section>
 
       {/* CTA */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 bg-gradient-warm pattern-dots relative z-10">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
+               style={{
+                 background: 'oklch(0.98 0.008 85)'
+               }}>
         <motion.div
           variants={fadeUp}
           initial="hidden"

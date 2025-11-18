@@ -116,7 +116,7 @@ export default function ProductsPage() {
       {/* Products Grid */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
                style={{
-                 background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.008 90) 100%)'
+                 background: 'oklch(0.98 0.008 85)'
                }}>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -184,7 +184,10 @@ export default function ProductsPage() {
       </section>
 
       {/* Complete Product Gallery - All 24 Images */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10 bg-gradient-cool pattern-grid">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
+               style={{
+                 background: 'oklch(0.98 0.008 85)'
+               }}>
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             variants={fadeUp}
@@ -254,7 +257,10 @@ export default function ProductsPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10 bg-gradient-warm pattern-dots">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
+               style={{
+                 background: 'oklch(0.98 0.008 85)'
+               }}>
         <div className="max-w-3xl mx-auto text-center relative z-10">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gradient-primary">Need Help Choosing?</h2>
           <p className="mb-6 sm:mb-8 text-sm sm:text-base"

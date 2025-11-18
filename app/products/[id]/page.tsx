@@ -177,8 +177,11 @@ function ProductDetailContent() {
            }}></div>
       
       {/* Breadcrumb */}
-      <section className="pt-28 sm:pt-36 pb-8 px-4 sm:px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
+      <section className="pt-28 sm:pt-36 pb-8 px-4 sm:px-6 relative z-10"
+               style={{
+                 background: 'oklch(0.98 0.008 85)'
+               }}>
+        <div className="max-w-7xl mx-auto relative z-10">
           <nav className="flex items-center gap-2 text-xs sm:text-sm"
                style={{ color: 'oklch(0.40 0.01 240)' }}>
             <Link href="/" className="transition-colors hover:text-[oklch(0.50_0.15_220)]">Home</Link>
@@ -193,7 +196,7 @@ function ProductDetailContent() {
       {/* Product Detail */}
       <section className="py-12 px-4 sm:px-6 relative z-10"
                style={{
-                 background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.008 90) 100%)'
+                 background: 'oklch(0.98 0.008 85)'
                }}>
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -365,7 +368,10 @@ function ProductDetailContent() {
       </section>
 
       {/* Related Products */}
-      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10 bg-gradient-cool pattern-grid">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
+               style={{
+                 background: 'oklch(0.98 0.008 85)'
+               }}>
         <div className="max-w-7xl mx-auto relative z-10">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gradient-primary">Related Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
