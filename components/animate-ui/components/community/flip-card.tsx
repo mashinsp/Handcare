@@ -38,20 +38,81 @@ const flipTransition = {
 
 export function FlipCard({ data }: FlipCardProps) {
   const [isFlipped, setIsFlipped] = React.useState(false);
+  const [isUsingTouch, setIsUsingTouch] = React.useState(false);
 
-  const isTouchDevice =
-    typeof window !== 'undefined' && 'ontouchstart' in window;
+  const touchStartTime = React.useRef(0);
+  const touchStartPos = React.useRef({ x: 0, y: 0 });
+  const lastInteractionType = React.useRef<'touch' | 'mouse'>('mouse');
 
-  const handleClick = () => {
-    if (isTouchDevice) setIsFlipped((prev) => !prev);
+  // Detect if user is actually using touch (not just device capability)
+  React.useEffect(() => {
+    const handleTouchStart = () => {
+      setIsUsingTouch(true);
+      lastInteractionType.current = 'touch';
+    };
+    
+    const handleMouseMove = () => {
+      if (lastInteractionType.current === 'mouse') {
+        setIsUsingTouch(false);
+      }
+    };
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // For non-touch interactions, hover handles the flip
+    // But we don't prevent the click if needed
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    lastInteractionType.current = 'touch';
+    touchStartTime.current = Date.now();
+    const touch = e.touches[0];
+    if (touch) {
+      touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    lastInteractionType.current = 'touch';
+    // Only flip if it's a single tap (not a swipe or multi-touch)
+    if (e.touches.length === 0 && e.changedTouches.length === 1) {
+      const touch = e.changedTouches[0];
+      const touchDuration = Date.now() - touchStartTime.current;
+      const deltaX = Math.abs(touch.clientX - touchStartPos.current.x);
+      const deltaY = Math.abs(touch.clientY - touchStartPos.current.y);
+      
+      // Only flip if it's a tap (quick, small movement) not a swipe
+      if (touchDuration < 300 && deltaX < 10 && deltaY < 10) {
+        // Check if the tap was on the card itself (not on interactive elements)
+        const target = e.target as HTMLElement;
+        if (target.tagName !== 'A' && target.tagName !== 'BUTTON' && !target.closest('a')) {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsFlipped((prev) => !prev);
+        }
+      }
+    }
   };
 
   const handleMouseEnter = () => {
-    if (!isTouchDevice) setIsFlipped(true);
+    lastInteractionType.current = 'mouse';
+    if (!isUsingTouch) {
+      setIsFlipped(true);
+    }
   };
 
   const handleMouseLeave = () => {
-    if (!isTouchDevice) setIsFlipped(false);
+    if (!isUsingTouch) {
+      setIsFlipped(false);
+    }
   };
 
   return (
@@ -62,8 +123,14 @@ export function FlipCard({ data }: FlipCardProps) {
           : 'mt-2 w-40 h-60 md:w-60 md:h-80 mx-auto'
       } perspective-1000 cursor-pointer`}
       onClick={handleClick}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      style={{
+        touchAction: 'manipulation', // Prevents double-tap zoom
+        WebkitTapHighlightColor: 'transparent', // Removes tap highlight on iOS
+      }}
     >
       {/* FRONT: Product Image + Name with Gradient or Profile */}
       <motion.div
