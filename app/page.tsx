@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { motion, type Variants } from "framer-motion"
 import Link from "next/link"
+import { FlipCard } from "@/components/animate-ui/components/community/flip-card"
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -580,13 +581,97 @@ function App() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { id: "working-gloves", name: "Working Gloves", img: "workingglove1.png", desc: "Heavy-duty protection for construction and general work" },
-              { id: "welding-gloves", name: "Welding Gloves", img: "weldinggloves1.png", desc: "Heat and flame-resistant gloves for welding operations" },
-              { id: "mechanical-gloves", name: "Mechanical Gloves", img: "mechanicalglove1.png", desc: "Precision grip and cut resistance for mechanical work" },
-              { id: "gardening-gloves", name: "Gardening Gloves", img: "gardening1.png", desc: "Comfortable protection for gardening and landscaping" },
-              { id: "riding-gloves", name: "Riding Gloves", img: "riding1.png", desc: "Flexible and durable gloves for equestrian activities" },
-              { id: "canadian-gloves", name: "Canadian Gloves", img: "canadianglove1.png", desc: "Cold weather protection with superior insulation" },
-              { id: "boxing-gloves", name: "Boxing Gloves", img: "boxing1.png", desc: "Professional-grade boxing gloves for training and competition" },
+              { 
+                id: "working-gloves", 
+                name: "Working Gloves", 
+                img: "workingglove1.png", 
+                desc: "Heavy-duty protection for construction and general work",
+                features: ["Cut-resistant materials", "Enhanced grip", "Durable construction", "Comfortable fit"],
+                specifications: {
+                  "Material": "Premium leather and synthetic blend",
+                  "Cut Level": "Level 3",
+                  "Sizes": "S, M, L, XL",
+                  "Standards": "EN 388, ANSI/ISEA 105"
+                }
+              },
+              { 
+                id: "welding-gloves", 
+                name: "Welding Gloves", 
+                img: "weldinggloves1.png", 
+                desc: "Heat and flame-resistant gloves for welding operations",
+                features: ["Heat resistance up to 500°C", "Flame retardant", "Heavy-duty leather", "Extended cuff protection"],
+                specifications: {
+                  "Material": "Heat-resistant leather",
+                  "Temperature Rating": "Up to 500°C",
+                  "Sizes": "M, L, XL",
+                  "Standards": "EN 407, CE Marking"
+                }
+              },
+              { 
+                id: "mechanical-gloves", 
+                name: "Mechanical Gloves", 
+                img: "mechanicalglove1.png", 
+                desc: "Precision grip and cut resistance for mechanical work",
+                features: ["Cut level 5 protection", "Precision touch", "Oil and water resistant", "Breathable design"],
+                specifications: {
+                  "Material": "HPPE and synthetic blend",
+                  "Cut Level": "Level 5",
+                  "Sizes": "S, M, L, XL",
+                  "Standards": "EN 388, ANSI/ISEA 105"
+                }
+              },
+              { 
+                id: "gardening-gloves", 
+                name: "Gardening Gloves", 
+                img: "gardening1.png", 
+                desc: "Comfortable protection for gardening and landscaping",
+                features: ["Puncture resistant", "Waterproof coating", "Breathable fabric", "Flexible design"],
+                specifications: {
+                  "Material": "Nitrile coating on cotton",
+                  "Waterproof": "Yes",
+                  "Sizes": "S, M, L, XL",
+                  "Standards": "EN 388"
+                }
+              },
+              { 
+                id: "riding-gloves", 
+                name: "Riding Gloves", 
+                img: "riding1.png", 
+                desc: "Flexible and durable gloves for equestrian activities",
+                features: ["Enhanced grip", "Weather protection", "Flexible fit", "Durable leather"],
+                specifications: {
+                  "Material": "Premium leather",
+                  "Sizes": "S, M, L, XL",
+                  "Standards": "CE Marking",
+                  "Color": "Brown, Black, Tan"
+                }
+              },
+              { 
+                id: "canadian-gloves", 
+                name: "Canadian Gloves", 
+                img: "canadianglove1.png", 
+                desc: "Cold weather protection with superior insulation",
+                features: ["Thermal insulation", "Waterproof exterior", "Wind resistant", "Extended wrist coverage"],
+                specifications: {
+                  "Material": "Insulated leather and synthetic",
+                  "Temperature Rating": "Down to -40°C",
+                  "Sizes": "M, L, XL",
+                  "Standards": "EN 388, CE Marking"
+                }
+              },
+              { 
+                id: "boxing-gloves", 
+                name: "Boxing Gloves", 
+                img: "boxing1.png", 
+                desc: "Professional-grade boxing gloves for training and competition",
+                features: ["Impact protection", "Secure wrist support", "Breathable design", "Durable construction"],
+                specifications: {
+                  "Material": "Premium leather and synthetic",
+                  "Weight": "12oz, 14oz, 16oz",
+                  "Sizes": "S, M, L, XL",
+                  "Standards": "CE Marking"
+                }
+              },
             ].map((product, i) => (
               <motion.div
                 key={i}
@@ -595,55 +680,23 @@ function App() {
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 viewport={{ once: true, amount: 0.3 }}
               >
-                <div className="rounded-2xl overflow-hidden transition-all duration-300 h-full flex flex-col group hover:shadow-primary-lg"
-                     style={{
-                       background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
-                       border: '1px solid oklch(0.90 0.008 100)',
-                       boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
-                     }}
-                     onMouseEnter={(e) => {
-                       e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
-                     }}
-                     onMouseLeave={(e) => {
-                       e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
-                     }}>
-                  <Link
-                    href={`/products/${product.id}`}
-                    className="flex flex-col flex-grow cursor-pointer"
-                  >
-                    <div className="h-64 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300"
-                         style={{
-                           background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
-                         }}>
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                           style={{
-                             background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
-                           }}></div>
-                      <img 
-                        src={`/${product.img}`} 
-                        alt={product.name}
-                        className="max-w-full max-h-full object-contain relative z-10"
-                      />
-                    </div>
-                    <div className="p-6 flex-grow flex flex-col relative z-10">
-                      <h3 className="text-lg font-bold mb-2 text-gradient-primary group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
-                          style={{ color: 'oklch(0.25 0.01 240)' }}>{product.name}</h3>
-                      <p className="text-sm mb-4 flex-grow"
-                         style={{ color: 'oklch(0.40 0.01 240)' }}>{product.desc}</p>
-                      <span className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-300 group-hover:gap-2"
-                             style={{ color: 'oklch(0.50 0.15 220)' }}>View Details →</span>
-                    </div>
-                  </Link>
-                  <div className="px-6 pb-6 relative z-10">
-                    <Link 
-                      href={`/quote?product=${product.id}`}
-                      className="text-sm font-medium transition-colors hover:text-[oklch(0.50_0.15_220)]"
-                      style={{ color: 'oklch(0.40 0.01 240)' }}
-                    >
-                      Request Quote
-                    </Link>
-                  </div>
-                </div>
+                <FlipCard
+                  data={{
+                    name: product.name,
+                    username: product.id.replace(/-/g, '_'),
+                    image: `/${product.img}`,
+                    bio: product.desc,
+                    desc: product.desc,
+                    features: product.features,
+                    specifications: product.specifications as unknown as Record<string, string>,
+                    stats: {
+                      following: product.features.length,
+                      followers: Math.floor(Math.random() * 1000) + 100,
+                      posts: product.features.length
+                    },
+                    productId: product.id
+                  }}
+                />
               </motion.div>
             ))}
           </div>
