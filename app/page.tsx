@@ -112,7 +112,7 @@ function StickyCenterDiv() {
                       opacity: 1,
                       scale: 1,
                     }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    transition={{ duration: 0.5 }}
                   >
                     <div className="relative w-full h-full flex items-center justify-center">
                       <img 
@@ -563,11 +563,12 @@ function App() {
                  background: 'oklch(0.98 0.008 85)'
                }}>
         <div className="max-w-6xl mx-auto relative z-10">
-          <motion.div
+            <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: true, amount: 0.3, margin: "0px" }}
+            style={{ willChange: "opacity, transform" }}
             className="text-center mb-8 sm:mb-12"
           >
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-gradient-primary">Our Product Range</h2>
@@ -593,48 +594,56 @@ function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 viewport={{ once: true, amount: 0.3 }}
-                className="rounded-2xl overflow-hidden transition-all duration-300 group relative hover:shadow-primary-lg"
-                style={{
-                  background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
-                  border: '1px solid oklch(0.90 0.008 100)',
-                  boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
-                }}
               >
-                <Link href={`/products/${product.id}`}>
-                  <div className="h-64 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300"
-                       style={{
-                         background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.01 220) 100%)'
-                       }}>
-                    {/* Gradient overlay on hover */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                <div className="rounded-2xl overflow-hidden transition-all duration-300 h-full flex flex-col group hover:shadow-primary-lg"
+                     style={{
+                       background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
+                       border: '1px solid oklch(0.90 0.008 100)',
+                       boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
+                     }}
+                     onMouseEnter={(e) => {
+                       e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
+                     }}
+                     onMouseLeave={(e) => {
+                       e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
+                     }}>
+                  <Link
+                    href={`/products/${product.id}`}
+                    className="flex flex-col flex-grow cursor-pointer"
+                  >
+                    <div className="h-64 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300"
                          style={{
-                           background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
-                         }}></div>
-                    <img 
-                      src={`/${product.img}`} 
-                      alt={product.name}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
-                  <div className="p-6 relative z-10">
-                    <h3 className="text-lg font-bold mb-2 text-gradient-primary group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
-                        style={{ color: 'oklch(0.25 0.01 240)' }}>{product.name}</h3>
-                    <p className="text-sm mb-4"
-                       style={{ color: 'oklch(0.40 0.01 240)' }}>{product.desc}</p>
-                    <span className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-300 group-hover:gap-2"
+                           background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
+                         }}>
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                            style={{
-                             color: 'oklch(0.50 0.15 220)'
-                           }}>
-                      View Details →
-                    </span>
+                             background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
+                           }}></div>
+                      <img 
+                        src={`/${product.img}`} 
+                        alt={product.name}
+                        className="max-w-full max-h-full object-contain relative z-10"
+                      />
+                    </div>
+                    <div className="p-6 flex-grow flex flex-col relative z-10">
+                      <h3 className="text-lg font-bold mb-2 text-gradient-primary group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
+                          style={{ color: 'oklch(0.25 0.01 240)' }}>{product.name}</h3>
+                      <p className="text-sm mb-4 flex-grow"
+                         style={{ color: 'oklch(0.40 0.01 240)' }}>{product.desc}</p>
+                      <span className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-300 group-hover:gap-2"
+                             style={{ color: 'oklch(0.50 0.15 220)' }}>View Details →</span>
+                    </div>
+                  </Link>
+                  <div className="px-6 pb-6 relative z-10">
+                    <Link 
+                      href={`/quote?product=${product.id}`}
+                      className="text-sm font-medium transition-colors hover:text-[oklch(0.50_0.15_220)]"
+                      style={{ color: 'oklch(0.40 0.01 240)' }}
+                    >
+                      Request Quote
+                    </Link>
                   </div>
-                </Link>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -674,7 +683,8 @@ function App() {
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: true, amount: 0.3, margin: "0px" }}
+            style={{ willChange: "opacity, transform" }}
             className="text-2xl sm:text-3xl font-bold mb-8 sm:mb-12 text-center text-gradient-primary"
           >
             Product Categories
@@ -704,19 +714,19 @@ function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 viewport={{ once: true, amount: 0.25 }}
-                className="rounded-2xl overflow-hidden transition-all duration-300 group relative hover:shadow-primary-lg"
-                style={{
-                  background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
-                  border: '1px solid oklch(0.90 0.008 100)',
-                  boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
-                }}
               >
+                <div className="rounded-2xl overflow-hidden transition-all duration-300 h-full flex flex-col group hover:shadow-primary-lg"
+                     style={{
+                       background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
+                       border: '1px solid oklch(0.90 0.008 100)',
+                       boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
+                     }}
+                     onMouseEnter={(e) => {
+                       e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
+                     }}
+                     onMouseLeave={(e) => {
+                       e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
+                     }}>
                 <div className="h-48 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300"
                      style={{
                        background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
@@ -739,6 +749,7 @@ function App() {
                      style={{ color: 'oklch(0.40 0.01 240)' }}>
                     {item.desc}
                   </p>
+                </div>
                 </div>
               </motion.div>
             ))}
@@ -786,33 +797,34 @@ function App() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 viewport={{ once: true, amount: 0.25 }}
-                className="rounded-2xl p-6 hover:shadow-primary transition-all duration-300"
-                style={{
-                  background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
-                  border: '1px solid oklch(0.90 0.008 100)',
-                  boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
-                }}
               >
-                <p className="text-sm mb-6"
-                   style={{ color: 'oklch(0.40 0.01 240)' }}>
-                  &quot;{testimonial.quote}&quot;
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full"
-                       style={{
-                         background: 'linear-gradient(135deg, oklch(0.50 0.15 220), oklch(0.65 0.18 65))'
-                       }}></div>
-                  <div>
-                    <p className="font-medium text-sm"
-                       style={{ color: 'oklch(0.25 0.01 240)' }}>{testimonial.name}</p>
-                    <p className="text-xs"
-                       style={{ color: 'oklch(0.45 0.01 240)' }}>{testimonial.company}</p>
+                <div className="rounded-2xl p-6 hover:shadow-primary transition-all duration-300"
+                     style={{
+                       background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
+                       border: '1px solid oklch(0.90 0.008 100)',
+                       boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
+                     }}
+                     onMouseEnter={(e) => {
+                       e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
+                     }}
+                     onMouseLeave={(e) => {
+                       e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
+                     }}>
+                  <p className="text-sm mb-6"
+                     style={{ color: 'oklch(0.40 0.01 240)' }}>
+                    &quot;{testimonial.quote}&quot;
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full"
+                         style={{
+                           background: 'linear-gradient(135deg, oklch(0.50 0.15 220), oklch(0.65 0.18 65))'
+                         }}></div>
+                    <div>
+                      <p className="font-medium text-sm"
+                         style={{ color: 'oklch(0.25 0.01 240)' }}>{testimonial.name}</p>
+                      <p className="text-xs"
+                         style={{ color: 'oklch(0.45 0.01 240)' }}>{testimonial.company}</p>
+                    </div>
                   </div>
                 </div>
               </motion.div>

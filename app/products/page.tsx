@@ -215,37 +215,38 @@ export default function ProductsPage() {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: (categoryIndex * 0.1) + (imgIndex * 0.05) }}
                         viewport={{ once: true }}
-                        className="rounded-xl p-4 hover:shadow-primary transition-all duration-300 cursor-pointer group"
-                        style={{
-                          background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
-                          border: '1px solid oklch(0.90 0.008 100)',
-                          boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
-                        }}
                       >
-                        <div className="h-48 rounded-lg flex items-center justify-center mb-3 relative overflow-hidden transition-all duration-300"
+                        <div className="rounded-xl p-4 hover:shadow-primary transition-all duration-300 cursor-pointer group"
                              style={{
-                               background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
+                               background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
+                               border: '1px solid oklch(0.90 0.008 100)',
+                               boxShadow: '0 1px 3px 0 oklch(0.45 0.15 220 / 0.05)'
+                             }}
+                             onMouseEnter={(e) => {
+                               e.currentTarget.style.borderColor = 'oklch(0.50 0.15 220)';
+                             }}
+                             onMouseLeave={(e) => {
+                               e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
                              }}>
-                          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                          <div className="h-48 rounded-lg flex items-center justify-center mb-3 relative overflow-hidden transition-all duration-300"
                                style={{
-                                 background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
-                               }}></div>
-                          <img 
-                            src={`/${img}`}
-                            alt={`${product.name} - Variant ${imgIndex + 1}`}
-                            className="max-w-full max-h-full object-contain relative z-10"
-                          />
+                                 background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
+                               }}>
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                 style={{
+                                   background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
+                                 }}></div>
+                            <img 
+                              src={`/${img}`}
+                              alt={`${product.name} - Variant ${imgIndex + 1}`}
+                              className="max-w-full max-h-full object-contain relative z-10"
+                            />
+                          </div>
+                          <p className="text-sm font-medium text-center transition-colors group-hover:text-[oklch(0.50_0.15_220)]"
+                             style={{ color: 'oklch(0.25 0.01 240)' }}>
+                            {product.name} - Variant {imgIndex + 1}
+                          </p>
                         </div>
-                        <p className="text-sm font-medium text-center transition-colors group-hover:text-[oklch(0.50_0.15_220)]"
-                           style={{ color: 'oklch(0.25 0.01 240)' }}>
-                          {product.name} - Variant {imgIndex + 1}
-                        </p>
                       </motion.div>
                     </Link>
                   ))}
