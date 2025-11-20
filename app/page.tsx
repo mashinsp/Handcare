@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { motion, type Variants } from "framer-motion"
 import Link from "next/link"
 import { FlipCard } from "@/components/animate-ui/components/community/flip-card"
@@ -73,7 +73,7 @@ function StickyCenterDiv() {
   }, [productImages.length])
 
   return (
-    <div className="sticky top-20 sm:top-28">
+    <div className="hidden lg:block sticky top-20 sm:top-28">
       <div className="relative h-[400px] sm:h-[480px] lg:h-[560px] flex items-start justify-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -159,6 +159,240 @@ function StickyCenterDiv() {
 const fade: Variants = {
   hidden: { opacity: 0 },
   show:  { opacity: 1, transition: { duration: 0.6 } },
+}
+
+const heroVisionMobileImages = [
+  { src: "/workingglove3.png", alt: "Premium working gloves" },
+  { src: "/mechanicalglove3.png", alt: "Mechanical gloves" },
+  { src: "/boxing2.png", alt: "Boxing gloves" },
+  { src: "/gardening1.png", alt: "Gardening gloves" },
+]
+
+// Mobile Carousel Component
+function MobileCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchEnd, setTouchEnd] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const [isLooping, setIsLooping] = useState(false)
+  const prevIndexRef = useRef(0)
+
+  const minSwipeDistance = 50
+  const autoSlideInterval = 3000 // 3 seconds
+
+  // Auto-slide functionality
+  useEffect(() => {
+    if (!isAutoPlaying) return
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const next = (prev + 1) % heroVisionMobileImages.length
+        // Detect if looping from last to first
+        if (prev === heroVisionMobileImages.length - 1 && next === 0) {
+          setIsLooping(true)
+          setTimeout(() => setIsLooping(false), 100) // Reset after transition
+        }
+        prevIndexRef.current = prev
+        return next
+      })
+    }, autoSlideInterval)
+
+    return () => clearInterval(interval)
+  }, [isAutoPlaying, heroVisionMobileImages.length])
+
+  // Resume auto-play after user interaction
+  const pauseAndResume = () => {
+    setIsAutoPlaying(false)
+    setTimeout(() => {
+      setIsAutoPlaying(true)
+    }, autoSlideInterval * 2) // Resume after 2x the interval
+  }
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0)
+    setTouchStart(e.targetTouches[0].clientX)
+    pauseAndResume()
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe && currentIndex < heroVisionMobileImages.length - 1) {
+      setCurrentIndex(currentIndex + 1)
+    }
+    if (isRightSwipe && currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1)
+    }
+  }
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => {
+      const next = (prev + 1) % heroVisionMobileImages.length
+      // Detect if looping from last to first
+      if (prev === heroVisionMobileImages.length - 1 && next === 0) {
+        setIsLooping(true)
+        setTimeout(() => setIsLooping(false), 100)
+      }
+      prevIndexRef.current = prev
+      return next
+    })
+    pauseAndResume()
+  }
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => {
+      const next = (prev - 1 + heroVisionMobileImages.length) % heroVisionMobileImages.length
+      // Detect if looping from first to last
+      if (prev === 0 && next === heroVisionMobileImages.length - 1) {
+        setIsLooping(true)
+        setTimeout(() => setIsLooping(false), 100)
+      }
+      prevIndexRef.current = prev
+      return next
+    })
+    pauseAndResume()
+  }
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index)
+    pauseAndResume()
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true, amount: 0.3 }}
+      className="relative w-full max-w-xl mx-auto h-[280px] sm:h-[300px] flex items-center justify-center"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      {/* Navigation Arrows */}
+      <button
+        onClick={goToPrevious}
+        className="absolute left-2 sm:left-4 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 active:scale-95"
+        style={{
+          background: 'oklch(1 0 0)',
+          color: 'oklch(0.45 0.15 220)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+        }}
+        aria-label="Previous slide"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+
+      <button
+        onClick={goToNext}
+        className="absolute right-2 sm:right-4 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 active:scale-95"
+        style={{
+          background: 'oklch(1 0 0)',
+          color: 'oklch(0.45 0.15 220)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+        }}
+        aria-label="Next slide"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </button>
+
+      {/* Carousel Cards */}
+      <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+        {heroVisionMobileImages.map((img, index) => {
+          const distance = Math.abs(index - currentIndex)
+          const isActive = index === currentIndex
+          const isVisible = distance <= 1
+
+          if (!isVisible) return null
+
+          const position = index - currentIndex
+          const scale = isActive ? 1 : 0.75
+          const opacity = isActive ? 1 : 0.5
+          const translateX = position * 80
+
+          return (
+            <motion.div
+              key={img.src}
+              className="absolute flex items-center justify-center"
+              initial={false}
+              animate={{
+                x: translateX,
+                scale,
+                opacity,
+                zIndex: isActive ? 10 : 5 - distance,
+              }}
+              transition={isLooping ? {
+                duration: 0,
+              } : {
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+              }}
+              style={{
+                width: isActive ? '85%' : '70%',
+                height: isActive ? '100%' : '80%',
+              }}
+            >
+              <div
+                className="w-full h-full rounded-3xl shadow-primary-lg flex items-center justify-center p-4 sm:p-6 transition-all duration-300"
+                style={{
+                  background: isActive
+                    ? 'linear-gradient(135deg, oklch(0.96 0.012 220) 0%, oklch(0.97 0.01 200) 100%)'
+                    : 'linear-gradient(135deg, oklch(0.96 0.012 220 / 0.6) 0%, oklch(0.97 0.01 200 / 0.6) 100%)',
+                  border: isActive
+                    ? '1px solid oklch(0.88 0.015 220)'
+                    : '1px solid oklch(0.88 0.015 220 / 0.5)',
+                  boxShadow: isActive
+                    ? '0 12px 30px -18px oklch(0.45 0.15 220 / 0.8)'
+                    : '0 8px 20px -12px oklch(0.45 0.15 220 / 0.5)',
+                }}
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  className="max-w-full max-h-full object-contain drop-shadow-xl"
+                  loading={index <= 1 ? 'eager' : 'lazy'}
+                />
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
+
+      {/* Pagination Dots */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+        {heroVisionMobileImages.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className="transition-all duration-300 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2"
+            style={{
+              width: index === currentIndex ? '32px' : '8px',
+              height: '8px',
+              background: index === currentIndex
+                ? 'oklch(1 0 0)'
+                : 'oklch(1 0 0 / 0.4)',
+              boxShadow: index === currentIndex
+                ? '0 2px 8px rgba(0,0,0,0.2)'
+                : 'none',
+            }}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+    </motion.div>
+  )
 }
 
 function ContactForm() {
@@ -471,12 +705,18 @@ function App() {
 
     {/* ROW 3: VISION */}
     <div className="row-start-3 col-span-3 lg:col-start-1 lg:col-span-1 z-10 mb-6 lg:mb-0">
+      {/* Mobile carousel */}
+      <div className="lg:hidden">
+        <MobileCarousel />
+      </div>
+
+      {/* Desktop static image */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true, amount: 0.3 }}
-        className="w-full max-w-xl mx-auto lg:mx-0 h-[200px] sm:h-[240px] lg:h-[260px] rounded-3xl flex items-center justify-center p-4 shadow-primary hover:shadow-primary-lg transition-shadow duration-300"
+        className="hidden lg:flex w-full max-w-xl mx-auto lg:mx-0 h-[200px] sm:h-[240px] lg:h-[260px] rounded-3xl items-center justify-center p-4 shadow-primary hover:shadow-primary-lg transition-shadow duration-300"
         style={{
           background: 'linear-gradient(135deg, oklch(0.96 0.012 220) 0%, oklch(0.97 0.01 200) 100%)',
           border: '1px solid oklch(0.88 0.015 220)'
@@ -756,7 +996,7 @@ function App() {
             <div className="space-y-12 sm:space-y-16">
               {[
                 { 
-                  type: "Cow",
+                  type: "Cow Hide",
                   label: "Cow hide",
                   icon: "cow-face.png",
                   description: "Most preferred type of leather. Readily available, thick, durable and easy to maintain. Cost-effective, and relatively soft.",
@@ -764,7 +1004,7 @@ function App() {
                   descriptionPosition: "right"
                 },
                 { 
-                  type: "Goat",
+                  type: "Goat skin",
                   label: "Goat skin",
                   icon: "goat.png",
                   description: "Smooth and soft fine grain, easily available, strong yet flexible and water resistant. Light weight and resilient leather.",
@@ -772,7 +1012,7 @@ function App() {
                   descriptionPosition: "left"
                 },
                 { 
-                  type: "Sheep",
+                  type: "Sheep skin",
                   label: "Sheep skin",
                   icon: "sheep.png",
                   description: "Thin and plush leather, extremely comfortable, soft and light-weight but delicate to use. Mostly used in garments and purses. Sheepskin shearlings can be used with wool inside and leather outside.",
@@ -780,7 +1020,7 @@ function App() {
                   descriptionPosition: "right"
                 },
                 { 
-                  type: "Deer",
+                  type: "Deer skin",
                   label: "Deer skin",
                   icon: "deer.png",
                   description: "Highly resilient, abrasion resistant and naturally water friendly. It is stretchable and breathable. Very strong leather yet soft and supple.",
