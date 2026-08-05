@@ -120,11 +120,12 @@ const products = {
 function ProductDetailContent() {
   const params = useParams()
   const searchParams = useSearchParams()
+  
+  // Read params.id matching folder [id]
   const productId = params.id as string
   const product = products[productId as keyof typeof products]
   const variantParam = searchParams.get('variant')
   
-  // Initialize with variant from URL or first image
   const getInitialImage = () => {
     if (variantParam && product) {
       const variantIndex = parseInt(variantParam) - 1
@@ -137,7 +138,6 @@ function ProductDetailContent() {
   
   const [selectedImage, setSelectedImage] = useState(getInitialImage())
 
-  // Update selected image when variant param changes
   useEffect(() => {
     if (variantParam && product) {
       const variantIndex = parseInt(variantParam) - 1
@@ -169,7 +169,6 @@ function ProductDetailContent() {
          style={{
            background: 'linear-gradient(180deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.005 95) 50%, oklch(0.99 0.002 100) 100%)'
          }}>
-      {/* Subtle texture overlay */}
       <div className="fixed inset-0 pointer-events-none opacity-20 z-0"
            style={{
              backgroundImage: 'radial-gradient(circle at 1px 1px, oklch(0.50 0.15 220 / 0.12) 1px, transparent 0)',
@@ -412,7 +411,7 @@ function ProductDetailContent() {
                       <p className="text-sm mb-4"
                          style={{ color: 'oklch(0.40 0.01 240)' }}>{prod.desc}</p>
                       <span className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-300 group-hover:gap-2"
-                             style={{ color: 'oklch(0.50 0.15 220)' }}>View Details →</span>
+                            style={{ color: 'oklch(0.50 0.15 220)' }}>View Details →</span>
                     </div>
                   </div>
                 </Link>
@@ -446,4 +445,3 @@ export default function ProductDetailPage() {
     </Suspense>
   )
 }
-

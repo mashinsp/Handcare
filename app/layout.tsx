@@ -12,6 +12,10 @@ export const metadata: Metadata = {
   title: 'Handcare - Premium Quality Industrial Gloves from Sialkot, Pakistan',
   description: 'Leading manufacturer of premium quality industrial and safety gloves from Sialkot, Pakistan. ISO certified, exporting to 50+ countries worldwide.',
   generator: 'Handcare',
+  icons: [
+    { rel: 'icon', url: '/handcarelogo-faviconn.png' },
+    { rel: 'shortcut icon', url: '/handcarelogo-faviconn.png' },
+  ],
 }
 
 export default function RootLayout({
