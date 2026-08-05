@@ -16,6 +16,9 @@ export const metadata: Metadata = {
     { rel: 'icon', url: '/handcarelogo-faviconn.png' },
     { rel: 'shortcut icon', url: '/handcarelogo-faviconn.png' },
   ],
+  other: [
+    { name: 'msvalidate.01', content: '0D7CE10BE6BEDCE395834D6A6E8A286C' },
+  ],
 }
 
 export default function RootLayout({
