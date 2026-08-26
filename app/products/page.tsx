@@ -1,22 +1,21 @@
 import React from "react"
 import { Metadata } from "next"
-import Script from "next/script"
 import Image from "next/image"
 import Link from "next/link"
 import { glovesCatalogSchema, productList } from "@/lib/structured-data"
 
 // SEO Metadata for Google, AI Crawlers, and Social Sharing
 export const metadata: Metadata = {
-  title: "Industrial & Safety Gloves Manufacturer Range | Handcare",
+  title: "Leather Gloves Catalogue | Custom Glove Manufacturer — Handcare",
   description:
-    "Explore Handcare's comprehensive collection of ISO 9001:2015 certified industrial safety, working, welding, mechanical, and sporting gloves manufactured in Sialkot, Pakistan.",
+    "Genuine leather industrial and safety gloves — working, welding, mechanical, and more. Premium cowhide and goat-grain leather. OEM/wholesale glove supplier, EN 388/407 & CE certified, manufactured in Sialkot, Pakistan.",
   alternates: {
     canonical: "https://www.handcare.co/products",
   },
   openGraph: {
-    title: "Industrial & Safety Gloves Manufacturer Range | Handcare",
+    title: "Leather Gloves Catalogue | Custom Glove Manufacturer — Handcare",
     description:
-      "Explore Handcare's comprehensive collection of ISO 9001:2015 certified protective gloves manufactured in Sialkot, Pakistan.",
+      "Genuine leather industrial and safety gloves, OEM/wholesale supply, manufactured in Sialkot, Pakistan.",
     url: "https://www.handcare.co/products",
     siteName: "Handcare",
     type: "website",
@@ -112,16 +111,21 @@ const products = [
 export default function ProductsPage() {
   return (
     <>
-      {/* Catalog JSON-LD */}
-      <Script
+      {/* Catalog JSON-LD — plain <script>, not next/script (see note in
+          app/layout.tsx: next/script gets buried in the RSC hydration
+          payload instead of appearing as literal HTML, so crawlers and
+          agents that don't execute JS never see it). */}
+      <script
         id="gloves-catalog-schema"
         type="application/ld+json"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(glovesCatalogSchema) }}
       />
       {/* Breadcrumb JSON-LD */}
-      <Script
+      <script
         id="catalog-breadcrumb-schema"
         type="application/ld+json"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(catalogBreadcrumbSchema) }}
       />
 

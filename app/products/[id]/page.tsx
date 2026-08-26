@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { useParams, useSearchParams } from "next/navigation"
+import { productSchema, productList } from "@/lib/structured-data"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -164,8 +165,18 @@ function ProductDetailContent() {
     )
   }
 
+  const schemaData = productList.find((p) => p.slug === productId)
+
   return (
-    <div className="min-h-screen relative"
+    <>
+      {schemaData && (
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema(schemaData)) }}
+        />
+      )}
+      <div className="min-h-screen relative"
          style={{
            background: 'linear-gradient(180deg, oklch(0.99 0.002 100) 0%, oklch(0.98 0.005 95) 50%, oklch(0.99 0.002 100) 100%)'
          }}>
@@ -421,6 +432,7 @@ function ProductDetailContent() {
       </section>
 
     </div>
+    </>
   )
 }
 
