@@ -49,6 +49,33 @@ export const organizationSchema = {
     '@type': 'EducationalOccupationalCredential',
     credentialCategory: 'ISO 9001:2015 Certification',
   },
+  // Real schema.org properties (not the dead HTML meta-keywords tag) that
+  // help AI agents and search engines semantically match your niche.
+  // Only terms that genuinely describe Handcare — broad single-word terms
+  // like "Gloves" are too generic to claim on their own.
+  keywords: [
+    'gloves',
+    'leather gloves',
+    'leather gloves industry',
+    'leather gloves manufacturer',
+    'custom glove manufacturer',
+    'gloves wholesale supplier',
+    'gloves exporter',
+    'OEM glove manufacturer',
+    'industrial glove exporter',
+    'genuine leather gloves',
+    'premium gloves',
+    'heavy-duty leather gloves',
+    'premium cowhide leather gloves',
+    'goat grain leather gloves',
+  ].join(', '),
+  knowsAbout: [
+    'Leather glove manufacturing',
+    'Industrial safety gloves',
+    'OEM/ODM glove production',
+    'Cowhide, goat, sheep, and deer leather processing',
+    'EN 388, EN 407, ANSI/ISEA 105, and CE glove safety standards',
+  ],
 }
 
 // Render on /products
