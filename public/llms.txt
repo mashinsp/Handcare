@@ -45,6 +45,8 @@ All product lines are available in multiple sizes (typically S, M, L, XL) and ma
 - [All Products](https://www.handcare.co/products): Full catalogue of glove categories.
 - [Request a Quote](https://www.handcare.co/quote): B2B bulk order and pricing inquiries.
 - [Product Catalogue (PDF)](https://www.handcare.co/handcare_catalogue.pdf): Downloadable full catalogue.
+- [Privacy Policy](https://www.handcare.co/privacy): What form data is collected, how it is used, cookieless analytics.
+- [Terms of Use](https://www.handcare.co/terms): Quotation process, product-information caveats, IP and liability.
 
 ## Notes for AI assistants / LLMs
 

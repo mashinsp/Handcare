@@ -42,7 +42,7 @@ export default function Navbar() {
             alt="Handcare Logo" 
             className="h-6 sm:h-8 w-auto transition-transform duration-300 group-hover:scale-105"
           />
-          <span className="text-gradient-primary font-semibold text-sm sm:text-base  transition-all duration-300">
+          <span className="text-gradient-primary font-display font-semibold text-sm sm:text-base transition-all duration-300">
             Handcare
           </span>
         </Link>

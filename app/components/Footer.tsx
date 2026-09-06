@@ -11,7 +11,7 @@ export default function Footer() {
               alt="Handcare Logo"
               className="h-6 w-auto"
             />
-            <span className="font-medium">Handcare</span>
+            <span className="font-display font-medium">Handcare</span>
           </div>
           <p className="text-sm text-gray-400">
             Leading manufacturer of premium quality industrial and safety gloves from Sialkot, Pakistan. ISO 9001:2015 certified with over 25 years of excellence in hand protection solutions.
@@ -19,7 +19,7 @@ export default function Footer() {
         </div>
 
         <div className="col-span-1">
-          <h3 className="font-medium mb-4">About</h3>
+          <h3 className="font-display font-medium mb-4">About</h3>
           <ul className="space-y-2 text-sm text-gray-400">
             <li><Link href="/#about" className="hover:text-white transition-colors">About</Link></li>
             <li><Link href="/#contact" className="hover:text-white transition-colors">Contact</Link></li>
@@ -28,16 +28,15 @@ export default function Footer() {
         </div>
 
         <div className="col-span-1">
-          <h3 className="font-medium mb-4">Policy</h3>
+          <h3 className="font-display font-medium mb-4">Policy</h3>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><Link href="/privacy" className="hover:text-white transition-colors pointer-events-none cursor-default opacity-50">Privacy</Link></li>
-            <li><Link href="/terms" className="hover:text-white transition-colors pointer-events-none cursor-default opacity-50">Terms</Link></li>
-            <li><Link href="/cookies" className="hover:text-white transition-colors pointer-events-none cursor-default opacity-50">Cookies</Link></li>
+            <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link></li>
+            <li><Link href="/terms" className="hover:text-white transition-colors">Terms</Link></li>
           </ul>
         </div>
 
         <div className="col-span-1">
-          <h3 className="font-medium mb-4">Social</h3>
+          <h3 className="font-display font-medium mb-4">Social</h3>
           <ul className="space-y-2 text-sm text-gray-400">
             <li><Link href="https://www.instagram.com/hand_care14?igsh=MXRwb2VxdHZ1aGdobw==" className="hover:text-white transition-colors">Instagram</Link></li>
           </ul>

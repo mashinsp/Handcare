@@ -4,11 +4,21 @@ import React, { useState, useEffect, useRef } from "react"
 import { motion, type Variants } from "framer-motion"
 import Link from "next/link"
 import { FlipCard } from "@/components/animate-ui/components/community/flip-card"
+import HeroScrollExpand from "@/components/hero-scroll-expand"
+import NotchedPhoto from "@/components/notched-photo"
+import LeatherTimeline from "@/components/leather-timeline"
+import { Hand, ShieldCheck } from "lucide-react"
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   show:  { opacity: 1, y: 0, transition: { duration: 0.6 } },
 }
+
+// Card height at lg; the sticky offset is derived from it so the card parks
+// in the middle of the viewport rather than under the navbar.
+const STICKY_CARD_H = 620
+const stickyTopOffset = (viewportHeight: number) =>
+  Math.max(96, Math.round(viewportHeight / 2 - STICKY_CARD_H / 2))
 
 // Sticky Center Div with Scroll Reveal Effect
 function StickyCenterDiv() {
@@ -36,9 +46,9 @@ function StickyCenterDiv() {
       const scrollPosition = window.scrollY
       const viewportHeight = window.innerHeight
       
-      // Calculate when sticky element becomes active (top-20 = 5rem = 80px, top-28 on sm = 7rem = 112px)
-      // Use responsive sticky offset: 80px on mobile, 112px on larger screens
-      const stickyOffset = window.innerWidth >= 640 ? 112 : 80
+      // Must track the CSS `top` the card actually sticks at, so image
+      // switching begins exactly when the card pins mid-screen.
+      const stickyOffset = stickyTopOffset(viewportHeight)
       const stickyStartPoint = sectionTop - stickyOffset
       
       // Image switching starts only after sticky element becomes active
@@ -73,14 +83,14 @@ function StickyCenterDiv() {
   }, [productImages.length])
 
   return (
-    <div className="hidden lg:block sticky top-20 sm:top-28">
-      <div className="relative h-[400px] sm:h-[480px] lg:h-[560px] flex items-start justify-center px-4">
+    <div className="hidden lg:block sticky top-[max(6rem,calc(50vh-310px))]">
+      <div className="relative h-[620px] flex items-start justify-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true, amount: 0.2 }}
-          className="w-full max-w-[320px] sm:max-w-[360px] lg:w-[380px] h-[360px] sm:h-[440px] lg:h-[500px]
+          className="w-full lg:w-[420px] xl:w-[460px] h-[620px]
                      rounded-3xl shadow-primary-lg overflow-hidden relative"
           style={{
             background: 'linear-gradient(135deg, oklch(0.98 0.01 220) 0%, oklch(0.96 0.012 220) 50%, oklch(0.97 0.01 200) 100%)',
@@ -557,102 +567,51 @@ function App() {
              backgroundSize: '28px 28px'
            }}></div>
       
-      {/* Hero */}
-      <section className="relative overflow-hidden min-h-[520px] pt-28 sm:pt-32 pb-10 bg-gradient-warm pattern-dots z-10">
-      {/* <div className="pointer-events-none absolute inset-0 z-0">
-    <div className="h-full w-full 
-                    bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:18px_18px]" />
-    <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-white via-white/80 to-transparent" />
-  </div> */}
-        {/* Smooth white fade from bottom */}
-        <div className="absolute inset-x-0 bottom-0 h-32 sm:h-40 lg:h-48 pointer-events-none z-10"
-             style={{
-               background: 'linear-gradient(to top, oklch(1 0 0) 0%, oklch(1 0 0) 40%, oklch(0.99 0.002 100 / 0.8) 70%, transparent 100%)'
-             }}></div>
-        
-        <div className="relative px-4 sm:px-6 z-20">
-          <div className="max-w-6xl mx-auto flex flex-col gap-6 sm:gap-8 text-center">
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.3 }}
-              className="max-w-3xl mx-auto text-center"
-            >
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 px-2 text-gradient-primary">
-                Premium Hand Protection Solutions from Sialkot, Pakistan
-              </h1>
-              <p className="text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed px-2"
-                 style={{ color: 'oklch(0.40 0.01 240)' }}>
-                Handcare is a leading manufacturer of high-quality industrial and safety gloves, proudly based in Sialkot, Pakistan. With decades of expertise, we deliver superior hand protection solutions trusted by professionals worldwide.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-                <Link 
-                  href="/products" 
-                  className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 border-2 text-sm rounded-full font-medium transition-all duration-300 glow-primary-hover"
-                  style={{
-                    borderColor: 'oklch(0.45 0.15 220)',
-                    color: 'oklch(0.45 0.15 220)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))';
-                    e.currentTarget.style.color = 'white';
-                    e.currentTarget.style.borderColor = 'transparent';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)';
-                    e.currentTarget.style.borderColor = 'oklch(0.45 0.15 220)';
-                  }}
-                >
-                  Explore Our Products
-                </Link>
-                <a 
-                  href="/handcare_catalogue.pdf" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 text-white text-sm rounded-full font-medium transition-all duration-300 btn-gradient glow-accent-hover relative overflow-hidden"
-                  style={{
-                    background: 'linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))'
-                  }}
-                >
-                  View Catalogue
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      {/* Scroll-expand video hero — merged factory footage, first section */}
+      <HeroScrollExpand />
 
       {/* Hero-Vision combined section with sticky center */}
 {/* DECORATIVE SHAPES + VISION (center starts between side shapes) */}
 {/* DECORATIVE SHAPES + PRE-RUNWAY + VISION (+ optional post-runway) */}
-<section id="hero-vision" className="relative px-4 sm:px-6 z-10"
+<section id="hero-vision" className="relative -mt-[14vh] px-4 pt-[14vh] pb-28 sm:px-6 lg:pb-40 z-10"
          style={{
-           background: 'oklch(0.98 0.008 85)'
+           /* Starts transparent so it dissolves out of the hero's ground
+              instead of butting against it with a hard edge. */
+           background: 'linear-gradient(180deg, transparent 0%, oklch(0.988 0.004 92) 14%, oklch(0.98 0.008 85) 34%, oklch(0.98 0.008 85) 100%)'
          }}>
 <div className="pointer-events-none absolute inset-0 z-0">
-    <div className="h-full w-full 
-                    bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-size-[18px_18px]" />
-    <div className="absolute inset-x-0 top-0 h-64 bg-linear-to-b from-white via-white/80 to-transparent" />
+    <div className="h-full w-full
+                    bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] bg-size-[18px_18px]"
+         style={{
+           WebkitMaskImage: 'linear-gradient(180deg, transparent 0, transparent 12vh, black 34vh, black calc(100% - 34vh), transparent calc(100% - 4vh))',
+           maskImage: 'linear-gradient(180deg, transparent 0, transparent 12vh, black 34vh, black calc(100% - 34vh), transparent calc(100% - 4vh))',
+         }} />
   </div>
+
+  {/* Soft veil across the join: content rises out of the hero's ground
+      rather than appearing at a cut line. */}
+  <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-[22vh]"
+       style={{
+         background: 'linear-gradient(180deg, oklch(0.99 0.002 100) 0%, oklch(0.99 0.002 100 / 0.85) 35%, transparent 100%)'
+       }} />
   <div
     className="max-w-7xl mx-auto grid
                grid-cols-1
-               lg:grid-cols-[1fr_minmax(420px,560px)_1fr]
+               lg:grid-cols-[minmax(0,1fr)_minmax(420px,470px)_minmax(0,1fr)]
+               xl:grid-cols-[minmax(0,1fr)_minmax(460px,520px)_minmax(0,1fr)]
                /* ↓ reduced pre- and post-runway heights ↓ */
-               lg:grid-rows-[500px_minmax(120px,28vh)_auto_minmax(100px,18vh)]
-               gap-y-8 lg:gap-x-12 lg:gap-y-12">
+               lg:grid-rows-[500px_minmax(120px,28vh)_auto_minmax(340px,42vh)]
+               gap-y-8 lg:gap-x-16 lg:gap-y-12">
 
     {/* ROW 1: SHAPES STAGE */}
-    <div className="hidden lg:block row-start-1 col-span-3 relative h-[500px]">
+    <div className="hidden lg:block row-start-1 col-start-1 col-span-3 relative h-[500px]">
       {/* Left Side Shape with Glove Image */} 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.05 }}
         viewport={{ once: true, amount: 0.2 }}
-        className="absolute top-[220px] right-[220%] w-[300px] h-[220px]
+        className="absolute top-[220px] left-1/2 -ml-[496px] w-[300px] h-[220px]
                    rounded-3xl opacity-90 overflow-hidden shadow-primary hover:shadow-primary-lg transition-shadow duration-300"
         style={{
           background: 'linear-gradient(135deg, oklch(0.98 0.01 220) 0%, oklch(0.96 0.012 220) 50%, oklch(0.97 0.01 200) 100%)',
@@ -676,7 +635,7 @@ function App() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.25 }}
         viewport={{ once: true, amount: 0.2 }}
-        className="absolute top-[80px] right-[74%] w-[280px] h-[220px]
+        className="absolute top-[80px] left-1/2 ml-[78px] w-[280px] h-[220px]
                    rounded-3xl opacity-90 z-10 overflow-hidden shadow-primary hover:shadow-primary-lg transition-shadow duration-300"
         style={{
           background: 'linear-gradient(135deg, oklch(0.97 0.01 200) 0%, oklch(0.96 0.012 220) 50%, oklch(0.98 0.01 220) 100%)',
@@ -701,7 +660,7 @@ function App() {
     </div>
 
     {/* ROW 2: PRE-RUNWAY (shortened) */}
-    <div className="row-start-2 col-span-3" aria-hidden />
+    <div className="row-start-2 col-start-1 col-span-3" aria-hidden />
 
     {/* ROW 3: VISION */}
     <div className="row-start-3 col-span-3 lg:col-start-1 lg:col-span-1 z-10 mb-6 lg:mb-0">
@@ -736,7 +695,7 @@ function App() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.3 }}
-        className="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:max-w-none lg:mx-0 lg:px-0 lg:w-[250%] lg:-ml-[25%]"
+        className="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:max-w-none lg:mx-0 lg:px-0 lg:w-full"
       >
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 lg:mb-6 text-center text-gradient-primary">Our Vision</h2>
         <p className="leading-relaxed text-base sm:text-lg text-center lg:text-left"
@@ -747,7 +706,7 @@ function App() {
     </div>
 
     {/* ROW 4: POST-RUNWAY (shortened) */}
-    <div className="row-start-4 col-span-3" aria-hidden />
+    <div className="row-start-4 col-start-1 col-span-3" aria-hidden />
   </div>
 </section>
 
@@ -759,21 +718,58 @@ function App() {
                style={{
                  background: 'oklch(0.98 0.008 85)'
                }}>
-        <div className="max-w-6xl mx-auto relative z-10">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-gradient-primary">About Handcare</h2>
-            <p className="mb-8 sm:mb-12 max-w-2xl text-sm sm:text-base"
-               style={{ color: 'oklch(0.40 0.01 240)' }}>
-              Established in the heart of Sialkot, Pakistan—the world&apos;s largest manufacturing hub for sports and safety goods—Handcare has been producing premium quality gloves for over two decades. Our state-of-the-art facility combines traditional craftsmanship with modern technology to deliver products that meet international quality standards. We are ISO 9001:2015 certified and comply with CE, ANSI, and EN standards, ensuring our gloves provide superior protection across various industries.
-            </p>
-          </motion.div>
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Alternating rows: copy beside a photo, the photos staggered so
+              the pair reads as a diagonal rather than a stacked column. */}
+          <div className="grid items-center gap-x-10 gap-y-10 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-4">
+            {/* Row 1 — copy left, photo right (photo pulled up) */}
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              className="lg:pr-4"
+            >
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-gradient-primary">About Handcare</h2>
+              <p className="max-w-xl text-sm sm:text-base"
+                 style={{ color: 'oklch(0.40 0.01 240)' }}>
+                Established in the heart of Sialkot, Pakistan&mdash;the world&apos;s largest manufacturing hub for sports and safety goods&mdash;Handcare has been producing premium quality gloves for over two decades, supplying professionals in more than 50 countries.
+              </p>
+            </motion.div>
 
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-4 md:gap-8 mb-8">
+            <NotchedPhoto
+              src="/handcare-facility.jpg"
+              alt="The Handcare manufacturing facility in Sialkot, Pakistan"
+              tag="Our Facility"
+              icon={ShieldCheck}
+              className="lg:-mt-10"
+            />
+
+            {/* Row 2 — photo left (pushed down), copy right */}
+            <NotchedPhoto
+              src="/factory-floor.jpg"
+              alt="Stitching floor inside the Handcare glove factory"
+              tag="Production Floor"
+              icon={Hand}
+              className="order-2 lg:order-none lg:mt-10"
+            />
+
+            <motion.div
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              className="order-1 lg:order-none lg:pl-4"
+            >
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-gradient-primary">Inside Our Facility</h2>
+              <p className="max-w-xl text-sm sm:text-base"
+                 style={{ color: 'oklch(0.40 0.01 240)' }}>
+                Cutting, stitching and finishing all happen under one roof, where traditional craftsmanship works alongside modern machinery. We are ISO 9001:2015 certified and comply with CE, ANSI and EN standards, so every pair leaves the floor to the same specification.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="mt-16 sm:mt-20 grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-4 md:gap-8 mb-8">
             {[
               { n: "25+", desc: "Years of Excellence" },
               { n: "50+", desc: "Countries Served" },
@@ -787,7 +783,7 @@ function App() {
                 transition={{ duration: 0.5, delay: i * 0.05 }}
                 viewport={{ once: true, amount: 0.2 }}
               >
-                <p className="text-4xl font-bold mb-2 text-gradient-accent">{kpi.n}</p>
+                <p className="font-display text-4xl font-bold mb-2 text-gradient-accent">{kpi.n}</p>
                 <p className="text-sm"
                    style={{ color: 'oklch(0.40 0.01 240)' }}>
                   {kpi.desc}
@@ -985,112 +981,7 @@ function App() {
             Our Leather Selection
           </motion.h2>
 
-          <div className="relative">
-            {/* Red vertical connecting line */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-1 -translate-x-1/2 hidden md:block"
-                 style={{
-                   background: 'linear-gradient(to bottom, transparent 0%, oklch(0.55 0.20 15) 5%, oklch(0.55 0.20 15) 95%, transparent 100%)',
-                   zIndex: 1
-                 }}></div>
-
-            <div className="space-y-12 sm:space-y-16">
-              {[
-                { 
-                  type: "Cow Hide",
-                  label: "Cow hide",
-                  icon: "cow-face.png",
-                  description: "Most preferred type of leather. Readily available, thick, durable and easy to maintain. Cost-effective, and relatively soft.",
-                  iconPosition: "left",
-                  descriptionPosition: "right"
-                },
-                { 
-                  type: "Goat skin",
-                  label: "Goat skin",
-                  icon: "goat.png",
-                  description: "Smooth and soft fine grain, easily available, strong yet flexible and water resistant. Light weight and resilient leather.",
-                  iconPosition: "right",
-                  descriptionPosition: "left"
-                },
-                { 
-                  type: "Sheep skin",
-                  label: "Sheep skin",
-                  icon: "sheep.png",
-                  description: "Thin and plush leather, extremely comfortable, soft and light-weight but delicate to use. Mostly used in garments and purses. Sheepskin shearlings can be used with wool inside and leather outside.",
-                  iconPosition: "left",
-                  descriptionPosition: "right"
-                },
-                { 
-                  type: "Deer skin",
-                  label: "Deer skin",
-                  icon: "deer.png",
-                  description: "Highly resilient, abrasion resistant and naturally water friendly. It is stretchable and breathable. Very strong leather yet soft and supple.",
-                  iconPosition: "right",
-                  descriptionPosition: "left"
-                },
-              ].map((leather, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: i * 0.1 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  className="relative flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-6 md:gap-8"
-                >
-                  {/* Icon */}
-                  <div className={`${leather.iconPosition === 'left' ? 'md:order-1 md:flex md:justify-end' : 'md:order-3 md:flex md:justify-start'} relative z-10 flex items-center justify-center`}
-                       style={{ 
-                         width: leather.iconPosition === 'left' ? '100%' : (leather.type === "Deer" ? '120px' : '100px'), 
-                         height: leather.type === "Deer" ? '120px' : '100px', 
-                         minWidth: leather.iconPosition === 'left' ? 'auto' : (leather.type === "Deer" ? '120px' : '100px')
-                       }}>
-                    <div className="flex items-center justify-center"
-                         style={{ 
-                           width: leather.type === "Deer" ? '120px' : '100px', 
-                           height: leather.type === "Deer" ? '120px' : '100px',
-                           filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
-                         }}>
-                      <img 
-                        src={`/${leather.icon}`} 
-                        alt={leather.type}
-                        className="max-w-full max-h-full object-contain"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Red Circle Label */}
-                  <div className="shrink-0 md:order-2 relative z-20 flex items-center justify-center"
-                       style={{
-                         width: '90px',
-                         height: '90px',
-                         minWidth: '90px',
-                         borderRadius: '50%',
-                         background: 'oklch(0.55 0.20 15)',
-                         display: 'flex',
-                         alignItems: 'center',
-                         justifyContent: 'center',
-                         boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                         border: '2px solid oklch(0.50 0.18 15)'
-                       }}>
-                    <span className="text-white font-bold text-xs sm:text-sm uppercase tracking-wide text-center px-2"
-                          style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                      {leather.type}
-                    </span>
-                  </div>
-
-                  {/* Description */}
-                  <div className={`flex-1 ${leather.descriptionPosition === 'left' ? 'md:order-1 md:text-right md:flex md:justify-end' : 'md:order-3 md:text-left md:flex md:justify-start'} relative z-10 text-center`}
-                       style={{ width: '100%', maxWidth: '400px' }}>
-                    <p className="text-sm sm:text-base leading-relaxed"
-                       style={{ 
-                         color: 'oklch(0.40 0.01 240)'
-                       }}>
-                      {leather.description}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+          <LeatherTimeline />
         </div>
       </section>
 
@@ -1192,13 +1083,15 @@ function App() {
               <div>
                 <p className="font-medium mb-1"
                    style={{ color: 'oklch(0.25 0.01 240)' }}>Phone:</p>
+                                   <a href="tel:+923024002921" 
+                   className="transition-colors hover:text-[oklch(0.50_0.15_220)]"
+                   style={{ color: 'oklch(0.40 0.01 240)' }}>+92 302 400 2921</a>
+                    <br />
+
                 <a href="tel:+923014264385" 
                    className="transition-colors hover:text-[oklch(0.50_0.15_220)]"
                    style={{ color: 'oklch(0.40 0.01 240)' }}>+92 301 426 4385</a>
-                <br />
-                <a href="tel:+923024002921" 
-                   className="transition-colors hover:text-[oklch(0.50_0.15_220)]"
-                   style={{ color: 'oklch(0.40 0.01 240)' }}>+92 302 400 2921</a>
+               
               </div>
               <div>
                 <p className="font-medium mb-1"

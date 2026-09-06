@@ -1,13 +1,37 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { DM_Sans, Sora } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { organizationSchema } from '@/lib/structured-data'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+/**
+ * Type pairing for the whole site.
+ *
+ * Sora — display face, for anything structural or numeric: headings, stat
+ * figures, the wordmark. Needs 400/600/700/800.
+ * DM Sans — text face and the body default, for labels, nav items, table
+ * content, names and emails, buttons, form fields and captions. Needs
+ * 400/500/600/700 plus 400 italic.
+ *
+ * Both are loaded as variable fonts (no `weight` list) rather than as static
+ * instances. Google serves Sora across 100-800 and DM Sans across 100-1000, so
+ * one file per style covers every weight above — three files in total, where
+ * naming the weights explicitly would fetch nine (next/font cannot scope a
+ * style to a single weight, so `italic` would be pulled at all four).
+ */
+const sora = Sora({
+  subsets: ["latin"],
+  variable: "--font-display-family",
+  display: "swap",
+});
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-sans-body",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: 'Handcare - Leather Gloves Manufacturer & Exporter | Sialkot, Pakistan',
@@ -28,7 +52,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${sora.variable} ${dmSans.variable}`}>
       <body className={`font-sans antialiased`}>
         {/*
           A plain <script> tag, not next/script — next/script's tag gets

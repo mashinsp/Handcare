@@ -92,10 +92,54 @@ email handcare514@gmail.com / call +92 301 426 4385, including:
 [Back to homepage](https://www.handcare.co/)
 `
 
+const PRIVACY_MARKDOWN = `# Privacy Policy
+
+Handcare (Industrial Area, Sialkot 51310, Punjab, Pakistan) collects only
+what you type into the quote or contact form: name, email, phone, country,
+product of interest and quantity, plus optional company name and message.
+Submissions are emailed to our sales inbox; they are not stored in a
+database on this site.
+
+Analytics are cookieless (Vercel Analytics). We set no advertising,
+profiling or third-party tracking cookies, so there is no consent banner.
+We never sell or trade your information.
+
+To request a copy, correction or deletion of your data, email
+handcare514@gmail.com.
+
+[Full policy](https://www.handcare.co/privacy) ·
+[Terms of Use](https://www.handcare.co/terms) ·
+[Homepage](https://www.handcare.co/)
+`
+
+const TERMS_MARKDOWN = `# Terms of Use
+
+www.handcare.co is an information and enquiry site for business customers,
+not an online shop. No prices are published and no order can be placed here.
+
+A quotation request is an invitation for Handcare to quote. A binding
+contract exists only once Handcare issues a written quotation or proforma
+invoice and you confirm it in writing.
+
+Product descriptions, images and standards references (CE, EN 388, EN 407,
+ANSI/ISEA 105) are a general guide; leather varies between batches. Confirm
+compliance in writing for the exact article before ordering. The downloadable
+catalogue is for reference — a written quotation prevails over it.
+
+Site content is owned by Handcare; commercial reuse requires written
+permission. Governed by the laws of Pakistan.
+
+[Full terms](https://www.handcare.co/terms) ·
+[Privacy Policy](https://www.handcare.co/privacy) ·
+[Homepage](https://www.handcare.co/)
+`
+
 const REGISTRY: Record<string, string> = {
   "/": HOME_MARKDOWN,
   "/products": PRODUCTS_INDEX_MARKDOWN,
   "/quote": QUOTE_MARKDOWN,
+  "/privacy": PRIVACY_MARKDOWN,
+  "/terms": TERMS_MARKDOWN,
 }
 
 for (const p of productList) {
