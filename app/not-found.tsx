@@ -77,8 +77,8 @@ export default function NotFound() {
 
         <Link
           href="/"
-          className="inline-block mt-8 px-6 py-3 text-white rounded-full font-medium transition-all duration-300 btn-gradient"
-          style={{ background: "linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))" }}
+          className="inline-block mt-8 px-6 py-3 text-white rounded-full font-medium transition-all duration-200 btn-gradient"
+          style={{ background: "linear-gradient(135deg, oklch(0.51 0.18 65), oklch(0.56 0.15 40))" }}
         >
           Back to Homepage
         </Link>

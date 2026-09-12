@@ -116,6 +116,20 @@ const products = {
       "Color": "Red, Blue, Black",
     }
   },
+  "driving-gloves": {
+    name: "Driving Gloves",
+    img: "driving1.png",
+    desc: "Soft grain leather gloves for precise steering feel and all-day comfort",
+    images: ["driving1.png", "driving2.png", "driving3.png", "driving4.png"],
+    features: ["Soft grain leather", "Close-fitting dexterity", "Breathable back", "Secure wrist closure", "Reinforced palm", "Unlined for feel"],
+    applications: ["Driving", "Chauffeur and fleet use", "Motorsport", "Classic and vintage motoring", "Delivery driving"],
+    specifications: {
+      "Material": "Soft grain goatskin and cowhide",
+      "Sizes": "S, M, L, XL",
+      "Standards": "CE Marking",
+      "Color": "White, Red, Tan, Black",
+    }
+  },
 }
 
 function ProductDetailContent() {
@@ -280,7 +294,7 @@ function ProductDetailContent() {
                 viewport={{ once: true }}
                 className="mb-8"
               >
-                <h3 className="text-xl font-bold mb-4 text-gradient-primary">Key Features</h3>
+                <h3 className="text-xl font-bold mb-4 text-heading">Key Features</h3>
                 <ul className="grid grid-cols-2 gap-2">
                   {product.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-2 text-sm"
@@ -305,7 +319,7 @@ function ProductDetailContent() {
                   border: '1px solid oklch(0.90 0.008 100)'
                 }}
               >
-                <h3 className="text-xl font-bold mb-4 text-gradient-primary">Specifications</h3>
+                <h3 className="text-xl font-bold mb-4 text-heading">Specifications</h3>
                 <div className="space-y-2">
                   {Object.entries(product.specifications).map(([key, value]) => (
                     <div key={key} className="flex justify-between text-sm">
@@ -325,7 +339,7 @@ function ProductDetailContent() {
                 viewport={{ once: true }}
                 className="mb-8"
               >
-                <h3 className="text-xl font-bold mb-4 text-gradient-primary">Applications</h3>
+                <h3 className="text-xl font-bold mb-4 text-heading">Applications</h3>
                 <div className="flex flex-wrap gap-2">
                   {product.applications.map((app, i) => (
                     <span key={i} className="px-3 py-1 text-sm rounded-full transition-colors hover:shadow-primary"
@@ -344,16 +358,16 @@ function ProductDetailContent() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href={`/quote?product=${productId}`}
-                  className="flex-1 px-6 py-3 text-white text-center rounded-full transition-all duration-300 btn-gradient glow-accent-hover relative overflow-hidden font-medium"
+                  className="flex-1 px-6 py-3 text-white text-center rounded-full transition-all duration-200 btn-gradient glow-accent-hover relative overflow-hidden font-medium"
                   style={{
-                    background: 'linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))'
+                    background: 'linear-gradient(135deg, oklch(0.51 0.18 65), oklch(0.56 0.15 40))'
                   }}
                 >
                   Request a Quote
                 </Link>
                 <Link
                   href="/#contact"
-                  className="flex-1 px-6 py-3 border-2 text-center rounded-full font-medium transition-all duration-300 glow-primary-hover"
+                  className="flex-1 px-6 py-3 border-2 text-center rounded-full font-medium transition-all duration-200 glow-primary-hover"
                   style={{
                     borderColor: 'oklch(0.45 0.15 220)',
                     color: 'oklch(0.45 0.15 220)'
@@ -383,14 +397,14 @@ function ProductDetailContent() {
                  background: 'oklch(0.98 0.008 85)'
                }}>
         <div className="max-w-7xl mx-auto relative z-10">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gradient-primary">Related Products</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-heading">Related Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {Object.entries(products)
               .filter(([id]) => id !== productId)
               .slice(0, 3)
               .map(([id, prod]) => (
                 <Link key={id} href={`/products/${id}`}>
-                  <div className="rounded-2xl overflow-hidden transition-all duration-300 group hover:shadow-primary-lg"
+                  <div className="rounded-2xl overflow-hidden transition-all duration-200 group hover:shadow-primary-lg"
                        style={{
                          background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
                          border: '1px solid oklch(0.90 0.008 100)',
@@ -402,11 +416,11 @@ function ProductDetailContent() {
                        onMouseLeave={(e) => {
                          e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
                        }}>
-                    <div className="h-48 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300"
+                    <div className="h-48 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-200"
                          style={{
                            background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)'
                          }}>
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                            style={{
                              background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
                            }}></div>
@@ -417,11 +431,11 @@ function ProductDetailContent() {
                       />
                     </div>
                     <div className="p-6 relative z-10">
-                      <h3 className="text-lg font-bold mb-2 text-gradient-primary group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
+                      <h3 className="text-lg font-bold mb-2 text-heading group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
                           style={{ color: 'oklch(0.25 0.01 240)' }}>{prod.name}</h3>
                       <p className="text-sm mb-4"
                          style={{ color: 'oklch(0.40 0.01 240)' }}>{prod.desc}</p>
-                      <span className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-300 group-hover:gap-2"
+                      <span className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-200 group-hover:gap-2"
                             style={{ color: 'oklch(0.50 0.15 220)' }}>View Details →</span>
                     </div>
                   </div>

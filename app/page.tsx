@@ -14,125 +14,126 @@ const fadeUp: Variants = {
   show:  { opacity: 1, y: 0, transition: { duration: 0.6 } },
 }
 
-// Card height at lg; the sticky offset is derived from it so the card parks
-// in the middle of the viewport rather than under the navbar.
-const STICKY_CARD_H = 620
-const stickyTopOffset = (viewportHeight: number) =>
-  Math.max(96, Math.round(viewportHeight / 2 - STICKY_CARD_H / 2))
+const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v)
+
+const productImages = [
+  { src: "/workingglove1.png", alt: "Working Gloves" },
+  { src: "/weldinggloves1.png", alt: "Welding Gloves" },
+  { src: "/mechanicalglove1.png", alt: "Mechanical Gloves" },
+  { src: "/gardening1.png", alt: "Gardening Gloves" },
+  { src: "/boxing1.png", alt: "Boxing Gloves" },
+  // { src: "/riding1.png", alt: "Riding Gloves" },
+  { src: "/riding2.png", alt: "Riding Gloves" },
+]
+
+// The last product is reached before the card unpins, so it holds on screen for
+// the tail of the section instead of flashing past right at the end.
+const IMAGE_SWEEP = 0.78
 
 // Sticky Center Div with Scroll Reveal Effect
-function StickyCenterDiv() {
-  const [scrollProgress, setScrollProgress] = useState(0)
+function StickyCenterDiv({ className = "" }: { className?: string }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-
-  const productImages = [
-    { src: "/workingglove1.png", alt: "Working Gloves" },
-    { src: "/weldinggloves1.png", alt: "Welding Gloves" },
-    { src: "/mechanicalglove1.png", alt: "Mechanical Gloves" },
-    { src: "/gardening1.png", alt: "Gardening Gloves" },
-    { src: "/boxing1.png", alt: "Boxing Gloves" },
-    // { src: "/riding1.png", alt: "Riding Gloves" },
-    { src: "/riding2.png", alt: "Riding Gloves" },
-  ]
+  const trackRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handleScroll = () => {
-      const heroVisionSection = document.getElementById('hero-vision')
-      if (!heroVisionSection) return
+    const track = trackRef.current
+    const card = cardRef.current
+    if (!track || !card) return
 
-      const rect = heroVisionSection.getBoundingClientRect()
-      const sectionTop = rect.top + window.scrollY
-      const sectionHeight = rect.height
-      const scrollPosition = window.scrollY
-      const viewportHeight = window.innerHeight
-      
-      // Must track the CSS `top` the card actually sticks at, so image
-      // switching begins exactly when the card pins mid-screen.
-      const stickyOffset = stickyTopOffset(viewportHeight)
-      const stickyStartPoint = sectionTop - stickyOffset
-      
-      // Image switching starts only after sticky element becomes active
-      // Calculate the scroll range while sticky (from when it becomes sticky until section ends)
-      // Using 70% of the range to make switching faster (images change more frequently)
-      const imageSwitchStart = stickyStartPoint
-      const imageSwitchEnd = sectionTop + sectionHeight - stickyOffset - 200
-      const totalSwitchRange = (imageSwitchEnd - imageSwitchStart) * 0.7
+    let raf = 0
 
-      // Before sticky starts, show first image
-      if (scrollPosition < imageSwitchStart) {
-        setScrollProgress(0)
-        setCurrentImageIndex(0)
-      } else if (scrollPosition > imageSwitchEnd) {
-        // After switching range, show last image
-        setScrollProgress(1)
-        setCurrentImageIndex(productImages.length - 1)
-      } else {
-        // Calculate progress within the switching range (0 to 1)
-        const progress = (scrollPosition - imageSwitchStart) / totalSwitchRange
-        setScrollProgress(Math.min(Math.max(progress, 0), 1))
-        
-        // Change image based on scroll progress
-        const imageIndex = Math.floor(progress * (productImages.length - 1))
-        setCurrentImageIndex(Math.min(imageIndex, productImages.length - 1))
-      }
+    const read = () => {
+      raf = 0
+      const t = track.getBoundingClientRect()
+      const c = card.getBoundingClientRect()
+      // How far the card has ridden down its runway: 0 before it pins, 1 once
+      // it has been carried to the bottom. The browser already clamps a sticky
+      // box to its container, so no viewport or offset arithmetic is needed —
+      // and the same formula holds on phones, where the runway is the card's
+      // own min-height rather than the grid's row span.
+      const travel = t.height - c.height
+      if (travel <= 0) return
+      const progress = clamp01((c.top - t.top) / travel)
+      const swept = clamp01(progress / IMAGE_SWEEP)
+      const next = Math.min(Math.floor(swept * productImages.length), productImages.length - 1)
+      setCurrentImageIndex((prev) => (prev === next ? prev : next))
     }
 
-    window.addEventListener('scroll', handleScroll)
-    handleScroll() // Initial call
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [productImages.length])
+    // Scroll fires far more often than a frame; collapse the bursts onto one.
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(read)
+    }
+
+    read()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      if (raf) cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
 
   return (
-    <div className="hidden lg:block sticky top-[max(6rem,calc(50vh-310px))]">
-      <div className="relative h-[620px] flex items-start justify-center px-4">
+    // Runway. From lg the grid's four-row span supplies the scroll the card is
+    // pinned for; below it the card carries its own.
+    <div ref={trackRef} className={`relative min-h-[calc(100svh_+_900px)] lg:min-h-0 ${className}`.trim()}>
+      <div
+        ref={cardRef}
+        // Phones pin a full-viewport box and centre the card inside it, which
+        // parks it mid-screen without having to know its height. From lg this
+        // is the original fixed 620px sticky wrapper.
+        className="sticky top-0 flex h-svh items-center justify-center
+                   lg:top-[max(6rem,calc(50vh-310px))] lg:h-[620px] lg:items-start lg:px-4"
+      >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true, amount: 0.2 }}
-          className="w-full lg:w-[420px] xl:w-[460px] h-[620px]
-                     rounded-3xl shadow-primary-lg overflow-hidden relative"
+          // Same card as the desktop one, kept to the same 420:620 proportions
+          // and shrunk only as far as the narrower of the phone's width and
+          // height demands — so it reads as the identical card, not a variant.
+          className="relative w-[min(100%,420px,calc((100svh-9rem)*42/62))] aspect-[42/62]
+                     overflow-hidden rounded-3xl shadow-primary-lg
+                     lg:aspect-auto lg:h-[620px] lg:w-[420px] xl:w-[460px]"
           style={{
             background: 'linear-gradient(135deg, oklch(0.98 0.01 220) 0%, oklch(0.96 0.012 220) 50%, oklch(0.97 0.01 200) 100%)',
             border: '1px solid oklch(0.90 0.015 220)'
           }}
         >
-          {/* Colored backdrop decorative elements */}
-          <div className="absolute bottom-8 right-8 w-32 h-32 rounded-full blur-xl opacity-40"
-               style={{ background: 'radial-gradient(circle, oklch(0.65 0.18 65 / 0.3) 0%, transparent 70%)' }} />
-          <div className="absolute top-12 left-12 w-24 h-24 rounded-full blur-lg opacity-35"
-               style={{ background: 'radial-gradient(circle, oklch(0.50 0.15 220 / 0.3) 0%, transparent 70%)' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full blur-2xl opacity-20"
-               style={{ background: 'radial-gradient(circle, oklch(0.55 0.15 160 / 0.2) 0%, transparent 70%)' }} />
-          
-          {/* Scroll-revealing image container */}
+          {/* Scroll-revealing image container. Every product stays mounted:
+              the outgoing one is cut instantly, exactly as unmounting it used
+              to look, while the incoming one plays the same 0.8 -> 1 scale and
+              fade. Swapping the <img> per step forced a fresh decode, which is
+              what made the sequence stutter on phones. */}
           <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <div className="relative w-full h-full">
-              {/* Only show current image */}
               {productImages.map((img, index) => {
                 const isActive = index === currentImageIndex
-                
-                if (!isActive) return null
-                
+
                 return (
-                  <motion.div
-                    key={index}
+                  <div
+                    key={img.src}
                     className="absolute inset-0 flex items-center justify-center"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{
-                      opacity: 1,
-                      scale: 1,
+                    aria-hidden={!isActive}
+                    style={{
+                      opacity: isActive ? 1 : 0,
+                      transform: `scale(${isActive ? 1 : 0.8})`,
+                      transition: isActive ? 'opacity 500ms ease-out, transform 500ms ease-out' : 'none',
                     }}
-                    transition={{ duration: 0.5 }}
                   >
                     <div className="relative w-full h-full flex items-center justify-center">
                       <img 
                         src={img.src}
                         alt={img.alt}
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
                         className="max-w-full max-h-full object-contain drop-shadow-2xl"
                       />
                     </div>
-                  </motion.div>
+                  </div>
                 )
               })}
             </div>
@@ -143,7 +144,7 @@ function StickyCenterDiv() {
             {productImages.map((_, index) => (
               <div
                 key={index}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-2 rounded-full transition-all duration-200 ${
                   index === currentImageIndex
                     ? 'w-8 shadow-lg'
                     : index < currentImageIndex
@@ -169,240 +170,6 @@ function StickyCenterDiv() {
 const fade: Variants = {
   hidden: { opacity: 0 },
   show:  { opacity: 1, transition: { duration: 0.6 } },
-}
-
-const heroVisionMobileImages = [
-  { src: "/workingglove3.png", alt: "Premium working gloves" },
-  { src: "/mechanicalglove3.png", alt: "Mechanical gloves" },
-  { src: "/boxing2.png", alt: "Boxing gloves" },
-  { src: "/gardening1.png", alt: "Gardening gloves" },
-]
-
-// Mobile Carousel Component
-function MobileCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-  const [isLooping, setIsLooping] = useState(false)
-  const prevIndexRef = useRef(0)
-
-  const minSwipeDistance = 50
-  const autoSlideInterval = 3000 // 3 seconds
-
-  // Auto-slide functionality
-  useEffect(() => {
-    if (!isAutoPlaying) return
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const next = (prev + 1) % heroVisionMobileImages.length
-        // Detect if looping from last to first
-        if (prev === heroVisionMobileImages.length - 1 && next === 0) {
-          setIsLooping(true)
-          setTimeout(() => setIsLooping(false), 100) // Reset after transition
-        }
-        prevIndexRef.current = prev
-        return next
-      })
-    }, autoSlideInterval)
-
-    return () => clearInterval(interval)
-  }, [isAutoPlaying, heroVisionMobileImages.length])
-
-  // Resume auto-play after user interaction
-  const pauseAndResume = () => {
-    setIsAutoPlaying(false)
-    setTimeout(() => {
-      setIsAutoPlaying(true)
-    }, autoSlideInterval * 2) // Resume after 2x the interval
-  }
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(0)
-    setTouchStart(e.targetTouches[0].clientX)
-    pauseAndResume()
-  }
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX)
-  }
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
-    const distance = touchStart - touchEnd
-    const isLeftSwipe = distance > minSwipeDistance
-    const isRightSwipe = distance < -minSwipeDistance
-
-    if (isLeftSwipe && currentIndex < heroVisionMobileImages.length - 1) {
-      setCurrentIndex(currentIndex + 1)
-    }
-    if (isRightSwipe && currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1)
-    }
-  }
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => {
-      const next = (prev + 1) % heroVisionMobileImages.length
-      // Detect if looping from last to first
-      if (prev === heroVisionMobileImages.length - 1 && next === 0) {
-        setIsLooping(true)
-        setTimeout(() => setIsLooping(false), 100)
-      }
-      prevIndexRef.current = prev
-      return next
-    })
-    pauseAndResume()
-  }
-
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => {
-      const next = (prev - 1 + heroVisionMobileImages.length) % heroVisionMobileImages.length
-      // Detect if looping from first to last
-      if (prev === 0 && next === heroVisionMobileImages.length - 1) {
-        setIsLooping(true)
-        setTimeout(() => setIsLooping(false), 100)
-      }
-      prevIndexRef.current = prev
-      return next
-    })
-    pauseAndResume()
-  }
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index)
-    pauseAndResume()
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true, amount: 0.3 }}
-      className="relative w-full max-w-xl mx-auto h-[280px] sm:h-[300px] flex items-center justify-center"
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-    >
-      {/* Navigation Arrows */}
-      <button
-        onClick={goToPrevious}
-        className="absolute left-2 sm:left-4 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 active:scale-95"
-        style={{
-          background: 'oklch(1 0 0)',
-          color: 'oklch(0.45 0.15 220)',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-        }}
-        aria-label="Previous slide"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M15 18l-6-6 6-6" />
-        </svg>
-      </button>
-
-      <button
-        onClick={goToNext}
-        className="absolute right-2 sm:right-4 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 active:scale-95"
-        style={{
-          background: 'oklch(1 0 0)',
-          color: 'oklch(0.45 0.15 220)',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-        }}
-        aria-label="Next slide"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M9 18l6-6-6-6" />
-        </svg>
-      </button>
-
-      {/* Carousel Cards */}
-      <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
-        {heroVisionMobileImages.map((img, index) => {
-          const distance = Math.abs(index - currentIndex)
-          const isActive = index === currentIndex
-          const isVisible = distance <= 1
-
-          if (!isVisible) return null
-
-          const position = index - currentIndex
-          const scale = isActive ? 1 : 0.75
-          const opacity = isActive ? 1 : 0.5
-          const translateX = position * 80
-
-          return (
-            <motion.div
-              key={img.src}
-              className="absolute flex items-center justify-center"
-              initial={false}
-              animate={{
-                x: translateX,
-                scale,
-                opacity,
-                zIndex: isActive ? 10 : 5 - distance,
-              }}
-              transition={isLooping ? {
-                duration: 0,
-              } : {
-                type: "spring",
-                stiffness: 300,
-                damping: 30,
-              }}
-              style={{
-                width: isActive ? '85%' : '70%',
-                height: isActive ? '100%' : '80%',
-              }}
-            >
-              <div
-                className="w-full h-full rounded-3xl shadow-primary-lg flex items-center justify-center p-4 sm:p-6 transition-all duration-300"
-                style={{
-                  background: isActive
-                    ? 'linear-gradient(135deg, oklch(0.96 0.012 220) 0%, oklch(0.97 0.01 200) 100%)'
-                    : 'linear-gradient(135deg, oklch(0.96 0.012 220 / 0.6) 0%, oklch(0.97 0.01 200 / 0.6) 100%)',
-                  border: isActive
-                    ? '1px solid oklch(0.88 0.015 220)'
-                    : '1px solid oklch(0.88 0.015 220 / 0.5)',
-                  boxShadow: isActive
-                    ? '0 12px 30px -18px oklch(0.45 0.15 220 / 0.8)'
-                    : '0 8px 20px -12px oklch(0.45 0.15 220 / 0.5)',
-                }}
-              >
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  className="max-w-full max-h-full object-contain drop-shadow-xl"
-                  loading={index <= 1 ? 'eager' : 'lazy'}
-                />
-              </div>
-            </motion.div>
-          )
-        })}
-      </div>
-
-      {/* Pagination Dots */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-        {heroVisionMobileImages.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className="transition-all duration-300 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2"
-            style={{
-              width: index === currentIndex ? '32px' : '8px',
-              height: '8px',
-              background: index === currentIndex
-                ? 'oklch(1 0 0)'
-                : 'oklch(1 0 0 / 0.4)',
-              boxShadow: index === currentIndex
-                ? '0 2px 8px rgba(0,0,0,0.2)'
-                : 'none',
-            }}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
-    </motion.div>
-  )
 }
 
 function ContactForm() {
@@ -474,7 +241,7 @@ function ContactForm() {
             required
             value={formData.name}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+            className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
             style={{
               border: '1px solid oklch(0.90 0.008 100)',
               backgroundColor: 'oklch(0.99 0.002 100)',
@@ -496,7 +263,7 @@ function ContactForm() {
             required
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+            className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
             style={{
               border: '1px solid oklch(0.90 0.008 100)',
               backgroundColor: 'oklch(0.99 0.002 100)',
@@ -518,7 +285,7 @@ function ContactForm() {
             required
             value={formData.message}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+            className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
             style={{
               border: '1px solid oklch(0.90 0.008 100)',
               backgroundColor: 'oklch(0.99 0.002 100)',
@@ -541,9 +308,9 @@ function ContactForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-6 py-3 text-white rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed btn-gradient glow-accent-hover relative overflow-hidden font-medium"
+            className="w-full px-6 py-3 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed btn-gradient glow-accent-hover relative overflow-hidden font-medium"
             style={{
-              background: isSubmitting ? 'oklch(0.70 0.01 240)' : 'linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))'
+              background: isSubmitting ? 'oklch(0.70 0.01 240)' : 'linear-gradient(135deg, oklch(0.51 0.18 65), oklch(0.56 0.15 40))'
             }}
           >
             {isSubmitting ? 'Sending...' : 'Submit'}
@@ -573,7 +340,7 @@ function App() {
       {/* Hero-Vision combined section with sticky center */}
 {/* DECORATIVE SHAPES + VISION (center starts between side shapes) */}
 {/* DECORATIVE SHAPES + PRE-RUNWAY + VISION (+ optional post-runway) */}
-<section id="hero-vision" className="relative -mt-[14vh] px-4 pt-[14vh] pb-28 sm:px-6 lg:pb-40 z-10"
+<section id="hero-vision" className="relative -mt-[14vh] px-4 pt-[14vh] pb-12 sm:px-6 sm:pb-20 lg:pb-20 z-10"
          style={{
            /* Starts transparent so it dissolves out of the hero's ground
               instead of butting against it with a hard edge. */
@@ -595,7 +362,7 @@ function App() {
          background: 'linear-gradient(180deg, oklch(0.99 0.002 100) 0%, oklch(0.99 0.002 100 / 0.85) 35%, transparent 100%)'
        }} />
   <div
-    className="max-w-7xl mx-auto grid
+    className="relative max-w-7xl mx-auto grid
                grid-cols-1
                lg:grid-cols-[minmax(0,1fr)_minmax(420px,470px)_minmax(0,1fr)]
                xl:grid-cols-[minmax(0,1fr)_minmax(460px,520px)_minmax(0,1fr)]
@@ -604,7 +371,7 @@ function App() {
                gap-y-8 lg:gap-x-16 lg:gap-y-12">
 
     {/* ROW 1: SHAPES STAGE */}
-    <div className="hidden lg:block row-start-1 col-start-1 col-span-3 relative h-[500px]">
+    <div className="hidden lg:block relative h-[500px] lg:row-start-1 lg:col-start-1 lg:col-span-3">
       {/* Left Side Shape with Glove Image */} 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
@@ -612,7 +379,7 @@ function App() {
         transition={{ duration: 0.6, delay: 0.05 }}
         viewport={{ once: true, amount: 0.2 }}
         className="absolute top-[220px] left-1/2 -ml-[496px] w-[300px] h-[220px]
-                   rounded-3xl opacity-90 overflow-hidden shadow-primary hover:shadow-primary-lg transition-shadow duration-300"
+                   rounded-3xl opacity-90 overflow-hidden shadow-primary hover:shadow-primary-lg transition-shadow duration-200"
         style={{
           background: 'linear-gradient(135deg, oklch(0.98 0.01 220) 0%, oklch(0.96 0.012 220) 50%, oklch(0.97 0.01 200) 100%)',
           border: '1px solid oklch(0.88 0.015 220)'
@@ -635,8 +402,8 @@ function App() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.25 }}
         viewport={{ once: true, amount: 0.2 }}
-        className="absolute top-[80px] left-1/2 ml-[78px] w-[280px] h-[220px]
-                   rounded-3xl opacity-90 z-10 overflow-hidden shadow-primary hover:shadow-primary-lg transition-shadow duration-300"
+        className="absolute top-[80px] left-1/2 ml-[128px] w-[280px] h-[220px]
+                   rounded-3xl opacity-90 z-10 overflow-hidden shadow-primary hover:shadow-primary-lg transition-shadow duration-200"
         style={{
           background: 'linear-gradient(135deg, oklch(0.97 0.01 200) 0%, oklch(0.96 0.012 220) 50%, oklch(0.98 0.01 220) 100%)',
           border: '1px solid oklch(0.88 0.015 220)'
@@ -655,27 +422,19 @@ function App() {
     </div>
 
     {/* CENTER STICKY with Scroll Reveal Effect */}
-    <div className="row-start-1 row-span-4 lg:col-start-2">
-      <StickyCenterDiv />
-    </div>
+    <StickyCenterDiv className="lg:row-start-1 lg:row-span-4 lg:col-start-2" />
 
     {/* ROW 2: PRE-RUNWAY (shortened) */}
-    <div className="row-start-2 col-start-1 col-span-3" aria-hidden />
+    <div className="hidden lg:block lg:row-start-2 lg:col-start-1 lg:col-span-3" aria-hidden />
 
     {/* ROW 3: VISION */}
-    <div className="row-start-3 col-span-3 lg:col-start-1 lg:col-span-1 z-10 mb-6 lg:mb-0">
-      {/* Mobile carousel */}
-      <div className="lg:hidden">
-        <MobileCarousel />
-      </div>
-
-      {/* Desktop static image */}
+    <div className="hidden lg:block z-10 lg:row-start-3 lg:col-start-1 lg:col-span-1">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true, amount: 0.3 }}
-        className="hidden lg:flex w-full max-w-xl mx-auto lg:mx-0 h-[200px] sm:h-[240px] lg:h-[260px] rounded-3xl items-center justify-center p-4 shadow-primary hover:shadow-primary-lg transition-shadow duration-300"
+        className="hidden lg:flex w-full max-w-xl mx-auto lg:mx-0 h-[200px] sm:h-[240px] lg:h-[260px] rounded-3xl items-center justify-center p-4 shadow-primary hover:shadow-primary-lg transition-shadow duration-200"
         style={{
           background: 'linear-gradient(135deg, oklch(0.96 0.012 220) 0%, oklch(0.97 0.01 200) 100%)',
           border: '1px solid oklch(0.88 0.015 220)'
@@ -689,7 +448,7 @@ function App() {
       </motion.div>
     </div>
 
-    <div className="row-start-4 col-span-3 lg:row-start-3 lg:col-start-3 lg:col-span-1 z-10" id="about">
+    <div className="z-10 lg:row-start-3 lg:col-start-3 lg:col-span-1" id="about">
       <motion.div
         variants={fadeUp}
         initial="hidden"
@@ -697,7 +456,7 @@ function App() {
         viewport={{ once: true, amount: 0.3 }}
         className="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:max-w-none lg:mx-0 lg:px-0 lg:w-full"
       >
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 lg:mb-6 text-center text-gradient-primary">Our Vision</h2>
+        <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-center text-heading">Our Vision</h2>
         <p className="leading-relaxed text-base sm:text-lg text-center lg:text-left"
            style={{ color: 'oklch(0.40 0.01 240)' }}>
           To become the global leader in hand protection solutions by combining traditional craftsmanship from Sialkot with modern manufacturing excellence. We envision a world where every worker has access to reliable, high-quality gloves that ensure safety and productivity.
@@ -706,7 +465,7 @@ function App() {
     </div>
 
     {/* ROW 4: POST-RUNWAY (shortened) */}
-    <div className="row-start-4 col-start-1 col-span-3" aria-hidden />
+    <div className="hidden lg:block lg:row-start-4 lg:col-start-1 lg:col-span-3" aria-hidden />
   </div>
 </section>
 
@@ -730,8 +489,8 @@ function App() {
               viewport={{ once: true, amount: 0.3 }}
               className="lg:pr-4"
             >
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-gradient-primary">About Handcare</h2>
-              <p className="max-w-xl text-sm sm:text-base"
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-heading">About Handcare</h2>
+              <p className="max-w-xl text-base sm:text-lg"
                  style={{ color: 'oklch(0.40 0.01 240)' }}>
                 Established in the heart of Sialkot, Pakistan&mdash;the world&apos;s largest manufacturing hub for sports and safety goods&mdash;Handcare has been producing premium quality gloves for over two decades, supplying professionals in more than 50 countries.
               </p>
@@ -761,8 +520,8 @@ function App() {
               viewport={{ once: true, amount: 0.3 }}
               className="order-1 lg:order-none lg:pl-4"
             >
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-gradient-primary">Inside Our Facility</h2>
-              <p className="max-w-xl text-sm sm:text-base"
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-heading">Inside Our Facility</h2>
+              <p className="max-w-xl text-base sm:text-lg"
                  style={{ color: 'oklch(0.40 0.01 240)' }}>
                 Cutting, stitching and finishing all happen under one roof, where traditional craftsmanship works alongside modern machinery. We are ISO 9001:2015 certified and comply with CE, ANSI and EN standards, so every pair leaves the floor to the same specification.
               </p>
@@ -780,7 +539,7 @@ function App() {
                 key={i}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
+                transition={{ duration: 0.5, delay: Math.min(i, 4) * 0.04 }}
                 viewport={{ once: true, amount: 0.2 }}
               >
                 <p className="font-display text-4xl font-bold mb-2 text-gradient-accent">{kpi.n}</p>
@@ -808,7 +567,7 @@ function App() {
             style={{ willChange: "opacity, transform" }}
             className="text-center mb-8 sm:mb-12"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-gradient-primary">Our Product Range</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-heading">Our Product Range</h2>
             <p className="max-w-2xl mx-auto leading-relaxed"
                style={{ color: 'oklch(0.40 0.01 240)' }}>
               Handcare offers a comprehensive range of protective gloves designed for various industries and applications. Each product is engineered with precision and tested for durability, comfort, and maximum protection.
@@ -908,12 +667,25 @@ function App() {
                   "Standards": "CE Marking"
                 }
               },
+              { 
+                id: "driving-gloves", 
+                name: "Driving Gloves", 
+                img: "driving1.png", 
+                desc: "Soft grain leather gloves for precise steering feel and all-day comfort",
+                features: ["Soft grain leather", "Close-fitting dexterity", "Breathable back", "Secure wrist closure"],
+                specifications: {
+                  "Material": "Soft grain goatskin and cowhide",
+                  "Sizes": "S, M, L, XL",
+                  "Standards": "CE Marking",
+                  "Color": "White, Red, Tan, Black"
+                }
+              },
             ].map((product, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
+                transition={{ duration: 0.6, delay: Math.min(i, 4) * 0.04 }}
                 viewport={{ once: true, amount: 0.3 }}
               >
                 <FlipCard
@@ -940,7 +712,7 @@ function App() {
           <div className="text-center mt-12">
             <Link 
               href="/products"
-              className="inline-block px-8 py-3 border-2 text-sm rounded-full font-medium transition-all duration-300 glow-primary-hover"
+              className="inline-block px-8 py-3 border-2 text-sm rounded-full font-medium transition-all duration-200 glow-primary-hover"
               style={{
                 borderColor: 'oklch(0.45 0.15 220)',
                 color: 'oklch(0.45 0.15 220)'
@@ -973,7 +745,7 @@ function App() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3, margin: "0px" }}
-            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-12 sm:mb-16 text-center text-gradient-primary"
+            className="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center text-heading"
             style={{ 
               willChange: "opacity, transform"
             }}
@@ -996,7 +768,7 @@ function App() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
-            className="text-2xl sm:text-3xl font-bold mb-8 sm:mb-12 text-gradient-primary"
+            className="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-heading"
           >
             Testimonials
           </motion.h2>
@@ -1023,10 +795,10 @@ function App() {
                 key={i}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
+                transition={{ duration: 0.5, delay: Math.min(i, 4) * 0.04 }}
                 viewport={{ once: true, amount: 0.25 }}
               >
-                <div className="rounded-2xl p-6 hover:shadow-primary transition-all duration-300"
+                <div className="rounded-2xl p-6 hover:shadow-primary transition-all duration-200"
                      style={{
                        background: 'linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))',
                        border: '1px solid oklch(0.90 0.008 100)',
@@ -1038,7 +810,7 @@ function App() {
                      onMouseLeave={(e) => {
                        e.currentTarget.style.borderColor = 'oklch(0.90 0.008 100)';
                      }}>
-                  <p className="text-sm mb-6"
+                  <p className="text-base mb-6"
                      style={{ color: 'oklch(0.40 0.01 240)' }}>
                     &quot;{testimonial.quote}&quot;
                   </p>
@@ -1073,12 +845,12 @@ function App() {
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gradient-primary">Get in touch</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-heading">Get in touch</h2>
             <p className="mb-8 leading-relaxed"
                style={{ color: 'oklch(0.40 0.01 240)' }}>
               Ready to find the perfect hand protection solution for your needs? Contact our team in Sialkot, Pakistan. We&apos;re here to help you choose the right gloves and provide competitive pricing for bulk orders. Let&apos;s discuss how Handcare can meet your requirements.
             </p>
-            <div className="space-y-3 text-sm"
+            <div className="space-y-3 text-base"
                  style={{ color: 'oklch(0.40 0.01 240)' }}>
               <div>
                 <p className="font-medium mb-1"
@@ -1140,16 +912,16 @@ function App() {
           viewport={{ once: true, amount: 0.3 }}
           className="max-w-3xl mx-auto text-center"
         >
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-gradient-primary">Ready to Partner with Handcare?</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-heading">Ready to Partner with Handcare?</h2>
           <p className="mb-8 leading-relaxed"
              style={{ color: 'oklch(0.40 0.01 240)' }}>
             Join hundreds of satisfied customers worldwide who trust Handcare for their hand protection needs. Request a quote today and discover why we&apos;re the preferred choice for quality gloves from Sialkot, Pakistan.
           </p>
           <Link 
             href="/quote" 
-            className="px-8 py-3 text-white text-sm rounded-full transition-all duration-300 btn-gradient glow-accent-hover inline-block relative overflow-hidden font-medium"
+            className="px-8 py-3 text-white text-sm rounded-full transition-all duration-200 btn-gradient glow-accent-hover inline-block relative overflow-hidden font-medium"
             style={{
-              background: 'linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))'
+              background: 'linear-gradient(135deg, oklch(0.51 0.18 65), oklch(0.56 0.15 40))'
             }}
           >
             Request a Quote

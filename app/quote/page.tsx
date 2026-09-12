@@ -145,16 +145,16 @@ function QuoteForm() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold mb-2 text-gradient-primary">Quote Request Submitted!</h2>
+              <h2 className="text-2xl font-bold mb-2 text-heading">Quote Request Submitted!</h2>
               <p className="mb-6"
                  style={{ color: 'oklch(0.40 0.01 240)' }}>
                 Thank you for your interest. Our team will contact you within 24 hours with a detailed quote.
               </p>
               <Link
                 href="/products"
-                className="inline-block px-6 py-3 text-white rounded-full transition-all duration-300 btn-gradient glow-accent-hover relative overflow-hidden font-medium"
+                className="inline-block px-6 py-3 text-white rounded-full transition-all duration-200 btn-gradient glow-accent-hover relative overflow-hidden font-medium"
                 style={{
-                  background: 'linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))'
+                  background: 'linear-gradient(135deg, oklch(0.51 0.18 65), oklch(0.56 0.15 40))'
                 }}
               >
                 Browse More Products
@@ -187,7 +187,7 @@ function QuoteForm() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
                       style={{
                         border: '1px solid oklch(0.90 0.008 100)',
                         backgroundColor: 'oklch(0.99 0.002 100)',
@@ -216,7 +216,7 @@ function QuoteForm() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
                       style={{
                         border: '1px solid oklch(0.90 0.008 100)',
                         backgroundColor: 'oklch(0.99 0.002 100)',
@@ -248,7 +248,7 @@ function QuoteForm() {
                       required
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
                       style={{
                         border: '1px solid oklch(0.90 0.008 100)',
                         backgroundColor: 'oklch(0.99 0.002 100)',
@@ -276,7 +276,7 @@ function QuoteForm() {
                       name="company"
                       value={formData.company}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
                       style={{
                         border: '1px solid oklch(0.90 0.008 100)',
                         backgroundColor: 'oklch(0.99 0.002 100)',
@@ -308,7 +308,7 @@ function QuoteForm() {
                       required
                       value={formData.country}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
                       style={{
                         border: '1px solid oklch(0.90 0.008 100)',
                         backgroundColor: 'oklch(0.99 0.002 100)',
@@ -335,7 +335,7 @@ function QuoteForm() {
                       required
                       value={formData.product}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
                       style={{
                         border: '1px solid oklch(0.90 0.008 100)',
                         backgroundColor: 'oklch(0.99 0.002 100)',
@@ -372,7 +372,7 @@ function QuoteForm() {
                     required
                     value={formData.quantity}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
                     style={{
                       border: '1px solid oklch(0.90 0.008 100)',
                       backgroundColor: 'oklch(0.99 0.002 100)',
@@ -401,7 +401,7 @@ function QuoteForm() {
                     rows={5}
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200"
                     style={{
                       border: '1px solid oklch(0.90 0.008 100)',
                       backgroundColor: 'oklch(0.99 0.002 100)',
@@ -429,9 +429,9 @@ function QuoteForm() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full px-6 py-3 text-white rounded-full transition-all duration-300 btn-gradient glow-accent-hover relative overflow-hidden font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-6 py-3 text-white rounded-full transition-all duration-200 btn-gradient glow-accent-hover relative overflow-hidden font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
-                      background: isSubmitting ? 'oklch(0.70 0.01 240)' : 'linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))'
+                      background: isSubmitting ? 'oklch(0.70 0.01 240)' : 'linear-gradient(135deg, oklch(0.51 0.18 65), oklch(0.56 0.15 40))'
                     }}
                   >
                     {isSubmitting ? 'Sending...' : 'Submit Quote Request'}
@@ -452,7 +452,7 @@ function QuoteForm() {
                  background: 'linear-gradient(135deg, oklch(0.98 0.01 220) 0%, oklch(0.97 0.008 220) 100%)',
                  border: '1px solid oklch(0.90 0.008 100)'
                }}>
-            <h3 className="text-xl font-bold mb-4 text-gradient-primary">Prefer to Contact Directly?</h3>
+            <h3 className="text-xl font-bold mb-4 text-heading">Prefer to Contact Directly?</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-sm font-medium mb-2"

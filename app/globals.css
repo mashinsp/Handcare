@@ -47,8 +47,12 @@
      surfaces and text so type reads calmer next to the brand accents. */
   --apple-surface: #f5f5f7;
   --apple-ink: #1d1d1f;
-  --apple-ink-muted: #86868b;
-  --apple-ink-faint: #aeaeb2;
+  /* Both of these carry real body text (legal pages, the hero's scroll hint),
+     so both have to clear 4.5:1 — the Apple greys they were borrowed from
+     (#86868b / #aeaeb2) measure 3.52:1 and 2.15:1 on our grounds. Darkened to
+     6.56:1 and 4.93:1 while keeping the muted > faint ordering. */
+  --apple-ink-muted: #5b5b60;
+  --apple-ink-faint: #6e6e73;
   --apple-hairline: rgba(0, 0, 0, 0.08);
 
   --radius: 0.625rem;
@@ -252,8 +256,17 @@
     background-clip: text;
   }
 
+  /* Section headings. The brand gradient is reserved for a page's own title —
+     repeating it down every section turned a signature into wallpaper, and a
+     solid ink reads better besides (15.08:1 against the section ground). */
+  .text-heading {
+    color: oklch(0.25 0.01 240);
+  }
+
   .text-gradient-accent {
-    background: linear-gradient(135deg, oklch(0.65 0.18 65) 0%, oklch(0.70 0.15 40) 100%);
+    /* Large bold text needs 3:1; the old ramp fell to 2.67:1 at its warm end.
+       This one runs 4.03:1 to 3.37:1 on the section ground. */
+    background: linear-gradient(135deg, oklch(0.59 0.18 65) 0%, oklch(0.64 0.15 40) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -278,7 +291,9 @@
   }
 
   .bg-gradient-accent {
-    background: linear-gradient(135deg, oklch(0.65 0.18 65) 0%, oklch(0.70 0.15 40) 100%);
+    /* Carries white labels, so it needs 4.5:1: the old ramp gave 3.36:1
+       falling to 2.83:1. This one runs 5.98:1 to 4.97:1. */
+    background: linear-gradient(135deg, oklch(0.51 0.18 65) 0%, oklch(0.56 0.15 40) 100%);
   }
 
   .bg-gradient-warm {

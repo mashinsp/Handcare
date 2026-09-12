@@ -20,7 +20,7 @@ export default function Navbar() {
 
   return (
     <header 
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
       style={{
         background: scrolled 
           ? 'linear-gradient(135deg, oklch(1 0 0 / 0.85) 0%, oklch(0.99 0.002 100 / 0.9) 100%)'
@@ -40,9 +40,9 @@ export default function Navbar() {
           <img 
             src="/handcarelogo.png" 
             alt="Handcare Logo" 
-            className="h-6 sm:h-8 w-auto transition-transform duration-300 group-hover:scale-105"
+            className="h-6 sm:h-8 w-auto transition-transform duration-200 group-hover:scale-105"
           />
-          <span className="text-gradient-primary font-display font-semibold text-sm sm:text-base transition-all duration-300">
+          <span className="text-gradient-primary font-display font-semibold text-sm sm:text-base transition-all duration-200">
             Handcare
           </span>
         </Link>
@@ -51,7 +51,7 @@ export default function Navbar() {
         <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
           <a 
             href="/#about" 
-            className="text-sm font-medium transition-all duration-300 relative group"
+            className="text-sm font-medium transition-all duration-200 relative group py-2 -my-2"
             style={{ 
               color: 'oklch(0.40 0.01 240)'
             }}
@@ -64,13 +64,13 @@ export default function Navbar() {
           >
             About
             <span 
-              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full"
+              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full"
               style={{ background: 'linear-gradient(90deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))' }}
             />
           </a>
           <Link 
             href="/products" 
-            className="text-sm font-medium transition-all duration-300 relative group"
+            className="text-sm font-medium transition-all duration-200 relative group py-2 -my-2"
             style={{ 
               color: 'oklch(0.40 0.01 240)'
             }}
@@ -83,13 +83,13 @@ export default function Navbar() {
           >
             Products
             <span 
-              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full"
+              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full"
               style={{ background: 'linear-gradient(90deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))' }}
             />
           </Link>
           <a 
             href="/#resources" 
-            className="text-sm font-medium transition-all duration-300 relative group"
+            className="text-sm font-medium transition-all duration-200 relative group py-2 -my-2"
             style={{ 
               color: 'oklch(0.40 0.01 240)'
             }}
@@ -102,13 +102,13 @@ export default function Navbar() {
           >
             Categories
             <span 
-              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full"
+              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full"
               style={{ background: 'linear-gradient(90deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))' }}
             />
           </a>
           <a 
             href="/#contact" 
-            className="text-sm font-medium transition-all duration-300 relative group"
+            className="text-sm font-medium transition-all duration-200 relative group py-2 -my-2"
             style={{ 
               color: 'oklch(0.40 0.01 240)'
             }}
@@ -121,13 +121,13 @@ export default function Navbar() {
           >
             Contact
             <span 
-              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full"
+              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full"
               style={{ background: 'linear-gradient(90deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))' }}
             />
           </a>
           <Link 
             href="/quote" 
-            className="px-4 xl:px-6 py-2 xl:py-2.5 text-sm rounded-full whitespace-nowrap font-medium transition-all duration-300 relative overflow-hidden group glow-primary-hover"
+            className="px-4 xl:px-6 py-2 xl:py-2.5 text-sm rounded-full whitespace-nowrap font-medium transition-all duration-200 relative overflow-hidden group glow-primary-hover"
             style={{
               background: 'linear-gradient(135deg, oklch(0.45 0.15 220) 0%, oklch(0.55 0.15 160) 100%)',
               color: 'white',
@@ -144,7 +144,7 @@ export default function Navbar() {
           >
             <span className="relative z-10">Request Quote</span>
             <div 
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
               style={{
                 background: 'linear-gradient(135deg, oklch(0.50 0.16 220) 0%, oklch(0.60 0.16 160) 100%)'
               }}
@@ -155,7 +155,7 @@ export default function Navbar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 rounded-lg transition-all duration-300"
+          className="lg:hidden p-2.5 rounded-lg transition-all duration-200"
           style={{ 
             color: 'oklch(0.40 0.01 240)'
           }}
@@ -252,7 +252,7 @@ export default function Navbar() {
               >
                 <a 
                   href="/#about" 
-                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
+                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-200"
                   style={{ 
                     color: 'oklch(0.40 0.01 240)'
                   }}
@@ -278,7 +278,7 @@ export default function Navbar() {
               >
                 <Link 
                   href="/products" 
-                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
+                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-200"
                   style={{ 
                     color: 'oklch(0.40 0.01 240)'
                   }}
@@ -304,7 +304,7 @@ export default function Navbar() {
               >
                 <a 
                   href="/#resources" 
-                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
+                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-200"
                   style={{ 
                     color: 'oklch(0.40 0.01 240)'
                   }}
@@ -330,7 +330,7 @@ export default function Navbar() {
               >
                 <a 
                   href="/#contact" 
-                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-300"
+                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-200"
                   style={{ 
                     color: 'oklch(0.40 0.01 240)'
                   }}
@@ -356,7 +356,7 @@ export default function Navbar() {
               >
                 <Link 
                   href="/quote" 
-                  className="block px-4 py-2.5 text-sm rounded-full text-center font-medium transition-all duration-300 relative overflow-hidden mt-2 glow-primary-hover"
+                  className="block px-4 py-2.5 text-sm rounded-full text-center font-medium transition-all duration-200 relative overflow-hidden mt-2 glow-primary-hover"
                   style={{
                     background: 'linear-gradient(135deg, oklch(0.45 0.15 220) 0%, oklch(0.55 0.15 160) 100%)',
                     color: 'white',

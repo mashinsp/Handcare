@@ -5,8 +5,9 @@ import ScrollExpand from "./ScrollExpand"
 
 /**
  * First section on the homepage: the merged factory footage opens from a
- * centred card into a full-bleed frame as the page scrolls. Closed state
- * shows the wordmark; open state hands over to the real hero copy.
+ * centred card into a full-bleed frame as the page scrolls. Closed state shows
+ * the entire 16:9 frame plus the wordmark; as the card grows the video zooms in
+ * to keep filling it, and the open state hands over to the real hero copy.
  */
 export default function HeroScrollExpand() {
   return (
@@ -25,19 +26,23 @@ export default function HeroScrollExpand() {
           </svg>
         </>
       }
-      startWidth={44}
-      startHeight={62}
-      mobileStartWidth={80}
-      mobileStartHeight={48}
+      /* Bounds for the closed card — the frame inside them takes the video's
+         own 16:9 shape, so the whole shot is visible before any scrolling. */
+      startWidth={60}
+      startHeight={58}
+      mobileStartWidth={92}
+      mobileStartHeight={46}
       endWidth={92}
       endHeight={84}
       mobileEndWidth={92}
       mobileEndHeight={78}
       startRadius={28}
       endRadius={28}
-      mediaZoom={1.3}
+      mediaAspect={16 / 9}
       scrollDistance={1.25}
-      holdDistance={0.45}
+      /* Trimmed from 0.45: with scrollDistance the hero was costing ~2.7
+         viewport heights before the first content section. */
+      holdDistance={0.2}
       overlayScrim={1}
       className="relative z-20"
     >
@@ -56,7 +61,7 @@ export default function HeroScrollExpand() {
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
           <Link
             href="/products"
-            className="inline-block rounded-full bg-white px-7 py-3 text-sm font-medium text-neutral-900 transition-transform duration-300 hover:scale-[1.03] hover:bg-white/90"
+            className="inline-block rounded-full bg-white px-7 py-3 text-sm font-medium text-neutral-900 transition-transform duration-200 hover:scale-[1.03] hover:bg-white/90"
           >
             Explore Our Products
           </Link>
@@ -64,12 +69,12 @@ export default function HeroScrollExpand() {
             href="/handcare_catalogue.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative inline-block overflow-hidden rounded-full border border-white/40 px-7 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors duration-300 hover:border-transparent"
+            className="group relative inline-block overflow-hidden rounded-full border border-white/40 px-7 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors duration-200 hover:border-transparent"
           >
             {/* Same gradient as the navbar's Request Quote button. */}
             <span
               aria-hidden
-              className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
               style={{
                 background: 'linear-gradient(135deg, oklch(0.45 0.15 220) 0%, oklch(0.55 0.15 160) 100%)',
               }}

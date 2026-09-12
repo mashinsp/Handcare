@@ -1,8 +1,15 @@
 "use client"
 
-import React, { useCallback, useEffect, useRef } from "react"
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react"
 
 import "./ScrollExpand.css"
+
+/**
+ * The geometry pass reads layout and writes styles, so it has to run before
+ * paint or the frame flashes at its CSS default for a frame. `useLayoutEffect`
+ * is a no-op warning on the server, hence the guard.
+ */
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect
 
 const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v)
 
@@ -11,6 +18,9 @@ const smoothstep = (edge0: number, edge1: number, x: number) => {
   return t * t * (3 - 2 * t)
 }
 
+/** Matches the `640px` Tailwind `sm` breakpoint the overrides in the CSS use. */
+const NARROW_QUERY = "(max-width: 639.98px)"
+
 export type ScrollExpandProps = {
   src?: string
   mediaType?: "image" | "video"
@@ -18,9 +28,14 @@ export type ScrollExpandProps = {
   alt?: string
   title?: React.ReactNode
   scrollHint?: React.ReactNode
+  /**
+   * Bounding box of the closed frame, in % of the stage. The frame itself is
+   * the largest box with the media's own aspect ratio that fits inside it, so
+   * the closed state shows the whole frame of a landscape video uncropped.
+   */
   startWidth?: number
   startHeight?: number
-  /** Frame size below 640px, where a 42%-wide frame reads as a postage stamp. */
+  /** Closed bounds below 640px, where a 44%-wide frame reads as a postage stamp. */
   mobileStartWidth?: number
   mobileStartHeight?: number
   /** Frame size at full expansion. Below 100 the video keeps a margin. */
@@ -30,7 +45,13 @@ export type ScrollExpandProps = {
   mobileEndHeight?: number
   startRadius?: number
   endRadius?: number
-  mediaZoom?: number
+  /**
+   * Intrinsic aspect ratio (w / h) of the media, used before it reports its
+   * own. Corrected automatically once metadata arrives.
+   */
+  mediaAspect?: number
+  /** Extra zoom on top of "cover" once the frame is fully open. */
+  endZoom?: number
   scrollDistance?: number
   holdDistance?: number
   smoothing?: number
@@ -49,8 +70,8 @@ const ScrollExpand = ({
   alt = "",
   title = "",
   scrollHint = "",
-  startWidth = 42,
-  startHeight = 58,
+  startWidth = 44,
+  startHeight = 62,
   mobileStartWidth,
   mobileStartHeight,
   endWidth = 100,
@@ -59,7 +80,8 @@ const ScrollExpand = ({
   mobileEndHeight,
   startRadius = 24,
   endRadius = 0,
-  mediaZoom = 1.35,
+  mediaAspect = 16 / 9,
+  endZoom = 1,
   scrollDistance = 1.2,
   holdDistance = 0.35,
   smoothing = 0.1,
@@ -92,12 +114,11 @@ const ScrollExpand = ({
     mobileEndHeight,
     startRadius,
     endRadius,
-    mediaZoom,
+    endZoom,
     scrollDistance,
     holdDistance,
     smoothing,
     overlayScrim,
-    useWindowScroll,
     enabled,
   })
   propsRef.current = {
@@ -111,41 +132,45 @@ const ScrollExpand = ({
     mobileEndHeight,
     startRadius,
     endRadius,
-    mediaZoom,
+    endZoom,
     scrollDistance,
     holdDistance,
     smoothing,
     overlayScrim,
-    useWindowScroll,
     enabled,
   }
 
-  // Narrow viewports get their own start frame so the closed state still
-  // reads as a card rather than a sliver.
-  const isNarrowRef = useRef(false)
+  /** Aspect ratio actually in play — the prop until the media reports its own. */
+  const mediaArRef = useRef(mediaAspect)
+
+  /**
+   * Frame geometry for the two ends of the animation, recomputed on resize.
+   * Sizes are % of the stage; `startScale` is the media scale at which the
+   * whole frame lands exactly inside the closed box.
+   */
+  const geomRef = useRef({ startW: 0, startH: 0, endW: 0, endH: 0, startScale: 1 })
 
   const applyProgress = useCallback((p: number) => {
     const frame = frameRef.current
     const media = mediaRef.current
     if (!frame || !media) return
     const c = propsRef.current
+    const g = geomRef.current
 
     const e = smoothstep(0, 1, p)
 
-    const narrow = isNarrowRef.current
-    const sw = narrow ? (c.mobileStartWidth ?? c.startWidth) : c.startWidth
-    const sh = narrow ? (c.mobileStartHeight ?? c.startHeight) : c.startHeight
-    const ew = narrow ? (c.mobileEndWidth ?? c.endWidth) : c.endWidth
-    const eh = narrow ? (c.mobileEndHeight ?? c.endHeight) : c.endHeight
-
-    const w = sw + (ew - sw) * e
-    const h = sh + (eh - sh) * e
+    const w = g.startW + (g.endW - g.startW) * e
+    const h = g.startH + (g.endH - g.startH) * e
     const ix = Math.max(0, (100 - w) / 2)
     const iy = Math.max(0, (100 - h) / 2)
     const r = c.startRadius + (c.endRadius - c.startRadius) * e
     frame.style.clipPath = `inset(${iy}% ${ix}% ${iy}% ${ix}% round ${r}px)`
 
-    media.style.transform = `scale(${c.mediaZoom + (1 - c.mediaZoom) * e})`
+    // Both the frame and the scale are linear in `e` and meet exactly at e = 0,
+    // so the media covers the frame for every value in between: the video fits
+    // the closed card whole, then zooms in just enough to keep filling it.
+    const s = g.startScale + (c.endZoom - g.startScale) * e
+    media.style.transform = `translate(-50%, -50%) scale(${s})`
 
     if (scrimRef.current) scrimRef.current.style.opacity = `${c.overlayScrim * e}`
 
@@ -170,37 +195,65 @@ const ScrollExpand = ({
     }
   }, [])
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     const track = trackRef.current
     const stage = stageRef.current
-    if (!root || !track || !stage) return
+    const media = mediaRef.current
+    if (!root || !track || !stage || !media) return
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const narrowQuery = window.matchMedia(NARROW_QUERY)
 
     let raf = 0
     let current = 0
     let target = 0
+    let stageW = 0
     let stageH = 0
     let running = false
 
     const measure = () => {
       const c = propsRef.current
-      isNarrowRef.current = window.innerWidth < 640
-      stageH = c.useWindowScroll ? window.innerHeight : root.clientHeight
-      if (stageH <= 0) return
-      stage.style.height = `${stageH}px`
-      track.style.height = `${stageH * (1 + Math.max(0, c.scrollDistance) + Math.max(0, c.holdDistance))}px`
+      const g = geomRef.current
+      const narrow = narrowQuery.matches
 
-      const w = root.clientWidth || stageH
-      stage.style.setProperty("--se-title-size", `${clamp(w * 0.075, 20, 84)}px`)
+      // In window-scroll mode the stage is sized by CSS (`100svh`) so that a
+      // mobile browser collapsing its toolbar does not resize the track and
+      // jump the scroll position mid-animation.
+      if (!useWindowScroll) stage.style.height = `${root.clientHeight}px`
+      stageW = stage.clientWidth
+      stageH = stage.clientHeight
+      if (stageW <= 0 || stageH <= 0) return
+
+      track.style.height = `${stageH * (1 + Math.max(0, c.scrollDistance) + Math.max(0, c.holdDistance))}px`
+      stage.style.setProperty("--se-title-size", `${clamp(stageW * (narrow ? 0.1 : 0.075), 20, 84)}px`)
+
+      // The media element is sized to the "cover" box of the stage and centred,
+      // so scale 1 fills the stage edge to edge with nothing letterboxed.
+      const ar = mediaArRef.current
+      const coverW = ar >= stageW / stageH ? stageH * ar : stageW
+      const coverH = coverW / ar
+      media.style.width = `${coverW}px`
+      media.style.height = `${coverH}px`
+
+      // Closed frame: the largest box of the media's aspect that fits the bounds.
+      const boundW = (stageW * (narrow ? (c.mobileStartWidth ?? c.startWidth) : c.startWidth)) / 100
+      const boundH = (stageH * (narrow ? (c.mobileStartHeight ?? c.startHeight) : c.startHeight)) / 100
+      const frameW = Math.min(boundW, boundH * ar)
+      const frameH = frameW / ar
+
+      g.startW = (frameW / stageW) * 100
+      g.startH = (frameH / stageH) * 100
+      g.endW = narrow ? (c.mobileEndWidth ?? c.endWidth) : c.endWidth
+      g.endH = narrow ? (c.mobileEndHeight ?? c.endHeight) : c.endHeight
+      g.startScale = frameW / coverW
     }
 
     const readProgress = () => {
       const c = propsRef.current
       if (!c.enabled) return 1
       const span = stageH * Math.max(0.01, c.scrollDistance)
-      if (c.useWindowScroll) {
+      if (useWindowScroll) {
         const top = track.getBoundingClientRect().top
         return clamp(-top / span, 0, 1)
       }
@@ -235,21 +288,47 @@ const ScrollExpand = ({
       kick()
     }
 
-    const onResize = () => {
+    /** Full re-measure; snaps to the new geometry without animating to it. */
+    const refresh = () => {
       measure()
       target = readProgress()
       current = target
       applyProgress(current)
     }
 
-    measure()
-    target = readProgress()
-    current = target
-    applyProgress(current)
+    let lastW = 0
+    let lastH = 0
+    const onResize = () => {
+      // iOS fires `resize` whenever the URL bar slides; with a `svh` stage
+      // nothing has actually changed, so skip the work and the reflow.
+      if (stage.clientWidth === lastW && stage.clientHeight === lastH) return
+      lastW = stage.clientWidth
+      lastH = stage.clientHeight
+      refresh()
+    }
+
+    /** Swap in the media's real aspect ratio as soon as it is known. */
+    const onMediaReady = () => {
+      const w = media.videoWidth || media.naturalWidth || 0
+      const h = media.videoHeight || media.naturalHeight || 0
+      if (w <= 0 || h <= 0) return
+      const ar = w / h
+      if (Math.abs(ar - mediaArRef.current) < 0.001) return
+      mediaArRef.current = ar
+      refresh()
+    }
+
+    refresh()
+    lastW = stage.clientWidth
+    lastH = stage.clientHeight
+    onMediaReady()
 
     const scroller: Window | HTMLDivElement = useWindowScroll ? window : root
     scroller.addEventListener("scroll", onScroll, { passive: true })
     window.addEventListener("resize", onResize)
+    window.addEventListener("orientationchange", refresh)
+    media.addEventListener("loadedmetadata", onMediaReady)
+    media.addEventListener("load", onMediaReady)
     const ro = new ResizeObserver(onResize)
     ro.observe(root)
 
@@ -257,6 +336,9 @@ const ScrollExpand = ({
       if (raf) cancelAnimationFrame(raf)
       scroller.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onResize)
+      window.removeEventListener("orientationchange", refresh)
+      media.removeEventListener("loadedmetadata", onMediaReady)
+      media.removeEventListener("load", onMediaReady)
       ro.disconnect()
     }
   }, [applyProgress, useWindowScroll])
@@ -282,7 +364,7 @@ const ScrollExpand = ({
   return (
     <div
       ref={rootRef}
-      className={`scroll-expand ${useWindowScroll ? "" : "scroll-expand--scroller"} ${className}`.trim()}
+      className={`scroll-expand ${useWindowScroll ? "scroll-expand--window" : "scroll-expand--scroller"} ${className}`.trim()}
       style={style}
       {...rest}
     >

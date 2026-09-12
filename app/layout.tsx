@@ -3,6 +3,7 @@ import { DM_Sans, Sora } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import MotionProvider from './components/MotionProvider'
 import { organizationSchema } from '@/lib/structured-data'
 import './globals.css'
 
@@ -68,9 +69,11 @@ export default function RootLayout({
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
-        <Navbar />
-        {children}
-        <Footer />
+        <MotionProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </MotionProvider>
         <Analytics />
       </body>
     </html>

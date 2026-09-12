@@ -106,6 +106,15 @@ const products = [
     features: ["Impact protection", "Secure wrist support", "Breathable design", "Durable construction"],
     applications: ["Boxing training", "Martial arts", "Fitness workouts", "Competition"],
   },
+  {
+    id: "driving-gloves",
+    name: "Driving Gloves",
+    img: "driving1.png",
+    desc: "Soft grain leather gloves for precise steering feel and all-day comfort",
+    images: ["driving1.png", "driving2.png", "driving3.png", "driving4.png"],
+    features: ["Soft grain leather", "Close-fitting dexterity", "Breathable back", "Secure wrist closure"],
+    applications: ["Driving", "Chauffeur and fleet use", "Motorsport", "Classic and vintage motoring"],
+  },
 ]
 
 export default function ProductsPage() {
@@ -167,7 +176,7 @@ export default function ProductsPage() {
                 return (
                   <div
                     key={product.id}
-                    className="rounded-2xl overflow-hidden transition-all duration-300 h-full flex flex-col group hover:shadow-primary-lg"
+                    className="rounded-2xl overflow-hidden transition-all duration-200 h-full flex flex-col group hover:shadow-primary-lg"
                     style={{
                       background: "linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))",
                       border: "1px solid oklch(0.90 0.008 100)",
@@ -176,7 +185,7 @@ export default function ProductsPage() {
                   >
                     <Link href={`/products/${product.id}`} className="flex flex-col flex-grow cursor-pointer">
                       <div
-                        className="h-64 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300"
+                        className="h-64 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-200"
                         style={{
                           background: "linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)",
                         }}
@@ -185,13 +194,13 @@ export default function ProductsPage() {
                           src={`/${product.img}`}
                           alt={`Handcare ${product.name} - Wholesale export standard safety glove`}
                           fill
-                          className="object-contain p-4 relative z-10 transition-transform duration-300 group-hover:scale-105"
+                          className="object-contain p-4 relative z-10 transition-transform duration-200 group-hover:scale-105"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       </div>
                       <div className="p-6 flex-grow flex flex-col relative z-10">
                         <h2
-                          className="text-lg font-bold mb-2 text-gradient-primary group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
+                          className="text-lg font-bold mb-2 text-heading group-hover:text-[oklch(0.45_0.15_220)] transition-colors"
                           style={{ color: "oklch(0.25 0.01 240)" }}
                         >
                           {product.name}
@@ -215,7 +224,7 @@ export default function ProductsPage() {
                         )}
 
                         <span
-                          className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-300 group-hover:gap-2"
+                          className="text-sm font-medium inline-flex items-center gap-1 transition-all duration-200 group-hover:gap-2"
                           style={{ color: "oklch(0.50 0.15 220)" }}
                         >
                           View Specifications & Variants →
@@ -242,7 +251,7 @@ export default function ProductsPage() {
         <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10" style={{ background: "oklch(0.98 0.008 85)" }}>
           <div className="max-w-7xl mx-auto relative z-10">
             <div className="text-center mb-8 sm:mb-12">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-gradient-primary">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-heading">
                 Complete Product Gallery
               </h2>
               <p className="max-w-2xl mx-auto" style={{ color: "oklch(0.40 0.01 240)" }}>
@@ -253,12 +262,12 @@ export default function ProductsPage() {
             <div className="space-y-16">
               {products.map((product) => (
                 <div key={product.id}>
-                  <h3 className="text-2xl font-bold mb-6 text-gradient-primary">{product.name}</h3>
+                  <h3 className="text-2xl font-bold mb-6 text-heading">{product.name}</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     {product.images.map((img, imgIndex) => (
                       <Link key={imgIndex} href={`/products/${product.id}?variant=${imgIndex + 1}`}>
                         <div
-                          className="rounded-xl p-4 hover:shadow-primary transition-all duration-300 cursor-pointer group"
+                          className="rounded-xl p-4 hover:shadow-primary transition-all duration-200 cursor-pointer group"
                           style={{
                             background: "linear-gradient(to bottom, oklch(1 0 0), oklch(0.99 0.002 100))",
                             border: "1px solid oklch(0.90 0.008 100)",
@@ -266,7 +275,7 @@ export default function ProductsPage() {
                           }}
                         >
                           <div
-                            className="h-48 rounded-lg flex items-center justify-center mb-3 relative overflow-hidden transition-all duration-300"
+                            className="h-48 rounded-lg flex items-center justify-center mb-3 relative overflow-hidden transition-all duration-200"
                             style={{
                               background: "linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)",
                             }}
@@ -275,7 +284,7 @@ export default function ProductsPage() {
                               src={`/${img}`}
                               alt={`Handcare ${product.name} Variant ${imgIndex + 1}`}
                               fill
-                              className="object-contain p-2 relative z-10 transition-transform duration-300 group-hover:scale-105"
+                              className="object-contain p-2 relative z-10 transition-transform duration-200 group-hover:scale-105"
                               sizes="(max-width: 768px) 50vw, 25vw"
                             />
                           </div>
@@ -298,7 +307,7 @@ export default function ProductsPage() {
         {/* CTA Section */}
         <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10" style={{ background: "oklch(0.98 0.008 85)" }}>
           <div className="max-w-3xl mx-auto text-center relative z-10">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gradient-primary">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-heading">
               Custom OEM / Wholesale Manufacturing
             </h2>
             <p className="mb-6 sm:mb-8 text-sm sm:text-base" style={{ color: "oklch(0.40 0.01 240)" }}>
@@ -307,16 +316,16 @@ export default function ProductsPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/quote"
-                className="px-8 py-3 text-white text-sm rounded-full transition-all duration-300 btn-gradient glow-accent-hover relative overflow-hidden font-medium"
+                className="px-8 py-3 text-white text-sm rounded-full transition-all duration-200 btn-gradient glow-accent-hover relative overflow-hidden font-medium"
                 style={{
-                  background: "linear-gradient(135deg, oklch(0.65 0.18 65), oklch(0.70 0.15 40))",
+                  background: "linear-gradient(135deg, oklch(0.51 0.18 65), oklch(0.56 0.15 40))",
                 }}
               >
                 Request Custom Quote
               </Link>
               <Link
                 href="/#contact"
-                className="px-8 py-3 border-2 text-sm rounded-full font-medium transition-all duration-300 glow-primary-hover"
+                className="px-8 py-3 border-2 text-sm rounded-full font-medium transition-all duration-200 glow-primary-hover"
                 style={{
                   borderColor: "oklch(0.45 0.15 220)",
                   color: "oklch(0.45 0.15 220)",

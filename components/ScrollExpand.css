@@ -29,21 +29,38 @@
   --se-title-size: 4rem;
 }
 
+/* Window-scroll mode sizes the stage in CSS rather than JS: `svh` ignores a
+   mobile browser's collapsing toolbar, so the track never re-measures and the
+   scroll position never jumps mid-animation. */
+.scroll-expand--window .scroll-expand__stage {
+  height: 100vh;
+  height: 100svh;
+}
+
 .scroll-expand__frame {
   position: absolute;
   inset: 0;
-  clip-path: inset(21% 29% 21% 29% round 24px);
+  /* Pre-JS default, roughly the 16:9 closed card the script computes. */
+  clip-path: inset(25% 22% 25% 22% round 24px);
   will-change: clip-path;
 }
 
+/* Sized and centred from JS to the stage's cover box, so `scale(1)` fills the
+   stage exactly and smaller scales show progressively more of the frame. */
 .scroll-expand__media {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: 50%;
   width: 100%;
   height: 100%;
+  /* Preflight caps media at `max-width: 100%`, which would clamp the cover box
+     back to the stage width and re-crop what the closed frame is meant to show. */
+  max-width: none;
+  max-height: none;
   object-fit: cover;
-  will-change: transform;
+  transform: translate(-50%, -50%);
   transform-origin: center;
+  will-change: transform;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -162,7 +179,47 @@
 
 @media (max-width: 640px) {
   .scroll-expand__overlay {
-    padding: 10% 7%;
-    gap: 1rem;
+    padding: 8% 6%;
+    gap: 0.875rem;
+  }
+
+  .scroll-expand__hint {
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+/* Landscape phones: the frame's top edge lands under the fixed navbar, so the
+   hero copy needs to start below it instead of centring in the whole stage. */
+@media (max-height: 520px) {
+  .scroll-expand__overlay {
+    padding: 4.5rem 6% 1.5rem;
+    gap: 0.625rem;
+  }
+
+  .scroll-expand__hint {
+    display: none;
+  }
+}
+
+/* Honour the OS setting. The frame's open/close is scroll-linked rather than
+   time-based, so it stays — it tracks the finger and stopping would strand the
+   hero half-open. What goes is everything that moves on its own: the title's
+   drift and scale, the hint's slide, and the overlay's rise. They cross-fade
+   in place instead, and the compositor hints come off with them. */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-expand__frame,
+  .scroll-expand__media,
+  .scroll-expand__title,
+  .scroll-expand__hint,
+  .scroll-expand__overlay {
+    will-change: auto;
+  }
+
+  .scroll-expand__title,
+  .scroll-expand__hint,
+  .scroll-expand__overlay {
+    transform: none !important;
   }
 }
