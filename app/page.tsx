@@ -109,7 +109,12 @@ function StickyCenterDiv({ className = "" }: { className?: string }) {
               fade. Swapping the <img> per step forced a fresh decode, which is
               what made the sequence stutter on phones. */}
           <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            <div className="relative w-full h-full">
+            {/* The shadow lives here, on a box that never moves, rather than on
+                each <img>. A drop-shadow on an element mid scale transition is
+                rasterised against its old bounds, so on GPU-composited browsers
+                (Safari especially) the blur was cut off into a hard vertical
+                seam across the card while scrolling. */}
+            <div className="relative w-full h-full drop-shadow-2xl">
               {productImages.map((img, index) => {
                 const isActive = index === currentImageIndex
 
@@ -130,7 +135,7 @@ function StickyCenterDiv({ className = "" }: { className?: string }) {
                         alt={img.alt}
                         loading={index === 0 ? 'eager' : 'lazy'}
                         decoding="async"
-                        className="max-w-full max-h-full object-contain drop-shadow-2xl"
+                        className="max-w-full max-h-full object-contain"
                       />
                     </div>
                   </div>
@@ -422,7 +427,10 @@ function App() {
     </div>
 
     {/* CENTER STICKY with Scroll Reveal Effect */}
-    <StickyCenterDiv className="lg:row-start-1 lg:row-span-4 lg:col-start-2" />
+    {/* z-20 keeps the card above the decorative shapes as it pins: the
+        right-hand shape is z-10, so without this it slid across the card's
+        edge on scroll and showed as a hard vertical seam. */}
+    <StickyCenterDiv className="z-20 lg:row-start-1 lg:row-span-4 lg:col-start-2" />
 
     {/* ROW 2: PRE-RUNWAY (shortened) */}
     <div className="hidden lg:block lg:row-start-2 lg:col-start-1 lg:col-span-3" aria-hidden />
