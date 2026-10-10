@@ -111,41 +111,42 @@ function StickyCenterDiv({ className = "" }: { className?: string }) {
               to look, while the incoming one plays the same 0.8 -> 1 scale and
               fade. Swapping the <img> per step forced a fresh decode, which is
               what made the sequence stutter on phones. */}
-          <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            {/* The glove shadows are baked into these files (public/carousel)
-                rather than drawn with a CSS drop-shadow. A filter on layers that
-                scale and fade while the page scrolls is rasterised to the
-                layer's bounds, which showed as hard vertical lines down the
-                card's left and right edges. */}
-            <div className="relative w-full h-full">
-              {productImages.map((img, index) => {
-                const isActive = index === currentImageIndex
+          {/* Glove shadows are baked into the files (public/carousel) rather
+              than drawn with a CSS drop-shadow, and every animated layer spans
+              the whole card with its padding inside it. A layer that scales and
+              fades on scroll can show its outline on GPU-composited browsers;
+              sized like this, that outline sits on the card's clipped edge
+              instead of as faint vertical lines down the card. */}
+          <div className="absolute inset-0">
+            {productImages.map((img, index) => {
+              const isActive = index === currentImageIndex
 
-                return (
-                  <div
-                    key={img.src}
-                    className="absolute inset-0 flex items-center justify-center"
-                    aria-hidden={!isActive}
-                    style={{
-                      opacity: isActive ? 1 : 0,
-                      transform: `scale(${isActive ? 1 : 0.8})`,
-                      transition: isActive ? 'opacity 500ms ease-out, transform 500ms ease-out' : 'none',
-                    }}
-                  >
-                    <div className="relative w-full h-full flex items-center justify-center">
-                      <img 
-                        src={img.src}
-                        alt={img.alt}
-                        loading={index === 0 ? 'eager' : 'lazy'}
-                        decoding="async"
-                        className="max-w-full max-h-full object-contain"
-                        style={{ transform: `scale(${img.grow})` }}
-                      />
-                    </div>
+              return (
+                <div
+                  key={img.src}
+                  className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8"
+                  aria-hidden={!isActive}
+                  style={{
+                    opacity: isActive ? 1 : 0,
+                    transition: isActive ? 'opacity 500ms ease-out' : 'none',
+                  }}
+                >
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      decoding="async"
+                      className="max-w-full max-h-full object-contain"
+                      style={{
+                        transform: `scale(${(isActive ? 1 : 0.8) * img.grow})`,
+                        transition: isActive ? 'transform 500ms ease-out' : 'none',
+                      }}
+                    />
                   </div>
-                )
-              })}
-            </div>
+                </div>
+              )
+            })}
           </div>
 
           {/* Colored progress indicator dots */}
