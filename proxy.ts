@@ -33,6 +33,7 @@ const EXCLUDED_PREFIXES = [
   "/handcare_catalogue.pdf",
   "/handcare_catalogue_del.pdf",
   "/BingSiteAuth.xml",
+  "/googled3fb1609b1da1e1b.html",
 ]
 
 const STATIC_ASSET_RE =
