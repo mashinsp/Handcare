@@ -7,7 +7,7 @@ import { FlipCard } from "@/components/animate-ui/components/community/flip-card
 import HeroScrollExpand from "@/components/hero-scroll-expand"
 import NotchedPhoto from "@/components/notched-photo"
 import LeatherTimeline from "@/components/leather-timeline"
-import { Hand, ShieldCheck } from "lucide-react"
+import { Hand, Ship } from "lucide-react"
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -16,14 +16,17 @@ const fadeUp: Variants = {
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v)
 
+// The carousel files carry their drop shadow baked in, which widens the canvas
+// around each glove; `grow` scales the image back up so the glove itself
+// renders at the same size as the original, shadowless file did.
 const productImages = [
-  { src: "/workingglove1.png", alt: "Working Gloves" },
-  { src: "/weldinggloves1.png", alt: "Welding Gloves" },
-  { src: "/mechanicalglove1.png", alt: "Mechanical Gloves" },
-  { src: "/gardening1.png", alt: "Gardening Gloves" },
-  { src: "/boxing1.png", alt: "Boxing Gloves" },
+  { src: "/carousel/workingglove1.webp", alt: "Working Gloves", grow: 1.095 },
+  { src: "/carousel/weldinggloves1.webp", alt: "Welding Gloves", grow: 1.085 },
+  { src: "/carousel/mechanicalglove1.webp", alt: "Mechanical Gloves", grow: 1.092 },
+  { src: "/carousel/gardening1.webp", alt: "Gardening Gloves", grow: 1 },
+  { src: "/carousel/boxing1.webp", alt: "Boxing Gloves", grow: 1.096 },
   // { src: "/riding1.png", alt: "Riding Gloves" },
-  { src: "/riding2.png", alt: "Riding Gloves" },
+  { src: "/carousel/riding2.webp", alt: "Riding Gloves", grow: 1.091 },
 ]
 
 // The last product is reached before the card unpins, so it holds on screen for
@@ -108,35 +111,42 @@ function StickyCenterDiv({ className = "" }: { className?: string }) {
               to look, while the incoming one plays the same 0.8 -> 1 scale and
               fade. Swapping the <img> per step forced a fresh decode, which is
               what made the sequence stutter on phones. */}
-          <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            <div className="relative w-full h-full">
-              {productImages.map((img, index) => {
-                const isActive = index === currentImageIndex
+          {/* Glove shadows are baked into the files (public/carousel) rather
+              than drawn with a CSS drop-shadow, and every animated layer spans
+              the whole card with its padding inside it. A layer that scales and
+              fades on scroll can show its outline on GPU-composited browsers;
+              sized like this, that outline sits on the card's clipped edge
+              instead of as faint vertical lines down the card. */}
+          <div className="absolute inset-0">
+            {productImages.map((img, index) => {
+              const isActive = index === currentImageIndex
 
-                return (
-                  <div
-                    key={img.src}
-                    className="absolute inset-0 flex items-center justify-center"
-                    aria-hidden={!isActive}
-                    style={{
-                      opacity: isActive ? 1 : 0,
-                      transform: `scale(${isActive ? 1 : 0.8})`,
-                      transition: isActive ? 'opacity 500ms ease-out, transform 500ms ease-out' : 'none',
-                    }}
-                  >
-                    <div className="relative w-full h-full flex items-center justify-center">
-                      <img 
-                        src={img.src}
-                        alt={img.alt}
-                        loading={index === 0 ? 'eager' : 'lazy'}
-                        decoding="async"
-                        className="max-w-full max-h-full object-contain drop-shadow-2xl"
-                      />
-                    </div>
+              return (
+                <div
+                  key={img.src}
+                  className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8"
+                  aria-hidden={!isActive}
+                  style={{
+                    opacity: isActive ? 1 : 0,
+                    transition: isActive ? 'opacity 500ms ease-out' : 'none',
+                  }}
+                >
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      decoding="async"
+                      className="max-w-full max-h-full object-contain"
+                      style={{
+                        transform: `scale(${(isActive ? 1 : 0.8) * img.grow})`,
+                        transition: isActive ? 'transform 500ms ease-out' : 'none',
+                      }}
+                    />
                   </div>
-                )
-              })}
-            </div>
+                </div>
+              )
+            })}
           </div>
 
           {/* Colored progress indicator dots */}
@@ -422,7 +432,10 @@ function App() {
     </div>
 
     {/* CENTER STICKY with Scroll Reveal Effect */}
-    <StickyCenterDiv className="lg:row-start-1 lg:row-span-4 lg:col-start-2" />
+    {/* z-20 keeps the card above the decorative shapes as it pins: the
+        right-hand shape is z-10, so without this it slid across the card's
+        edge on scroll and showed as a hard vertical seam. */}
+    <StickyCenterDiv className="z-20 lg:row-start-1 lg:row-span-4 lg:col-start-2" />
 
     {/* ROW 2: PRE-RUNWAY (shortened) */}
     <div className="hidden lg:block lg:row-start-2 lg:col-start-1 lg:col-span-3" aria-hidden />
@@ -497,10 +510,10 @@ function App() {
             </motion.div>
 
             <NotchedPhoto
-              src="/handcare-facility.jpg"
-              alt="The Handcare manufacturing facility in Sialkot, Pakistan"
-              tag="Our Facility"
-              icon={ShieldCheck}
+              src="/global-shipping-port.jpg"
+              alt="Container port with cargo ships loading for worldwide export"
+              tag="Global Export"
+              icon={Ship}
               className="lg:-mt-10"
             />
 
