@@ -16,14 +16,17 @@ const fadeUp: Variants = {
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v)
 
+// The carousel files carry their drop shadow baked in, which widens the canvas
+// around each glove; `grow` scales the image back up so the glove itself
+// renders at the same size as the original, shadowless file did.
 const productImages = [
-  { src: "/workingglove1.png", alt: "Working Gloves" },
-  { src: "/weldinggloves1.png", alt: "Welding Gloves" },
-  { src: "/mechanicalglove1.png", alt: "Mechanical Gloves" },
-  { src: "/gardening1.png", alt: "Gardening Gloves" },
-  { src: "/boxing1.png", alt: "Boxing Gloves" },
+  { src: "/carousel/workingglove1.webp", alt: "Working Gloves", grow: 1.095 },
+  { src: "/carousel/weldinggloves1.webp", alt: "Welding Gloves", grow: 1.085 },
+  { src: "/carousel/mechanicalglove1.webp", alt: "Mechanical Gloves", grow: 1.092 },
+  { src: "/carousel/gardening1.webp", alt: "Gardening Gloves", grow: 1 },
+  { src: "/carousel/boxing1.webp", alt: "Boxing Gloves", grow: 1.096 },
   // { src: "/riding1.png", alt: "Riding Gloves" },
-  { src: "/riding2.png", alt: "Riding Gloves" },
+  { src: "/carousel/riding2.webp", alt: "Riding Gloves", grow: 1.091 },
 ]
 
 // The last product is reached before the card unpins, so it holds on screen for
@@ -109,12 +112,12 @@ function StickyCenterDiv({ className = "" }: { className?: string }) {
               fade. Swapping the <img> per step forced a fresh decode, which is
               what made the sequence stutter on phones. */}
           <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            {/* The shadow lives here, on a box that never moves, rather than on
-                each <img>. A drop-shadow on an element mid scale transition is
-                rasterised against its old bounds, so on GPU-composited browsers
-                (Safari especially) the blur was cut off into a hard vertical
-                seam across the card while scrolling. */}
-            <div className="relative w-full h-full drop-shadow-2xl">
+            {/* The glove shadows are baked into these files (public/carousel)
+                rather than drawn with a CSS drop-shadow. A filter on layers that
+                scale and fade while the page scrolls is rasterised to the
+                layer's bounds, which showed as hard vertical lines down the
+                card's left and right edges. */}
+            <div className="relative w-full h-full">
               {productImages.map((img, index) => {
                 const isActive = index === currentImageIndex
 
@@ -136,6 +139,7 @@ function StickyCenterDiv({ className = "" }: { className?: string }) {
                         loading={index === 0 ? 'eager' : 'lazy'}
                         decoding="async"
                         className="max-w-full max-h-full object-contain"
+                        style={{ transform: `scale(${img.grow})` }}
                       />
                     </div>
                   </div>
