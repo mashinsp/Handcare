@@ -7,7 +7,7 @@ import { FlipCard } from "@/components/animate-ui/components/community/flip-card
 import HeroScrollExpand from "@/components/hero-scroll-expand"
 import NotchedPhoto from "@/components/notched-photo"
 import LeatherTimeline from "@/components/leather-timeline"
-import { Hand, ShieldCheck } from "lucide-react"
+import { Hand, Ship } from "lucide-react"
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -497,10 +497,10 @@ function App() {
             </motion.div>
 
             <NotchedPhoto
-              src="/handcare-facility.jpg"
-              alt="The Handcare manufacturing facility in Sialkot, Pakistan"
-              tag="Our Facility"
-              icon={ShieldCheck}
+              src="/global-shipping-port.jpg"
+              alt="Container port with cargo ships loading for worldwide export"
+              tag="Global Export"
+              icon={Ship}
               className="lg:-mt-10"
             />
 
