@@ -9,7 +9,7 @@ export default function Footer() {
             <img
               src="/handcarelogo.png"
               alt="Handcare Logo"
-              className="h-6 w-auto"
+              className="h-6 w-auto brightness-0 invert"
             />
             <span className="font-display font-medium">Handcare</span>
           </div>
