@@ -49,7 +49,7 @@ export default function HeroScrollExpand() {
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 sm:gap-7">
 
         <h1 className="font-display text-[clamp(1.9rem,5.4vw,4.25rem)] font-semibold leading-[1.04] tracking-[-0.035em] text-white text-balance">
-          Premium Hand Protection
+          Premium Hand Protection{" "}
           <span className="block font-normal text-white/85">Solutions from Sialkot, Pakistan</span>
         </h1>
 

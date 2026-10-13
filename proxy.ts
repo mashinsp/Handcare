@@ -29,6 +29,7 @@ const EXCLUDED_PREFIXES = [
   "/api",
   "/llms.txt",
   "/sitemap.xml",
+  "/opengraph-image",
   "/robots.txt",
   "/handcare_catalogue.pdf",
   "/handcare_catalogue_del.pdf",
