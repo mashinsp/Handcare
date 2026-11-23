@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import ScrollExpand from "./ScrollExpand"
+import { HERO_SCROLL_DISTANCE } from "@/lib/hero-scroll"
 
 /**
  * First section on the homepage: the merged factory footage opens from a
@@ -39,7 +40,7 @@ export default function HeroScrollExpand() {
       startRadius={28}
       endRadius={28}
       mediaAspect={16 / 9}
-      scrollDistance={1.25}
+      scrollDistance={HERO_SCROLL_DISTANCE}
       /* Trimmed from 0.45: with scrollDistance the hero was costing ~2.7
          viewport heights before the first content section. */
       holdDistance={0.2}

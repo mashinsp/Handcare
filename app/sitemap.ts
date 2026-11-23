@@ -13,7 +13,7 @@ import { SITE_URL } from "@/lib/seo"
  * Bump the matching date when a page's content actually changes — an
  * accurate lastmod is what makes Google trust it.
  */
-const SITE_UPDATED = "2026-10-13"
+const SITE_UPDATED = "2026-11-24"
 const LEGAL_UPDATED = "2026-10-13"
 
 export default function sitemap(): MetadataRoute.Sitemap {

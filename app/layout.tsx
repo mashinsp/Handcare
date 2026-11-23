@@ -40,8 +40,8 @@ const dmSans = DM_Sans({
 // set here would be inherited by every page and point them all at "/".
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'Handcare - Leather Gloves Manufacturer & Exporter | Sialkot, Pakistan',
-  description: 'ISO 9001:2015 certified leather gloves manufacturer and industrial glove exporter in Sialkot, Pakistan. OEM/custom glove manufacturing, wholesale supply to 50+ countries.',
+  title: 'Leather Gloves Manufacturer & Exporter, Sialkot | Handcare',
+  description: 'ISO 9001:2015 certified leather glove manufacturer in Sialkot, Pakistan. OEM and custom industrial gloves, wholesale export to 50+ countries.',
   generator: 'Handcare',
   icons: [
     { rel: 'icon', url: '/handcarelogo-faviconn.png' },

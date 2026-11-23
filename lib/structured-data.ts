@@ -21,6 +21,9 @@ export const organizationSchema = {
   description:
     'Handcare is a leading manufacturer of high-quality industrial and safety gloves based in Sialkot, Pakistan, ISO 9001:2015 certified, exporting to 50+ countries.',
   foundingLocation: 'Sialkot, Pakistan',
+  email: 'handcare514@gmail.com',
+  telephone: '+92-301-426-4385',
+  areaServed: 'Worldwide',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Industrial Area',
@@ -212,6 +215,18 @@ export const websiteSchema = {
   url: 'https://www.handcare.co/',
   inLanguage: 'en',
   publisher: { '@id': 'https://www.handcare.co/#organization' },
+}
+
+export function faqSchema(faqs: readonly { question: string; answer: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  }
 }
 
 export function breadcrumbSchema(items: { name: string; url: string }[]) {

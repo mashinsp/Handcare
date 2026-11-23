@@ -7,6 +7,7 @@ import { FlipCard } from "@/components/animate-ui/components/community/flip-card
 import HeroScrollExpand from "@/components/hero-scroll-expand"
 import NotchedPhoto from "@/components/notched-photo"
 import LeatherTimeline from "@/components/leather-timeline"
+import FaqSection from "@/components/faq-section"
 import { Hand, Ship } from "lucide-react"
 
 const fadeUp: Variants = {
@@ -769,6 +770,8 @@ function App() {
           <LeatherTimeline />
         </div>
       </section>
+
+      <FaqSection />
 
       {/* Testimonials */}
       <section className="py-12 sm:py-20 px-4 sm:px-6 relative z-10"
