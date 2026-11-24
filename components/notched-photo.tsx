@@ -74,7 +74,7 @@ export default function NotchedPhoto({
         className
       )}
     >
-      <img
+      <img decoding="async"
         src={src}
         alt={alt}
         loading="lazy"

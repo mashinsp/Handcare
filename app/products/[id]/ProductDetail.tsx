@@ -94,7 +94,7 @@ export default function ProductDetail({ productId }: { productId: string }) {
                      background: 'linear-gradient(135deg, oklch(0.99 0.002 100) 0%, oklch(0.97 0.008 220) 100%)',
                      border: '1px solid oklch(0.88 0.015 220)'
                    }}>
-                <img 
+                <img decoding="async" 
                   src={`/${selectedImage}`}
                   alt={product.name}
                   className="max-w-full max-h-full object-contain"
@@ -118,7 +118,7 @@ export default function ProductDetail({ productId }: { productId: string }) {
                       borderColor: selectedImage === img ? 'oklch(0.50 0.15 220)' : 'oklch(0.90 0.008 100)'
                     }}
                   >
-                    <img 
+                    <img decoding="async" 
                       src={`/${img}`}
                       alt={`${product.name} variant ${i + 1}`}
                       className="max-w-full max-h-full object-contain"
@@ -290,7 +290,7 @@ export default function ProductDetail({ productId }: { productId: string }) {
                            style={{
                              background: 'linear-gradient(135deg, oklch(0.50 0.15 220 / 0.05) 0%, oklch(0.65 0.18 65 / 0.05) 100%)'
                            }}></div>
-                      <img 
+                      <img decoding="async" 
                         src={`/${prod.img}`}
                         alt={prod.name}
                         className="max-w-full max-h-full object-contain relative z-10"

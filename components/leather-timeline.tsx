@@ -184,7 +184,7 @@ export default function LeatherTimeline() {
                   className="flex h-[100px] w-[100px] items-center justify-center"
                   style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}
                 >
-                  <img
+                  <img decoding="async"
                     src={`/${leather.icon}`}
                     alt={leather.type}
                     loading="lazy"
