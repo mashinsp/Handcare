@@ -1,4 +1,5 @@
 import { productList, type ProductSchemaInput } from "./structured-data"
+import { HOME_FAQS } from "./faqs"
 
 /**
  * Markdown variants for content negotiation (acceptmarkdown.com compliance).
@@ -55,6 +56,10 @@ international safety standards.
 ## Product range
 
 ${productList.map((p) => `- [${p.name}](https://www.handcare.co/products/${p.slug}): ${p.description}`).join("\n")}
+
+## Frequently asked questions
+
+${HOME_FAQS.map((f) => `### ${f.question}\n\n${f.answer}`).join("\n\n")}
 
 ## Contact
 

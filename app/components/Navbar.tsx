@@ -1,377 +1,180 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
+import { usePathname } from "next/navigation"
+import OfferStrip from "./OfferStrip"
+import { heroStripTuckOffset } from "@/lib/hero-scroll"
+import { NAV_INSET_FLAT, NAV_INSET_PILL } from "./navGeometry"
 
-export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+interface NavItem {
+  label: string
+  href: string
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 20
-      setScrolled(isScrolled)
-    }
+const NAV_ITEMS: readonly NavItem[] = [
+  { label: "About", href: "/#about" },
+  { label: "Products", href: "/products" },
+  { label: "Categories", href: "/#resources" },
+  { label: "FAQ", href: "/#faq" },
+  { label: "Contact", href: "/#contact" },
+]
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+/** Scroll distance after which the bar condenses into a floating pill. */
+const CONDENSE_AFTER_PX = 24
+/** Scroll distance after which the offer strip tucks away on pages without the hero (measured from osmo.supply). */
+const TUCK_STRIP_AFTER_PX = 56
 
+function Arrow() {
   return (
-    <header 
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-200"
-      style={{
-        background: scrolled 
-          ? 'linear-gradient(135deg, oklch(1 0 0 / 0.85) 0%, oklch(0.99 0.002 100 / 0.9) 100%)'
-          : 'linear-gradient(135deg, oklch(1 0 0 / 0.75) 0%, oklch(0.99 0.002 100 / 0.8) 100%)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-        borderBottom: scrolled 
-          ? '1px solid oklch(0.90 0.008 100 / 0.6)' 
-          : '1px solid oklch(0.90 0.008 100 / 0.3)',
-        boxShadow: scrolled 
-          ? '0 8px 32px -8px oklch(0.45 0.15 220 / 0.15), 0 2px 16px -4px oklch(0.50 0.15 220 / 0.1)'
-          : '0 2px 16px -4px oklch(0.45 0.15 220 / 0.08)',
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
-          <img 
-            src="/handcarelogo.png" 
-            alt="Handcare Logo" 
-            className="h-6 sm:h-8 w-auto transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="text-gradient-primary font-display font-semibold text-sm sm:text-base transition-all duration-200">
-            Handcare
-          </span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
-          <a 
-            href="/#about" 
-            className="text-sm font-medium transition-all duration-200 relative group py-2 -my-2"
-            style={{ 
-              color: 'oklch(0.40 0.01 240)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-            }}
-          >
-            About
-            <span 
-              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full"
-              style={{ background: 'linear-gradient(90deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))' }}
-            />
-          </a>
-          <Link 
-            href="/products" 
-            className="text-sm font-medium transition-all duration-200 relative group py-2 -my-2"
-            style={{ 
-              color: 'oklch(0.40 0.01 240)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-            }}
-          >
-            Products
-            <span 
-              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full"
-              style={{ background: 'linear-gradient(90deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))' }}
-            />
-          </Link>
-          <a 
-            href="/#resources" 
-            className="text-sm font-medium transition-all duration-200 relative group py-2 -my-2"
-            style={{ 
-              color: 'oklch(0.40 0.01 240)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-            }}
-          >
-            Categories
-            <span 
-              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full"
-              style={{ background: 'linear-gradient(90deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))' }}
-            />
-          </a>
-          <a 
-            href="/#contact" 
-            className="text-sm font-medium transition-all duration-200 relative group py-2 -my-2"
-            style={{ 
-              color: 'oklch(0.40 0.01 240)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-            }}
-          >
-            Contact
-            <span 
-              className="absolute bottom-0 left-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full"
-              style={{ background: 'linear-gradient(90deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160))' }}
-            />
-          </a>
-          <Link 
-            href="/quote" 
-            className="px-4 xl:px-6 py-2 xl:py-2.5 text-sm rounded-full whitespace-nowrap font-medium transition-all duration-200 relative overflow-hidden group glow-primary-hover"
-            style={{
-              background: 'linear-gradient(135deg, oklch(0.45 0.15 220) 0%, oklch(0.55 0.15 160) 100%)',
-              color: 'white',
-              boxShadow: '0 4px 16px -4px oklch(0.45 0.15 220 / 0.4)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-1px)'
-              e.currentTarget.style.boxShadow = '0 6px 20px -4px oklch(0.45 0.15 220 / 0.5)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 4px 16px -4px oklch(0.45 0.15 220 / 0.4)'
-            }}
-          >
-            <span className="relative z-10">Request Quote</span>
-            <div 
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-              style={{
-                background: 'linear-gradient(135deg, oklch(0.50 0.16 220) 0%, oklch(0.60 0.16 160) 100%)'
-              }}
-            />
-          </Link>
-        </nav>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2.5 rounded-lg transition-all duration-200"
-          style={{ 
-            color: 'oklch(0.40 0.01 240)'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
-            e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent'
-            e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-          }}
-          aria-label="Toggle menu"
-        >
-          <motion.svg 
-            className="w-6 h-6" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-            animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
-            <AnimatePresence mode="wait">
-              {mobileMenuOpen ? (
-                <motion.path
-                  key="close"
-                  initial={{ opacity: 0, pathLength: 0 }}
-                  animate={{ opacity: 1, pathLength: 1 }}
-                  exit={{ opacity: 0, pathLength: 0 }}
-                  transition={{ duration: 0.2 }}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <motion.path
-                  key="menu"
-                  initial={{ opacity: 0, pathLength: 0 }}
-                  animate={{ opacity: 1, pathLength: 1 }}
-                  exit={{ opacity: 0, pathLength: 0 }}
-                  transition={{ duration: 0.2 }}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </AnimatePresence>
-          </motion.svg>
-        </button>
-      </div>
-
-      {/* Mobile Navigation Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.nav
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ 
-              duration: 0.3, 
-              ease: [0.4, 0, 0.2, 1],
-              opacity: { duration: 0.2 }
-            }}
-            className="lg:hidden overflow-hidden"
-            style={{
-              borderTop: '1px solid oklch(0.90 0.008 100 / 0.5)',
-              background: 'linear-gradient(180deg, oklch(1 0 0 / 0.95) 0%, oklch(0.99 0.002 100 / 0.98) 100%)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              boxShadow: '0 8px 32px -8px oklch(0.45 0.15 220 / 0.1)'
-            }}
-          >
-            <motion.div 
-              className="px-4 py-4 space-y-2"
-              initial="closed"
-              animate="open"
-              exit="closed"
-              variants={{
-                open: {
-                  transition: { staggerChildren: 0.05, delayChildren: 0.1 }
-                },
-                closed: {
-                  transition: { staggerChildren: 0.03, staggerDirection: -1 }
-                }
-              }}
-            >
-              <motion.div
-                variants={{
-                  open: { opacity: 1, x: 0 },
-                  closed: { opacity: 0, x: -20 }
-                }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-              >
-                <a 
-                  href="/#about" 
-                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-200"
-                  style={{ 
-                    color: 'oklch(0.40 0.01 240)'
-                  }}
-                  onClick={() => setMobileMenuOpen(false)}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
-                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                    e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-                  }}
-                >
-                  About
-                </a>
-              </motion.div>
-              <motion.div
-                variants={{
-                  open: { opacity: 1, x: 0 },
-                  closed: { opacity: 0, x: -20 }
-                }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-              >
-                <Link 
-                  href="/products" 
-                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-200"
-                  style={{ 
-                    color: 'oklch(0.40 0.01 240)'
-                  }}
-                  onClick={() => setMobileMenuOpen(false)}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
-                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                    e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-                  }}
-                >
-                  Products
-                </Link>
-              </motion.div>
-              <motion.div
-                variants={{
-                  open: { opacity: 1, x: 0 },
-                  closed: { opacity: 0, x: -20 }
-                }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-              >
-                <a 
-                  href="/#resources" 
-                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-200"
-                  style={{ 
-                    color: 'oklch(0.40 0.01 240)'
-                  }}
-                  onClick={() => setMobileMenuOpen(false)}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
-                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                    e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-                  }}
-                >
-                  Categories
-                </a>
-              </motion.div>
-              <motion.div
-                variants={{
-                  open: { opacity: 1, x: 0 },
-                  closed: { opacity: 0, x: -20 }
-                }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-              >
-                <a 
-                  href="/#contact" 
-                  className="block text-sm font-medium py-2.5 px-3 rounded-lg transition-all duration-200"
-                  style={{ 
-                    color: 'oklch(0.40 0.01 240)'
-                  }}
-                  onClick={() => setMobileMenuOpen(false)}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'oklch(0.96 0.005 90 / 0.6)'
-                    e.currentTarget.style.color = 'oklch(0.45 0.15 220)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                    e.currentTarget.style.color = 'oklch(0.40 0.01 240)'
-                  }}
-                >
-                  Contact
-                </a>
-              </motion.div>
-              <motion.div
-                variants={{
-                  open: { opacity: 1, x: 0, scale: 1 },
-                  closed: { opacity: 0, x: -20, scale: 0.95 }
-                }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
-              >
-                <Link 
-                  href="/quote" 
-                  className="block px-4 py-2.5 text-sm rounded-full text-center font-medium transition-all duration-200 relative overflow-hidden mt-2 glow-primary-hover"
-                  style={{
-                    background: 'linear-gradient(135deg, oklch(0.45 0.15 220) 0%, oklch(0.55 0.15 160) 100%)',
-                    color: 'white',
-                    boxShadow: '0 4px 16px -4px oklch(0.45 0.15 220 / 0.4)'
-                  }}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Request Quote
-                </Link>
-              </motion.div>
-            </motion.div>
-          </motion.nav>
-        )}
-      </AnimatePresence>
-    </header>
+    <span aria-hidden="true" className="nav-cta-arrow">
+      <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 8h10M9 4l4 4-4 4" />
+      </svg>
+    </span>
   )
 }
 
+export default function Navbar() {
+  const pathname = usePathname()
+  const isHome = pathname === "/"
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [condensed, setCondensed] = useState(false)
+  const [stripTucked, setStripTucked] = useState(false)
+  const ticking = useRef(false)
+
+  useEffect(() => {
+    const update = () => {
+      setCondensed(window.scrollY > CONDENSE_AFTER_PX)
+      // On the homepage the strip stays until the scroll-expand hero is ~65% open.
+      const tuckAt = isHome ? heroStripTuckOffset(window.innerHeight) : TUCK_STRIP_AFTER_PX
+      setStripTucked(window.scrollY > tuckAt)
+      ticking.current = false
+    }
+    const onScroll = () => {
+      if (ticking.current) return
+      ticking.current = true
+      requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll)
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
+  }, [isHome])
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false)
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [menuOpen])
+
+  const isActive = (href: string) => !href.includes("#") && pathname.startsWith(href)
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-50">
+      <div
+        className={`relative w-full transition-[padding] duration-[650ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none ${
+          condensed ? `${NAV_INSET_PILL} pt-2.5` : `${NAV_INSET_FLAT} pt-0`
+        }`}
+      >
+        <div
+          className={`relative z-10 flex h-[var(--nav-h)] items-center justify-between gap-4 px-5 transition-[border-radius,background-color,border-color,box-shadow] duration-[650ms] ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none sm:px-7 lg:px-9 ${
+            condensed
+              ? "rounded-[2.75rem] border border-black/[0.06] bg-white shadow-[0_10px_40px_-14px_rgba(0,60,90,0.3)]"
+              : "rounded-none border border-transparent bg-white"
+          }`}
+        >
+          <Link
+            href="/"
+            className="flex shrink-0 items-center gap-2.5 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[oklch(0.45_0.15_220)]"
+            aria-label="Handcare home"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/handcarelogo.png" alt="" className="h-10 w-auto lg:h-11" />
+            <span className="font-display text-[1.6rem] font-semibold leading-none tracking-tight text-gradient-primary lg:text-[1.9rem]">
+              Handcare
+            </span>
+          </Link>
+
+          <nav aria-label="Main" className="hidden items-center gap-8 lg:flex xl:gap-11">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                data-active={isActive(item.href) || undefined}
+                aria-current={isActive(item.href) ? "page" : undefined}
+                className="nav-link relative whitespace-nowrap rounded-sm py-2 text-[1.05rem] text-[oklch(0.25_0.01_240)]/90 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-[oklch(0.45_0.15_220)] active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[oklch(0.45_0.15_220)]"
+              >
+                {item.label}
+                <span aria-hidden="true" className="nav-rule" />
+              </Link>
+            ))}
+          </nav>
+
+          <div className="hidden shrink-0 items-center lg:flex">
+            <Link href="/quote" className="nav-cta">
+              Request Quote
+              <Arrow />
+            </Link>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            className="relative grid size-12 place-items-center rounded-full text-[oklch(0.25_0.01_240)] transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-black/5 active:scale-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[oklch(0.45_0.15_220)] lg:hidden"
+          >
+            <span aria-hidden="true" className="burger" data-open={menuOpen || undefined}>
+              <span />
+              <span />
+            </span>
+          </button>
+        </div>
+
+        {/*
+          A sibling of the pill, not a child, and driven by plain CSS transitions.
+          Two things used to make it flicker: a backdrop-filter on the pill (every
+          animating descendant repaints each frame) and framer-motion's opacity
+          animation, which drops to 0 for one frame when it hands over to the
+          final style. It stays mounted so a transition can run in both directions.
+        */}
+        <nav
+          id="mobile-menu"
+          aria-label="Mobile"
+          aria-hidden={!menuOpen}
+          data-open={menuOpen || undefined}
+          {...(menuOpen ? {} : { inert: true })}
+          className="mobile-menu absolute z-20 inset-x-3 top-full mt-2 rounded-[2rem] border border-black/[0.06] bg-white p-3 shadow-[0_24px_60px_-24px_rgba(0,60,90,0.4)] sm:inset-x-5 lg:hidden"
+        >
+          <ul className="flex flex-col">
+            {NAV_ITEMS.map((item, i) => (
+              <li key={item.label} className="mobile-menu-item" style={{ "--i": i } as React.CSSProperties}>
+                <Link
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-2xl px-4 py-3.5 text-[1.1rem] text-[oklch(0.25_0.01_240)] transition-[background-color,color,transform] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[oklch(0.96_0.01_220)] hover:text-[oklch(0.45_0.15_220)] active:scale-[0.98]"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="mobile-menu-item" style={{ "--i": NAV_ITEMS.length } as React.CSSProperties}>
+            <Link href="/quote" onClick={() => setMenuOpen(false)} className="nav-cta mt-2 w-full justify-between">
+              Request Quote
+              <Arrow />
+            </Link>
+          </div>
+        </nav>
+      </div>
+
+      <OfferStrip condensed={condensed} tucked={stripTucked || menuOpen} />
+    </header>
+  )
+}

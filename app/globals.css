@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --nav-h: 4.5rem;
   /* Modern industrial color scheme - Vibrant and Professional */
   /* Primary: Deep Teal/Blue for trust and professionalism */
   --primary: oklch(0.45 0.15 220); /* Deep teal-blue */
@@ -373,4 +374,153 @@
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--apple-hairline);
   }
+}
+
+/* ── Navbar + offer strip ─────────────────────────────────────────── */
+.nav-link .nav-rule {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, oklch(0.45 0.15 220), oklch(0.55 0.15 160));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nav-link:hover .nav-rule,
+.nav-link[data-active] .nav-rule {
+  transform: scaleX(1);
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 3rem;
+  padding: 0 0.4rem 0 1.4rem;
+  border-radius: 1rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  background: linear-gradient(135deg, oklch(0.45 0.15 220), oklch(0.52 0.15 175));
+  transition: filter 0.25s ease, transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nav-cta:hover { filter: brightness(1.08); transform: scale(1.02); }
+.nav-cta:active { transform: scale(0.96); transition-duration: 0.12s; }
+.nav-cta:focus-visible { outline: 2px solid oklch(0.45 0.15 220); outline-offset: 2px; }
+.nav-cta-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.7rem;
+  background: #fff;
+  color: oklch(0.45 0.15 220);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nav-cta:hover .nav-cta-arrow { transform: translateX(2px); }
+
+/* Offer strip: moves with the nav (padding / radius, nav easing); tucks with Osmo's easing. */
+/* Tailwind v4 moves elements with the individual `translate` and `scale` properties, so
+   listing only `transform` here would make the tuck snap instead of slide. */
+.offer-strip-wrap {
+  transition:
+    translate 0.6s cubic-bezier(0.625, 0.05, 0, 1),
+    scale 0.6s cubic-bezier(0.625, 0.05, 0, 1),
+    transform 0.6s cubic-bezier(0.625, 0.05, 0, 1),
+    padding 0.65s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.offer-strip-link { transition: border-radius 0.65s cubic-bezier(0.32, 0.72, 0, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .offer-strip-wrap, .offer-strip-link { transition: none; }
+}
+
+/* FAQ accordion: height animates via grid rows (0fr -> 1fr); the answer fades in a beat later.
+   Closed panels turn `visibility: hidden` only once the collapse has finished. */
+.faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 0.5s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 0.5s;
+}
+.faq-panel[data-open] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 0.5s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s;
+}
+.faq-panel-inner {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.faq-panel[data-open] .faq-panel-inner {
+  opacity: 1;
+  transition: opacity 0.4s ease 0.12s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-panel, .faq-panel[data-open], .faq-panel-inner, .faq-panel[data-open] .faq-panel-inner { transition: none; }
+}
+
+@keyframes offer-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.offer-track { animation: offer-scroll 38s linear infinite; will-change: transform; }
+.offer-marquee:hover .offer-track,
+.offer-marquee:focus-visible .offer-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .offer-track { animation: none; }
+}
+
+/* Hamburger that morphs into a cross. Transform-only, so no layout work per frame. */
+.burger { position: relative; display: block; width: 1.4rem; height: 1.4rem; }
+.burger > span {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.burger > span:nth-child(1) { transform: translateY(-4px); }
+.burger > span:nth-child(2) { transform: translateY(4px); }
+.burger[data-open] > span:nth-child(1) { transform: translateY(0) rotate(45deg); }
+.burger[data-open] > span:nth-child(2) { transform: translateY(0) rotate(-45deg); }
+/* Mobile menu: opacity + transform only, staggered items, symmetrical in/out. */
+.mobile-menu {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(0, -12px, 0) scale(0.98);
+  transform-origin: top right;
+  transition: opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1), transform 0.5s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 0.5s;
+}
+.mobile-menu[data-open] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition: opacity 0.3s cubic-bezier(0.32, 0.72, 0, 1), transform 0.5s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s;
+}
+.mobile-menu-item {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.mobile-menu[data-open] .mobile-menu-item {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1) calc(0.05s + var(--i) * 0.04s), transform 0.5s cubic-bezier(0.32, 0.72, 0, 1) calc(0.05s + var(--i) * 0.04s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu, .mobile-menu[data-open], .mobile-menu-item, .mobile-menu[data-open] .mobile-menu-item { transition: none; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .burger > span, .nav-cta, .nav-cta-arrow, .nav-link .nav-rule { transition: none; }
 }

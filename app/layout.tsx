@@ -4,7 +4,8 @@ import { Analytics } from '@vercel/analytics/next'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import MotionProvider from './components/MotionProvider'
-import { organizationSchema } from '@/lib/structured-data'
+import { organizationSchema, websiteSchema } from '@/lib/structured-data'
+import { SITE_URL } from '@/lib/seo'
 import './globals.css'
 
 /**
@@ -34,17 +35,21 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+// Site-wide defaults only. Each page sets its own title, description,
+// canonical and Open Graph via pageMetadata() in lib/seo.ts — a canonical
+// set here would be inherited by every page and point them all at "/".
 export const metadata: Metadata = {
-  title: 'Handcare - Leather Gloves Manufacturer & Exporter | Sialkot, Pakistan',
-  description: 'ISO 9001:2015 certified leather gloves manufacturer and industrial glove exporter in Sialkot, Pakistan. OEM/custom glove manufacturing, wholesale supply to 50+ countries.',
+  metadataBase: new URL(SITE_URL),
+  title: 'Leather Gloves Manufacturer & Exporter, Sialkot | Handcare',
+  description: 'ISO 9001:2015 certified leather glove manufacturer in Sialkot, Pakistan. OEM and custom industrial gloves, wholesale export to 50+ countries.',
   generator: 'Handcare',
   icons: [
     { rel: 'icon', url: '/handcarelogo-faviconn.png' },
     { rel: 'shortcut icon', url: '/handcarelogo-faviconn.png' },
   ],
-  other: [
-    { name: 'msvalidate.01', content: '0D7CE10BE6BEDCE395834D6A6E8A286C' },
-  ],
+  other: {
+    'msvalidate.01': '0D7CE10BE6BEDCE395834D6A6E8A286C',
+  },
 }
 
 export default function RootLayout({
@@ -68,6 +73,12 @@ export default function RootLayout({
           type="application/ld+json"
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          id="website-schema"
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <MotionProvider>
           <Navbar />

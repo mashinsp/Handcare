@@ -1,12 +1,13 @@
 import type { Metadata } from "next"
 import LegalPage, { type LegalSection } from "@/components/legal-page"
+import { pageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy | Handcare",
   description:
     "How Handcare collects, uses and protects the information you submit through handcare.co, including quote and contact form data.",
-  alternates: { canonical: "https://www.handcare.co/privacy" },
-}
+  path: "/privacy",
+})
 
 const sections: LegalSection[] = [
   {

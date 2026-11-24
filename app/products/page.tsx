@@ -3,24 +3,15 @@ import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { glovesCatalogSchema, productList } from "@/lib/structured-data"
+import { pageMetadata } from "@/lib/seo"
 
 // SEO Metadata for Google, AI Crawlers, and Social Sharing
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Leather Gloves Catalogue | Custom Glove Manufacturer — Handcare",
   description:
-    "Genuine leather industrial and safety gloves — working, welding, mechanical, and more. Premium cowhide and goat-grain leather. OEM/wholesale glove supplier, EN 388/407 & CE certified, manufactured in Sialkot, Pakistan.",
-  alternates: {
-    canonical: "https://www.handcare.co/products",
-  },
-  openGraph: {
-    title: "Leather Gloves Catalogue | Custom Glove Manufacturer — Handcare",
-    description:
-      "Genuine leather industrial and safety gloves, OEM/wholesale supply, manufactured in Sialkot, Pakistan.",
-    url: "https://www.handcare.co/products",
-    siteName: "Handcare",
-    type: "website",
-  },
-}
+    "Leather work, welding, mechanic, gardening, riding, winter, boxing and driving gloves. EN 388/407 & CE. OEM and wholesale supply from Sialkot, Pakistan.",
+  path: "/products",
+})
 
 // Catalog Breadcrumb Schema for AEO / Rich Snippets
 const catalogBreadcrumbSchema = {
@@ -265,7 +256,7 @@ export default function ProductsPage() {
                   <h3 className="text-2xl font-bold mb-6 text-heading">{product.name}</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     {product.images.map((img, imgIndex) => (
-                      <Link key={imgIndex} href={`/products/${product.id}?variant=${imgIndex + 1}`}>
+                      <Link key={imgIndex} href={`/products/${product.id}#variant-${imgIndex + 1}`}>
                         <div
                           className="rounded-xl p-4 hover:shadow-primary transition-all duration-200 cursor-pointer group"
                           style={{

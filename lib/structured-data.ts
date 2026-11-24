@@ -4,17 +4,11 @@
  * WHERE TO USE:
  * 1. `organizationSchema` -> render once in app/layout.tsx (applies site-wide)
  * 2. `glovesCatalogSchema` -> render on app/products/page.tsx
- * 3. `productSchema(slug)` -> render on each app/products/[slug]/page.tsx (or the
- *    7 static product pages), passing the matching product data
+ * 3. `productSchema(p)` + `breadcrumbSchema(...)` -> render on app/products/[id]/page.tsx
+ * 4. `websiteSchema` -> render once in app/layout.tsx
  *
- * HOW TO RENDER:
- * import Script from 'next/script'
- *
- * <Script
- *   id="organization-schema"
- *   type="application/ld+json"
- *   dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
- * />
+ * HOW TO RENDER: a plain <script type="application/ld+json"> tag, not
+ * next/script (see the comment in app/layout.tsx).
  */
 
 export const organizationSchema = {
@@ -27,6 +21,9 @@ export const organizationSchema = {
   description:
     'Handcare is a leading manufacturer of high-quality industrial and safety gloves based in Sialkot, Pakistan, ISO 9001:2015 certified, exporting to 50+ countries.',
   foundingLocation: 'Sialkot, Pakistan',
+  email: 'handcare514@gmail.com',
+  telephone: '+92-301-426-4385',
+  areaServed: 'Worldwide',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Industrial Area',
@@ -41,6 +38,12 @@ export const organizationSchema = {
       telephone: '+92-301-426-4385',
       contactType: 'sales',
       email: 'handcare514@gmail.com',
+      areaServed: 'Worldwide',
+    },
+    {
+      '@type': 'ContactPoint',
+      telephone: '+92-302-400-2921',
+      contactType: 'sales',
       areaServed: 'Worldwide',
     },
   ],
@@ -76,18 +79,6 @@ export const organizationSchema = {
     'Cowhide, goat, sheep, and deer leather processing',
     'EN 388, EN 407, ANSI/ISEA 105, and CE glove safety standards',
   ],
-}
-
-// Render on /products
-export const glovesCatalogSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  '@id': 'https://www.handcare.co/products#collection',
-  name: 'Handcare Product Range',
-  description:
-    'Comprehensive range of protective gloves for industrial, safety, sports and outdoor use, manufactured in Sialkot, Pakistan.',
-  url: 'https://www.handcare.co/products',
-  isPartOf: { '@id': 'https://www.handcare.co/#organization' },
 }
 
 export interface ProductSchemaInput {
@@ -156,13 +147,23 @@ export const productList: ProductSchemaInput[] = [
     image: 'https://www.handcare.co/boxing1.png',
     standards: ['CE Marking'],
   },
+  {
+    slug: 'driving-gloves',
+    name: 'Driving Gloves',
+    description: 'Soft grain leather driving gloves, unlined for precise steering feel, with a secure wrist closure.',
+    material: 'Soft grain goatskin and cowhide',
+    image: 'https://www.handcare.co/driving1.png',
+    standards: ['CE Marking'],
+  },
 ]
 
 export function productSchema(p: ProductSchemaInput) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Product',
+    '@id': `https://www.handcare.co/products/${p.slug}#product`,
     name: p.name,
+    url: `https://www.handcare.co/products/${p.slug}`,
     description: p.description,
     image: p.image,
     material: p.material,
@@ -173,14 +174,70 @@ export function productSchema(p: ProductSchemaInput) {
       name: 'Safety Standard',
       value: s,
     })),
-    offers: {
-      '@type': 'Offer',
-      availability: 'https://schema.org/InStock',
-      priceSpecification: {
-        '@type': 'PriceSpecification',
-        description: 'Bulk/wholesale pricing available on request',
-      },
+    // No `offers`: pricing is quote-based, and an Offer without a price is
+    // flagged invalid for product snippets / merchant listings. A Product
+    // with no offers, review or aggregateRating is simply not eligible for
+    // those rich results, which is the honest state for a B2B catalogue.
+    // If indicative wholesale price ranges are ever published, add an
+    // AggregateOffer with lowPrice, highPrice and priceCurrency here.
+  }
+}
+
+// Render on /products
+export const glovesCatalogSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': 'https://www.handcare.co/products#collection',
+  name: 'Handcare Product Range',
+  description:
+    'Comprehensive range of protective gloves for industrial, safety, sports and outdoor use, manufactured in Sialkot, Pakistan.',
+  url: 'https://www.handcare.co/products',
+  isPartOf: { '@id': 'https://www.handcare.co/#website' },
+  publisher: { '@id': 'https://www.handcare.co/#organization' },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: productList.length,
+    itemListElement: productList.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: p.name,
       url: `https://www.handcare.co/products/${p.slug}`,
-    },
+    })),
+  },
+}
+
+// Render once in app/layout.tsx, as its own block next to the Organization.
+export const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': 'https://www.handcare.co/#website',
+  name: 'Handcare',
+  url: 'https://www.handcare.co/',
+  inLanguage: 'en',
+  publisher: { '@id': 'https://www.handcare.co/#organization' },
+}
+
+export function faqSchema(faqs: readonly { question: string; answer: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  }
+}
+
+export function breadcrumbSchema(items: { name: string; url: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      item: item.url,
+    })),
   }
 }

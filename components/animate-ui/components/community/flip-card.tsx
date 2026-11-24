@@ -376,7 +376,7 @@ export function FlipCard({ data }: FlipCardProps) {
                   e.currentTarget.style.boxShadow = 'none';
                 }}
               >
-                View Details
+                View {data.name}
                 <svg
                   className="w-4 h-4"
                   fill="none"
