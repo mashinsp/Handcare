@@ -397,7 +397,7 @@ function App() {
         }}
       >
         <div className="absolute inset-0 flex items-center justify-center p-6">
-          <img 
+          <img decoding="async" 
             src="/boxing2.png" 
             alt="Boxing Gloves"
             className="max-w-full max-h-full object-contain opacity-90"
@@ -421,7 +421,7 @@ function App() {
         }}
       >
         <div className="absolute inset-0 flex items-center justify-center p-6">
-          <img 
+          <img decoding="async" 
             src="/mechanicalglove3.png" 
             alt="Mechanical Gloves"
             className="max-w-full max-h-full object-contain opacity-90"
@@ -454,7 +454,7 @@ function App() {
           border: '1px solid oklch(0.88 0.015 220)'
         }}
       >
-        <img 
+        <img decoding="async" 
           src="/workingglove3.png" 
           alt="Handcare Quality Gloves"
           className="max-w-full max-h-full object-contain"

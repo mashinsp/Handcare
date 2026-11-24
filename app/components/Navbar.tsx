@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type MouseEvent } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import OfferStrip from "./OfferStrip"
@@ -72,6 +72,22 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", onKey)
   }, [menuOpen])
 
+  /**
+   * On the homepage a plain <Link href="/"> does nothing (same URL), so the logo
+   * scrolls back to the top itself, and drops a leftover #hash from the address.
+   * From any other page it falls through to a normal navigation to "/".
+   */
+  const handleLogoClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    setMenuOpen(false)
+    if (pathname !== "/") return
+    event.preventDefault()
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" })
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+  }
+
   const isActive = (href: string) => !href.includes("#") && pathname.startsWith(href)
 
   return (
@@ -90,24 +106,25 @@ export default function Navbar() {
         >
           <Link
             href="/"
+            onClick={handleLogoClick}
             className="flex shrink-0 items-center gap-2.5 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[oklch(0.45_0.15_220)]"
             aria-label="Handcare home"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/handcarelogo.png" alt="" className="h-10 w-auto lg:h-11" />
-            <span className="font-display text-[1.6rem] font-semibold leading-none tracking-tight text-gradient-primary lg:text-[1.9rem]">
+            <img src="/handcarelogo.png" alt="" className="h-10 w-auto lg:h-10" />
+            <span className="font-display text-[1.6rem] font-semibold leading-none tracking-tight text-gradient-primary lg:text-[1.65rem]">
               Handcare
             </span>
           </Link>
 
-          <nav aria-label="Main" className="hidden items-center gap-8 lg:flex xl:gap-11">
+          <nav aria-label="Main" className="hidden items-center gap-6 lg:flex">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 data-active={isActive(item.href) || undefined}
                 aria-current={isActive(item.href) ? "page" : undefined}
-                className="nav-link relative whitespace-nowrap rounded-sm py-2 text-[1.05rem] text-[oklch(0.25_0.01_240)]/90 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-[oklch(0.45_0.15_220)] active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[oklch(0.45_0.15_220)]"
+                className="nav-link relative whitespace-nowrap rounded-sm py-2 text-base text-[oklch(0.25_0.01_240)]/90 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-[oklch(0.45_0.15_220)] active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[oklch(0.45_0.15_220)]"
               >
                 {item.label}
                 <span aria-hidden="true" className="nav-rule" />
